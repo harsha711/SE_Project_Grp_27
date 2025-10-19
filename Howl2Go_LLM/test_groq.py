@@ -2,7 +2,7 @@ import os
 from groq import Groq
 
 # Initialize Groq client with API key
-client = Groq(api_key=os.environ.get("GROQ_API_KEY") or "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")
+client = Groq(api_key=os.environ.get("GROQ_API_KEY") or "api_key")
 
 model = "llama-3.1-8b-instant"  # Updated to current model
 
