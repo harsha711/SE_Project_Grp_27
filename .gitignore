@@ -4,6 +4,12 @@ data/uber-eats-usa-restaurants-menus.zip
 data/fast-food/*.csv
 data/*.ipynb
 
+# Data files in Proj 2
+Proj 2/data/uber-eats-usa-restaurants-menus/
+Proj 2/data/uber-eats-usa-restaurants-menus.zip
+Proj 2/data/fast-food/*.csv
+Proj 2/data/*.ipynb
+
 # Environment variables
 .env
 *.env
