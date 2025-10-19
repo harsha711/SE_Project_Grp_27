@@ -1,0 +1,41 @@
+#!/bin/sh
+echo ""
+echo "🎉 ====================================="
+echo "   Commit successful!"
+echo "   ====================================="
+echo ""
+
+# Get commit info
+COMMIT_HASH=$(git rev-parse --short HEAD)
+COMMIT_MSG=$(git log -1 --pretty=%B)
+COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+FILES_CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD | wc -l)
+
+echo "📝 Commit Details:"
+echo "   Hash:    $COMMIT_HASH"
+echo "   Author:  $COMMIT_AUTHOR"
+echo "   Files:   $FILES_CHANGED file(s) changed"
+echo ""
+echo "💬 Message:"
+echo "   $COMMIT_MSG" | head -1
+echo ""
+
+# Check if on a feature branch
+CURRENT_BRANCH=$(git branch --show-current)
+if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
+  echo "🌿 Branch: $CURRENT_BRANCH"
+  echo ""
+  echo "💡 Next steps:"
+  echo "   - Run tests: npm test (if applicable)"
+  echo "   - Push to remote: git push origin $CURRENT_BRANCH"
+  echo "   - Create PR when ready"
+else
+  echo "⚠️  You're on '$CURRENT_BRANCH' branch"
+  echo ""
+  echo "💡 Next steps:"
+  echo "   - Push to remote: git push origin $CURRENT_BRANCH"
+fi
+
+echo ""
+echo "✨ ====================================="
+echo ""

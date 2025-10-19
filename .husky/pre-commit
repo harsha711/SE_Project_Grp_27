@@ -2,10 +2,12 @@ echo "🔍 Running pre-commit checks..."
 
 # Check for secrets in staged files (excluding hooks, docs, and markdown files)
 echo "🔐 Checking for secrets and API keys..."
-FILES_TO_CHECK=$(git diff --cached --name-only | grep -vE "^\.husky/|\.md$|README|package")
+FILES_TO_CHECK=$(git diff --cached --name-only | grep -vE "^\.husky/|\.md$|README|package" || true)
 if [ -n "$FILES_TO_CHECK" ]; then
-  if echo "$FILES_TO_CHECK" | xargs grep -l "gsk_[a-zA-Z0-9]\{48\}\|sk-[a-zA-Z0-9]\{48\}\|AKIA[A-Z0-9]\{16\}\|mongodb+srv://[^:]*:[^@]*@" 2>/dev/null; then
+  SECRET_FOUND=$(echo "$FILES_TO_CHECK" | xargs -r grep -l "gsk_[a-zA-Z0-9]\{48\}\|sk-[a-zA-Z0-9]\{48\}\|AKIA[A-Z0-9]\{16\}\|mongodb+srv://[^:]*:[^@]*@" 2>/dev/null || true)
+  if [ -n "$SECRET_FOUND" ]; then
     echo "❌ ERROR: Potential API key or secret detected in staged files!"
+    echo "$SECRET_FOUND"
     echo "Please remove secrets before committing."
     exit 1
   fi

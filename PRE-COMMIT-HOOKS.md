@@ -1,6 +1,6 @@
-# Pre-Commit Hooks
+# Git Hooks (Pre-Commit & Post-Commit)
 
-This project uses [Husky](https://typicode.github.io/husky/) and [lint-staged](https://github.com/okonet/lint-staged) to enforce code quality and security checks before commits.
+This project uses [Husky](https://typicode.github.io/husky/) and [lint-staged](https://github.com/okonet/lint-staged) to enforce code quality and security checks, plus provide helpful feedback after commits.
 
 ## What Gets Checked
 
@@ -46,6 +46,41 @@ Runs checks on staged files based on file type:
 - JavaScript/TypeScript files (`*.{js,jsx,ts,tsx}`)
 - Python files (`*.py`)
 - JSON/Markdown/YAML files
+
+## Post-Commit Hook
+
+After a successful commit, a post-commit hook provides helpful feedback:
+
+### What You'll See:
+
+```bash
+🎉 =====================================
+   Commit successful!
+   =====================================
+
+📝 Commit Details:
+   Hash:    a1b2c3d
+   Author:  Your Name
+   Files:   5 file(s) changed
+
+💬 Message:
+   Add new feature
+
+🌿 Branch: feature/new-feature
+
+💡 Next steps:
+   - Run tests: npm test (if applicable)
+   - Push to remote: git push origin feature/new-feature
+   - Create PR when ready
+
+✨ =====================================
+```
+
+### Features:
+- **Commit summary** - Shows hash, author, and files changed
+- **Branch detection** - Warns if on main/master branch
+- **Smart suggestions** - Contextual next steps based on your branch
+- **Visual feedback** - Clear, colorful output
 
 ## Setup
 
@@ -197,12 +232,21 @@ git add src/api.js
 # 3. Commit (hooks run automatically)
 git commit -m "Add API integration"
 
-# Output:
+# Pre-commit output:
 🔍 Running pre-commit checks...
 🔐 Checking for secrets and API keys...
 📦 Checking for large files...
 ✨ Running lint-staged...
 ✅ Pre-commit checks passed!
+
+# Post-commit output:
+🎉 =====================================
+   Commit successful!
+   =====================================
+📝 Commit Details:
+   Hash:    a1b2c3d
+   ...
+✨ =====================================
 ```
 
 ### Blocked Commit Example
@@ -230,7 +274,8 @@ git commit -m "Update config"
 .
 ├── .husky/
 │   ├── _/                    # Husky internal files
-│   └── pre-commit            # Main pre-commit hook script
+│   ├── pre-commit            # Pre-commit hook script (runs before commit)
+│   └── post-commit           # Post-commit hook script (runs after commit)
 ├── package.json              # Husky & lint-staged config
 └── PRE-COMMIT-HOOKS.md      # This file
 ```
