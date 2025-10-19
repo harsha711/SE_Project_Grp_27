@@ -1,8 +1,15 @@
 import os
 from groq import Groq
 
-# Initialize Groq client with API key
-client = Groq(api_key=os.environ.get("GROQ_API_KEY") or "api_key")
+# Initialize Groq client with API key from environment variable
+api_key = os.environ.get("GROQ_API_KEY")
+if not api_key:
+    raise ValueError(
+        "GROQ_API_KEY environment variable is not set.\n"
+        "Please set it using: export GROQ_API_KEY='your-key-here'"
+    )
+
+client = Groq(api_key=api_key)
 
 model = "llama-3.1-8b-instant"  # Updated to current model
 
