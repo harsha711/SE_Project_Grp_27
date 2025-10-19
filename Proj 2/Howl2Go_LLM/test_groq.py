@@ -18,22 +18,62 @@ user_prompt = "I want a high protein meal with low carbs"
 print(f"Testing with prompt: '{user_prompt}'")
 print("-" * 50)
 
-prompt = f"""Your goal is to extract nutritional and taste-based information from user prompts in the form of a structured json object.
-For example, the user might ask 'I want to eat something that has at least 30g of protein, less than 500 calories, and is pretty spicy.'
-The response should be a json object with the following fields:
-{{
-     "spice_level": {{"min": 3}},
-     "calories": {{"max": 500}},
-     "protein": {{"min": 30}}
-}}
-Respond only with the json object and nothing else. If a field is not mentioned in the prompt, it should be omitted from the response.
-Here are some examples:
-User prompt: "I want a meal with at least 20g of fiber and low sugar."
-Response: {{"fiber": {{"min": 20}}, "sugar": {{"max": 10}}}}
-User prompt: "Give me a dessert that's not too sweet and has under 300 calories."
-Response: {{"sugar": {{"max": 15}}, "calories": {{"max": 300}}}}
+prompt = f"""Your goal is to extract nutritional information only from user prompts in the form of a structured JSON object.
 
-If the user prompt is not related to food or nutrition, respond with an empty json object: {{}} and nothing else.
+The JSON object can only contain the following keys:
+calories
+caloriesFromFat
+totalFat
+saturatedFat
+transFat
+cholesterol
+sodium
+carbs
+fiber
+sugars
+protein
+
+Each key may have a nested object specifying "min" or "max" values (for example, "protein": {{"min": 30}}).
+
+If a nutrient is not mentioned or cannot be inferred from the user prompt, omit it from the JSON object.
+You must only include keys from the list above. Do not add any other fields under any circumstances. Ignore non-nutritional attributes such as taste, spice level, texture, flavor, or temperature, even if mentioned.
+You should also handle common synonyms or variants by mapping them to the correct key:
+"fat" or "fats" → "totalFat"
+"saturated" or "saturated fats" → "saturatedFat"
+"trans" or "trans fats" → "transFat"
+"cholesterol" → "cholesterol"
+"salt" → "sodium"
+"carbohydrates" or "carbohydrate" → "carbs"
+"fiber" or "fibre" → "fiber"
+"sugar" or "sweetness" → "sugars"
+"protein" or "proteins" → "protein"
+"calorie" or "energy" → "calories"
+"calories from fat" → "caloriesFromFat"
+
+If the user prompt is not related to food or nutrition at all, respond with an empty JSON object: {{}}
+Your responses must always be a valid JSON object and must never contain any text or explanation.
+
+Examples:
+
+User prompt:
+"I want a meal with at least 20g of fiber and low sugar."
+Response:
+{{"fiber": {{"min": 20}}, "sugars": {{"max": 10}}}}
+
+User prompt:
+"Give me a dessert that's under 300 calories and low in fat."
+Response:
+{{"calories": {{"max": 300}}, "totalFat": {{"max": 10}}}}
+
+User prompt:
+"I want something spicy with lots of protein."
+Response:
+{{"protein": {{"min": 20}}}}
+
+User prompt:
+"Tell me a joke."
+Response:
+{{}}
 
 Now, here is the user prompt: {user_prompt}
 """
