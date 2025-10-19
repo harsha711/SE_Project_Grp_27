@@ -1,0 +1,40 @@
+echo "🔍 Running pre-commit checks..."
+
+# Check for secrets in staged files (excluding hooks, docs, and markdown files)
+echo "🔐 Checking for secrets and API keys..."
+FILES_TO_CHECK=$(git diff --cached --name-only | grep -vE "^\.husky/|\.md$|README|package" || true)
+if [ -n "$FILES_TO_CHECK" ]; then
+  SECRET_FOUND=$(echo "$FILES_TO_CHECK" | xargs -r grep -l "gsk_[a-zA-Z0-9]\{48\}\|sk-[a-zA-Z0-9]\{48\}\|AKIA[A-Z0-9]\{16\}\|mongodb+srv://[^:]*:[^@]*@" 2>/dev/null || true)
+  if [ -n "$SECRET_FOUND" ]; then
+    echo "❌ ERROR: Potential API key or secret detected in staged files!"
+    echo "$SECRET_FOUND"
+    echo "Please remove secrets before committing."
+    exit 1
+  fi
+fi
+
+# Check for .env files
+if git diff --cached --name-only | grep -q "\.env$"; then
+  echo "❌ ERROR: .env file detected in commit!"
+  echo "Never commit .env files. Use .env.example instead."
+  exit 1
+fi
+
+# Check for large files (> 50MB)
+echo "📦 Checking for large files..."
+for file in $(git diff --cached --name-only); do
+  if [ -f "$file" ]; then
+    size=$(du -m "$file" | cut -f1)
+    if [ "$size" -gt 50 ]; then
+      echo "❌ ERROR: File $file is ${size}MB (limit: 50MB)"
+      echo "Please use Git LFS or exclude from repository."
+      exit 1
+    fi
+  fi
+done
+
+# Run lint-staged for code formatting
+echo "✨ Running lint-staged..."
+npx lint-staged
+
+echo "✅ Pre-commit checks passed!"

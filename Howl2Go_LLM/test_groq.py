@@ -2,7 +2,6 @@ import os
 from groq import Groq
 
 # Initialize Groq client with API key from environment variable
-# Set GROQ_API_KEY in your environment: export GROQ_API_KEY="your-key-here"
 api_key = os.environ.get("GROQ_API_KEY")
 if not api_key:
     raise ValueError(
@@ -12,9 +11,13 @@ if not api_key:
 
 client = Groq(api_key=api_key)
 
-model = "llama-3.1-8b-instant"  # Llama 3.1 8B running on Groq cloud (updated model)
+model = "llama-3.1-8b-instant"  # Updated to current model
 
-user_prompt = input("Enter your nutritional requirements: ")
+# Test prompt
+user_prompt = "I want a high protein meal with low carbs"
+print(f"Testing with prompt: '{user_prompt}'")
+print("-" * 50)
+
 prompt = f"""Your goal is to extract nutritional and taste-based information from user prompts in the form of a structured json object.
 For example, the user might ask 'I want to eat something that has at least 30g of protein, less than 500 calories, and is pretty spicy.'
 The response should be a json object with the following fields:
@@ -35,20 +38,27 @@ If the user prompt is not related to food or nutrition, respond with an empty js
 Now, here is the user prompt: {user_prompt}
 """
 
-response = client.chat.completions.create(
-    model=model,
-    messages=[
-        {
-            "role": "system",
-            "content": "You are a helpful assistant that extracts nutritional requirements from natural language and outputs only valid JSON."
-        },
-        {
-            "role": "user",
-            "content": prompt
-        }
-    ],
-    temperature=0.1,  # Low temperature for more consistent JSON output
-    max_tokens=500,
-)
+try:
+    response = client.chat.completions.create(
+        model=model,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful assistant that extracts nutritional requirements from natural language and outputs only valid JSON."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.1,
+        max_tokens=500,
+    )
 
-print(response.choices[0].message.content)
+    print("Response from Groq:")
+    print(response.choices[0].message.content)
+    print("-" * 50)
+    print("✅ Test successful!")
+
+except Exception as e:
+    print(f"❌ Error: {e}")
