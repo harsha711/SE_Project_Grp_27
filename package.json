@@ -1,0 +1,36 @@
+{
+  "name": "se_project_grp_27",
+  "version": "1.0.0",
+  "description": "- Proj 1   - Proj 1a1 - Problem familiarization   - Proj 1b1 - Problem Anticipation   - Proj 1c1 - Problem Condensation   - Proj 1d1 - Problem Reflection   - Proj 1e1 - Poster",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harsha711/SE_Project_Grp_27.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/harsha711/SE_Project_Grp_27/issues"
+  },
+  "homepage": "https://github.com/harsha711/SE_Project_Grp_27#readme",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "echo 'Checking JavaScript/TypeScript files...'"
+    ],
+    "*.py": [
+      "echo 'Checking Python files...'"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "echo 'Checking JSON/Markdown/YAML files...'"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.4"
+  }
+}
