@@ -1,8 +1,12 @@
 import http from 'http';
 import app from './app.js';
 import env from './config/env.js';
+import connectDB from './config/database.js';
 
 const { port, nodeEnv } = env;
+
+// Connect to MongoDB before starting the server
+await connectDB();
 
 const server = http.createServer(app);
 
