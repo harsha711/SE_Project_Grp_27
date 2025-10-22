@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -43,6 +44,7 @@ const mockSearchResults = [
 
 export default function Home() {
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const scroll = (direction: "left" | "right") => {
     if (carouselRef.current) {
@@ -66,7 +68,7 @@ export default function Home() {
             "color-mix(in srgb, var(--howl-bg) 95%, transparent)",
         }}
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
           {/* Left Side */}
           <div className="flex items-center gap-4">
             <button
@@ -75,14 +77,15 @@ export default function Home() {
             >
               <Menu className="h-6 w-6 text-[var(--howl-neutral)]" />
             </button>
-            <Image
-              src="/next.svg"
-              alt="Howl2Go Logo"
-              width={120}
-              height={30}
-              priority
-              className="invert"
-            />
+            <Link href="/">
+              <Image
+                src="/Howl2go_orange_logo_transparent.png"
+                alt="Howl2Go Logo"
+                width={60}
+                height={20}
+                priority
+              />
+            </Link>
           </div>
 
           {/* Right Side */}
@@ -97,7 +100,7 @@ export default function Home() {
               href="/login"
               className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
             >
-              Sign In
+              Log In
             </Link>
             <Link
               href="/dashboard"
@@ -111,11 +114,18 @@ export default function Home() {
 
       {/* Integrated Full-Screen Hero Section */}
       <div className="pt-15 min-h-screen">
-        <IntegratedHeroSection />
+        <IntegratedHeroSection onSearchFocusChange={setIsSearchFocused} />
       </div>
 
       {/* Frequently Bought Section */}
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:py-20">
+      <motion.section
+        className="mx-auto max-w-7xl px-4 py-12 sm:py-20"
+        animate={{
+          opacity: isSearchFocused ? 0.5 : 1,
+          filter: isSearchFocused ? "blur(2px)" : "blur(0px)",
+        }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
         <div className="flex items-center justify-between mb-10">
           <div>
             <h2 className="text-3xl font-bold mb-3 text-[var(--howl-neutral)]">
@@ -155,7 +165,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer spacing */}
       <div className="h-8"></div>
@@ -164,7 +174,13 @@ export default function Home() {
 }
 
 // Integrated Hero Section - "Show, Don't Tell"
-function IntegratedHeroSection() {
+function IntegratedHeroSection({
+  onSearchFocusChange,
+}: {
+  onSearchFocusChange: (focused: boolean) => void;
+}) {
+  const router = useRouter();
+
   // ========== STATE MANAGEMENT ==========
   // Core state for switching between Demonstration Mode and Live Mode
   const [isDemoMode, setIsDemoMode] = useState(true);
@@ -177,9 +193,32 @@ function IntegratedHeroSection() {
   // Live mode states
   const [inputValue, setInputValue] = useState("");
   const [showLiveResults, setShowLiveResults] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const cravings = ["spicy ramen", "cheesy pizza", "healthy salad"];
   const currentCraving = cravings[demoStep % cravings.length];
+
+  // Notify parent component of search focus state changes
+  useEffect(() => {
+    onSearchFocusChange(isSearchFocused);
+  }, [isSearchFocused, onSearchFocusChange]);
+
+  // Screen reader announcements
+  useEffect(() => {
+    if (isSearchFocused && !isDemoMode) {
+      // Announce to screen readers that search is now active
+      const announcement = document.createElement("div");
+      announcement.setAttribute("role", "status");
+      announcement.setAttribute("aria-live", "polite");
+      announcement.className = "sr-only";
+      announcement.textContent = "Search activated. Type your query and press Enter to search.";
+      document.body.appendChild(announcement);
+
+      return () => {
+        document.body.removeChild(announcement);
+      };
+    }
+  }, [isSearchFocused, isDemoMode]);
 
   // ========== DEMONSTRATION MODE ANIMATION ==========
   // Typewriter effect that cycles through different food cravings
@@ -213,13 +252,31 @@ function IntegratedHeroSection() {
   const handleSearchFocus = () => {
     setIsDemoMode(false);
     setShowLiveResults(true);
+    setIsSearchFocused(true);
   };
 
   // Returns to Demo Mode if user abandons search (only if search is empty)
   const handleSearchBlur = () => {
+    setIsSearchFocused(false);
     if (inputValue === "") {
       setIsDemoMode(true);
       setShowLiveResults(false);
+    }
+  };
+
+  // Handle Enter key press to navigate to search page
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputValue.trim()) {
+      // Navigate to search page with hero transition
+      const query = encodeURIComponent(inputValue.trim());
+      router.push(`/search?q=${query}`);
+    } else if (e.key === "Escape") {
+      // Allow user to exit typing state with Escape key
+      if (inputValue === "") {
+        setIsDemoMode(true);
+        setShowLiveResults(false);
+        setIsSearchFocused(false);
+      }
     }
   };
 
@@ -260,9 +317,18 @@ function IntegratedHeroSection() {
         {/* ========== ANIMATED HEADLINE ========== */}
         <motion.h1
           className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-12 text-[var(--howl-neutral)]"
-          variants={headlineContainerVariants}
           initial="hidden"
-          animate="visible"
+          animate={
+            isSearchFocused
+              ? {
+                  opacity: 0.3,
+                  scale: 0.95,
+                  filter: "blur(2px)",
+                }
+              : "visible"
+          }
+          variants={headlineContainerVariants}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           {words.map((word, index) => (
             <motion.span
@@ -299,22 +365,44 @@ function IntegratedHeroSection() {
 
         {/* ========== INTERACTIVE SEARCH COMPONENT ========== */}
         <div className="w-full">
-          {/* Search Bar */}
+          {/* Search Bar - Hero Element with Shared Layout ID */}
           <div className="mb-8">
             <motion.div
-              className="w-full px-6 py-5 text-xl sm:text-2xl rounded-full border-2 flex items-center min-h-[70px] transition-all duration-300 relative"
+              layoutId="hero-search-bar"
+              className="w-full px-6 py-5 text-xl sm:text-2xl rounded-full border-2 flex items-center min-h-[70px] relative focus-within:outline-none"
               style={{
                 backgroundColor: isDemoMode
-                  ? "var(--howl-surface-elevated)"
-                  : "var(--howl-surface)",
+                  ? "var(--search-bar-bg-demo)"
+                  : "var(--search-bar-bg-live)",
+                outline: "none",
               }}
+              initial={{ borderColor: "var(--search-bar-border)" }}
               animate={{
-                borderColor: isDemoMode
-                  ? "var(--howl-surface-elevated)"
-                  : "var(--howl-secondary)",
-                boxShadow: isDemoMode
-                  ? "none"
-                  : "0 0 0 3px color-mix(in srgb, var(--howl-secondary) 20%, transparent)",
+                borderColor: isSearchFocused
+                  ? "var(--orange)"
+                  : "var(--search-bar-border)",
+                boxShadow: isSearchFocused
+                  ? "0 8px 24px rgba(198, 107, 77, 0.25)"
+                  : "0 0 0 0 transparent",
+                scale: isSearchFocused ? 1.02 : 1,
+              }}
+              transition={{
+                borderColor: {
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20,
+                },
+                boxShadow: { duration: 0.25, ease: "easeOut" },
+                scale: { duration: 0.15, ease: "easeOut" },
+                layout: {
+                  duration: 0.6,
+                  ease: [0.4, 0, 0.2, 1],
+                },
+              }}
+              whileHover={{
+                boxShadow: isSearchFocused
+                  ? "0 8px 24px rgba(198, 107, 77, 0.25)"
+                  : "0 0 0 2px var(--search-bar-hover-glow)",
               }}
             >
               {/* Always-present search input - focusable in both demo and live modes */}
@@ -323,6 +411,7 @@ function IntegratedHeroSection() {
                 placeholder={isDemoMode ? "" : "Search for any craving..."}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
                 // ENTER LIVE MODE: Triggered when user directly focuses on the search input
                 // This provides precise control - only clicking/tabbing into the input activates Live Mode
                 onFocus={handleSearchFocus}
@@ -331,12 +420,14 @@ function IntegratedHeroSection() {
                 // component stays in Live Mode to preserve their search and prevent jarring animation restart
                 onBlur={handleSearchBlur}
                 autoFocus={!isDemoMode}
-                className="flex-1 bg-transparent outline-none text-[var(--howl-neutral)] placeholder:text-[color-mix(in_srgb,var(--howl-neutral)_50%,transparent)] relative z-10"
+                aria-label="Search for food"
+                className="flex-1 bg-transparent outline-none focus:outline-none focus:ring-0 border-0 focus:border-0 text-[var(--search-bar-text)] placeholder:text-[var(--search-bar-placeholder)] relative z-10"
                 style={{
-                  color: isDemoMode ? "transparent" : "var(--howl-neutral)",
+                  color: isDemoMode ? "transparent" : "var(--search-bar-text)",
                   caretColor: isDemoMode
                     ? "transparent"
-                    : "var(--howl-neutral)",
+                    : "var(--search-bar-cursor)",
+                  boxShadow: "none",
                 }}
               />
 
@@ -350,11 +441,53 @@ function IntegratedHeroSection() {
                 </div>
               )}
 
-              {/* Search icon in Live Mode */}
+              {/* Search icon in Live Mode with Enter CTA */}
               {!isDemoMode && (
-                <Search className="h-6 w-6 text-[var(--howl-secondary)] ml-2 relative z-10" />
+                <div className="flex items-center gap-2 ml-2 relative z-10">
+                  <motion.div
+                    animate={{
+                      color: isSearchFocused
+                        ? "var(--orange)"
+                        : "var(--howl-secondary)",
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Search className="h-6 w-6" />
+                  </motion.div>
+                  <AnimatePresence>
+                    {isSearchFocused && inputValue.trim().length > 0 && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                        exit={{ opacity: 0, scale: 0.8, x: -10 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="text-sm font-medium text-[var(--cream)] flex items-center gap-1"
+                      >
+                        <span className="hidden sm:inline">Press</span>
+                        <kbd className="px-2 py-0.5 text-xs bg-[var(--bg-hover)] border border-[var(--border)] rounded">
+                          ↵
+                        </kbd>
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </div>
               )}
             </motion.div>
+
+            {/* CTA Text Below Search Bar (Alternative/Additional Option) */}
+            <AnimatePresence>
+              {isSearchFocused && inputValue.trim().length > 1 && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 0.7, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="text-center text-sm text-[var(--cream)] mt-3"
+                >
+                  Press Enter to find your craving
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* ========== RESULTS CONTAINER ========== */}
@@ -369,20 +502,35 @@ function IntegratedHeroSection() {
                 className="grid grid-cols-1 sm:grid-cols-3 gap-6 overflow-hidden"
                 // HEIGHT ANIMATION: Smoothly expands from 0 to natural height, pushing content below
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
+                animate={{
+                  height: "auto",
+                  opacity: isSearchFocused ? 0.4 : 1,
+                  filter: isSearchFocused ? "blur(4px)" : "blur(0px)",
+                }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                {demoDishes.map((dish) => (
-                  <div
+                {demoDishes.map((dish, idx) => (
+                  <motion.div
                     key={dish.id}
+                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                    animate={{
+                      opacity: isSearchFocused ? 0.4 : 1,
+                      y: 0,
+                      scale: 1,
+                    }}
+                    transition={{
+                      delay: idx * 0.1,
+                      duration: 0.4,
+                      ease: "easeOut",
+                    }}
                     className="rounded-2xl p-6 bg-[var(--howl-surface)] border border-[color-mix(in_srgb,var(--howl-primary)_15%,transparent)] text-center"
                   >
                     <div className="text-6xl mb-4">{dish.emoji}</div>
                     <p className="text-[var(--howl-neutral)] font-medium">
                       {dish.name}
                     </p>
-                  </div>
+                  </motion.div>
                 ))}
               </motion.div>
             )}
