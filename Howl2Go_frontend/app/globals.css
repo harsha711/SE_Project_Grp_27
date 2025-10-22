@@ -1,37 +1,220 @@
 @import "tailwindcss";
 
 :root {
-  /* Charred Wood Dark Theme */
-  --howl-bg: #332E29;                  /* Background - Charred Wood */
-  --howl-primary: #FD7E14;             /* Primary Accent / CTA - Spiced Orange */
-  --howl-secondary: #FFB81C;           /* Secondary Accent - Golden Amber */
-  --howl-neutral: #FFF9F3;             /* Neutral - Warm Ivory */
-  --howl-cta: #FD7E14;                 /* CTA/Alert - Spiced Orange */
+  /* ============================================
+     HOWL2GO BURNT ORANGE + CHARCOAL THEME
+     Based on COLOR_PALETTE_GUIDE.md
+     ============================================ */
 
-  /* Surface colors for cards and elevated elements */
-  --howl-surface: hsl(30, 10%, 22%);   /* Slightly lighter than background */
-  --howl-surface-elevated: hsl(30, 10%, 26%); /* For cards and modals */
+  /* 1. PRIMARY COLORS */
+  --bg: #2B2B2B;                        /* Background - Main app background - charcoal from logo */
+  --orange: #C66B4D;                    /* Orange Primary - Buttons, links, main CTAs - signature burnt orange */
+  --cream: #F5E6D3;                     /* Cream Accent - Highlights, badges, active states */
 
-  /* Legacy variables for compatibility */
-  --background: #332E29;
-  --foreground: #FFF9F3;
+  /* 2. TEXT COLORS */
+  --text: #FFFFFF;                      /* Main Text - All headings, body text, labels - crisp white */
+  --text-subtle: #D4D4D4;               /* Subtle Text - Descriptions, subtext, secondary info */
+  --text-muted: #9CA3AF;                /* Placeholder - Input placeholders, timestamps, metadata */
+
+  /* 3. UI ELEMENT COLORS */
+  --bg-card: #3D3D3D;                   /* Card Background - Cards, panels, navigation bars - lighter charcoal */
+  --border: #4A4A4A;                    /* Border - Default borders for inputs, cards, dividers */
+  --bg-hover: #454545;                  /* Hover State - Background color when hovering interactive elements */
+
+  /* 4. FEEDBACK COLORS */
+  --success: #10B981;                   /* Success - Success messages, checkmarks, confirmations */
+  --warning: #F59E0B;                   /* Warning - Warnings, alerts, important notices */
+  --error: #EF4444;                     /* Error - Error messages, validation failures, critical alerts */
+
+  /* ============================================
+     COMPONENT-SPECIFIC VARIABLES
+     Easy to update for different components
+     ============================================ */
+
+  /* Login Page Colors */
+  --login-bg: var(--bg);
+  --login-card-bg: var(--bg-card);
+  --login-card-border: var(--border);
+  --login-input-bg: var(--bg-card);
+  --login-input-border: var(--border);
+  --login-input-border-focus: var(--orange);
+  --login-input-text: var(--text);
+  --login-input-placeholder: var(--text-muted);
+  --login-button-bg: var(--orange);
+  --login-button-hover: var(--cream);
+  --login-button-text: var(--text);
+  --login-heading-text: var(--text);
+
+  /* Home Page / Search Bar Colors */
+  --search-bar-bg-demo: var(--bg-card);
+  --search-bar-bg-live: var(--bg-card);
+  --search-bar-border: var(--bg-card);
+  --search-bar-hover-glow: rgba(198, 107, 77, 0.4);
+  --search-bar-text: var(--text);
+  --search-bar-placeholder: var(--text-muted);
+  --search-bar-icon: var(--cream);
+  --search-bar-cursor: var(--orange);
+
+  /* Card/Dish Card Colors */
+  --card-bg: var(--bg-card);
+  --card-border: var(--border);
+  --card-border-hover: var(--orange);
+  --card-text: var(--text);
+  --card-text-subtle: var(--text-subtle);
+  --card-price: var(--cream);
+  --card-button-bg: var(--orange);
+  --card-button-hover: var(--cream);
+  --card-button-text: var(--text);
+
+  /* Navigation Colors */
+  --nav-bg: var(--bg-card);
+  --nav-border: var(--border);
+  --nav-text: var(--text);
+  --nav-link-hover: var(--orange);
+  --nav-button-bg: var(--orange);
+  --nav-button-text: var(--text);
+
+  /* ============================================
+     COMPATIBILITY ALIASES
+     For existing code using old variable names
+     ============================================ */
+  --howl-bg: var(--bg);
+  --howl-bg-elevated: var(--bg-card);
+  --howl-bg-overlay: var(--bg-card);
+  --howl-bg-hover: var(--bg-hover);
+  --howl-bg-active: var(--bg-hover);
+
+  --howl-primary: var(--orange);
+  --howl-primary-light: #D78968;
+  --howl-primary-dark: #A85438;
+  --howl-primary-muted: #8F4830;
+
+  --howl-secondary: var(--cream);
+  --howl-secondary-light: #FFFBF5;
+  --howl-secondary-dark: #E8D4BE;
+
+  --howl-text-primary: var(--text);
+  --howl-text-secondary: var(--text-subtle);
+  --howl-text-tertiary: var(--text-muted);
+  --howl-text-disabled: #6B7280;
+  --howl-text-inverse: var(--bg);
+
+  --howl-success: var(--success);
+  --howl-success-bg: #064E3B;
+  --howl-warning: var(--warning);
+  --howl-warning-bg: #78350F;
+  --howl-error: var(--error);
+  --howl-error-bg: #7F1D1D;
+  --howl-info: #3B82F6;
+  --howl-info-bg: #1E3A8A;
+
+  --howl-border: var(--border);
+  --howl-border-light: #3D3D3D;
+  --howl-border-strong: #5A5A5A;
+  --howl-divider: rgba(255, 255, 255, 0.1);
+
+  --howl-overlay-10: rgba(198, 107, 77, 0.1);
+  --howl-overlay-20: rgba(198, 107, 77, 0.2);
+  --howl-overlay-30: rgba(198, 107, 77, 0.3);
+  --howl-shadow-sm: rgba(0, 0, 0, 0.3);
+  --howl-shadow-md: rgba(0, 0, 0, 0.4);
+  --howl-shadow-lg: rgba(0, 0, 0, 0.5);
+
+  --howl-focus-ring: var(--orange);
+  --howl-selection-bg: var(--orange);
+  --howl-selection-text: var(--text);
+
+  --howl-neutral: var(--text);
+  --howl-cta: var(--orange);
+  --howl-surface: var(--bg-card);
+  --howl-surface-elevated: var(--bg-card);
+  --background: var(--bg);
+  --foreground: var(--text);
+
+  /* Legacy amber support (now maps to cream) */
+  --amber: var(--cream);
 }
 
-
 @theme inline {
-  --color-background: var(--howl-bg);
-  --color-foreground: var(--howl-neutral);
-  --color-primary: var(--howl-primary);
-  --color-secondary: var(--howl-secondary);
-  --color-cta: var(--howl-cta);
-  --color-surface: var(--howl-surface);
-  --color-surface-elevated: var(--howl-surface-elevated);
+  /* Tailwind theme integration */
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-primary: var(--orange);
+  --color-secondary: var(--amber);
+  --color-cta: var(--orange);
+  --color-surface: var(--bg-card);
+  --color-surface-elevated: var(--bg-card);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* ============================================
+   GLOBAL STYLES
+   ============================================ */
+
 body {
-  background: var(--howl-bg);
-  color: var(--howl-neutral);
+  background: var(--bg);
+  color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Text selection styling */
+::selection {
+  background-color: var(--orange);
+  color: var(--bg);
+}
+
+::-moz-selection {
+  background-color: var(--orange);
+  color: var(--bg);
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-card);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--orange);
+}
+
+/* Focus visible styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
