@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, X, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -75,46 +75,41 @@ const mockAllDishes = [
   },
 ];
 
-const categories = [
-  "All",
-  "Tacos",
-  "Pizza",
-  "Pasta",
-  "Noodles",
-  "Salads",
-  "Burgers",
-  "Sushi",
-  "Appetizers",
-];
-
 function SmartMenuSearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQuery = searchParams.get("q") || "";
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiData, setApiData] = useState(null);
 
-  // Simulate loading state
-  useEffect(() => {
+  // Handle search form submission
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!searchQuery.trim()) return;
+
     setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, [searchQuery, selectedCategory]);
 
-  // Filter results based on search query and category
-  const filteredResults = mockAllDishes.filter((dish) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      dish.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      dish.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || dish.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+    try {
+      const response = await fetch("http://localhost:4000/api/food/recommend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: searchQuery }),
+      });
+
+      const data = await response.json();
+      console.log("API Response:", data);
+      setApiData(data);
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
@@ -139,7 +134,8 @@ function SmartMenuSearchContent() {
         transition={{ duration: 0.3, delay: 0.8 }}
         className="sticky top-0 z-40 border-b backdrop-blur-sm"
         style={{
-          borderColor: "color-mix(in srgb, var(--howl-neutral) 10%, transparent)",
+          borderColor:
+            "color-mix(in srgb, var(--howl-neutral) 10%, transparent)",
           backgroundColor: "color-mix(in srgb, var(--bg) 95%, transparent)",
         }}
       >
@@ -182,52 +178,29 @@ function SmartMenuSearchContent() {
           transition={{ duration: 0.4 }}
         >
           <div className="w-full max-w-3xl mx-auto">
-            <motion.div
-              className="w-full px-6 py-4 rounded-2xl border-2 flex items-center bg-[var(--bg-card)]"
-              style={{
-                borderColor: "var(--orange)",
-                boxShadow: "0 8px 24px rgba(198, 107, 77, 0.25)",
-              }}
-            >
-              <input
-                type="text"
-                placeholder="Search for any craving..."
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                onKeyDown={handleKeyDown}
-                autoFocus
-                aria-label="Search for food"
-                className="flex-1 bg-transparent outline-none focus:outline-none focus:ring-0 border-0 text-[var(--text)] placeholder:text-[var(--text-muted)] text-lg sm:text-xl"
-              />
-              <Search className="h-6 w-6 text-[var(--orange)] ml-2" />
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Filter Chips */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.85 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            <Filter className="h-5 w-5 text-[var(--text-subtle)] flex-shrink-0" />
-            {categories.map((category) => (
-              <motion.button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all ${
-                  selectedCategory === category
-                    ? "bg-[var(--orange)] text-[var(--text)]"
-                    : "bg-[var(--bg-card)] text-[var(--text-subtle)] hover:bg-[var(--bg-hover)]"
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <form onSubmit={handleSearch}>
+              <motion.div
+                className="w-full px-6 py-4 rounded-2xl border-2 flex items-center bg-[var(--bg-card)]"
+                style={{
+                  borderColor: "var(--orange)",
+                  boxShadow: "0 8px 24px rgba(198, 107, 77, 0.25)",
+                }}
               >
-                {category}
-              </motion.button>
-            ))}
+                <input
+                  type="text"
+                  placeholder="Search for any craving..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  autoFocus
+                  aria-label="Search for food"
+                  className="flex-1 bg-transparent outline-none focus:outline-none focus:ring-0 border-0 text-[var(--text)] placeholder:text-[var(--text-muted)] text-lg sm:text-xl"
+                />
+                <button type="submit" className="bg-transparent border-0 p-0 cursor-pointer">
+                  <Search className="h-6 w-6 text-[var(--orange)] ml-2" />
+                </button>
+              </motion.div>
+            </form>
           </div>
         </motion.div>
 
@@ -252,7 +225,20 @@ function SmartMenuSearchContent() {
                 </div>
               ))}
             </motion.div>
-          ) : filteredResults.length > 0 ? (
+          ) : apiData ? (
+            <motion.div
+              key="api-data"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="bg-[var(--bg-card)] border border-[var(--orange)] rounded-xl p-6"
+            >
+              <h2 className="text-2xl font-bold text-[var(--orange)] mb-4">API Response:</h2>
+              <pre className="text-[var(--text)] whitespace-pre-wrap overflow-auto max-h-[600px] bg-[var(--bg-hover)] p-4 rounded-lg">
+                {JSON.stringify(apiData, null, 2)}
+              </pre>
+            </motion.div>
+          ) : (
             <motion.div
               key="results"
               initial={{ opacity: 0 }}
@@ -260,7 +246,7 @@ function SmartMenuSearchContent() {
               exit={{ opacity: 0 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {filteredResults.map((dish, idx) => (
+              {mockAllDishes.map((dish, idx) => (
                 <motion.div
                   key={dish.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -295,31 +281,6 @@ function SmartMenuSearchContent() {
                   </div>
                 </motion.div>
               ))}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="no-results"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="text-center py-20"
-            >
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-bold text-[var(--text)] mb-2">
-                No dishes found
-              </h3>
-              <p className="text-[var(--text-subtle)] mb-6">
-                Try adjusting your search or filters
-              </p>
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCategory("All");
-                }}
-                className="px-6 py-3 rounded-full font-semibold bg-[var(--orange)] text-[var(--text)] hover:bg-[var(--cream)] hover:text-[var(--bg)] transition-colors"
-              >
-                Clear filters
-              </button>
             </motion.div>
           )}
         </AnimatePresence>
