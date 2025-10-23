@@ -146,3 +146,69 @@ test('LLM Service - parseQuery throws error for number input', async () => {
     }
   );
 });
+
+test('LLM Service - buildMongoQuery handles item name search', () => {
+  const criteria = {
+    item: { name: 'burger' }
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    item: { $regex: 'burger', $options: 'i' }
+  });
+});
+
+test('LLM Service - buildMongoQuery handles company name search', () => {
+  const criteria = {
+    company: { name: 'McDonald' }
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    company: { $regex: 'McDonald', $options: 'i' }
+  });
+});
+
+test('LLM Service - buildMongoQuery handles item name with nutritional criteria', () => {
+  const criteria = {
+    item: { name: 'Big Mac' },
+    protein: { min: 20 },
+    calories: { max: 600 }
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    item: { $regex: 'Big Mac', $options: 'i' },
+    protein: { $gte: 20 },
+    calories: { $lte: 600 }
+  });
+});
+
+test('LLM Service - buildMongoQuery handles item and company search together', () => {
+  const criteria = {
+    item: { name: 'sandwich' },
+    company: { name: 'Subway' },
+    calories: { max: 400 }
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    item: { $regex: 'sandwich', $options: 'i' },
+    company: { $regex: 'Subway', $options: 'i' },
+    calories: { $lte: 400 }
+  });
+});
+
+test('LLM Service - buildPrompt includes item name examples', () => {
+  const userPrompt = 'Show me Big Mac';
+  const prompt = llmService.buildPrompt(userPrompt);
+
+  assert.ok(prompt.includes('Big Mac'));
+  assert.ok(prompt.includes('item'));
+  assert.ok(prompt.includes('burger'));
+  assert.ok(prompt.includes('chicken sandwich'));
+});
