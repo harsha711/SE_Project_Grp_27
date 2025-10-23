@@ -5,32 +5,73 @@ import { useRouter } from "next/navigation";
 import AnimatedHeadline from "./AnimatedHeadline";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
+import type { FoodItem } from "@/types/food";
 
-// Mock search results for live mode
-const mockSearchResults = [
+// Realistic mock search results matching API structure
+const mockSearchResults: FoodItem[] = [
   {
-    id: 1,
-    name: "Spicy Korean Tacos",
-    description: "Kimchi, sriracha mayo, cilantro",
-    price: "$12.99",
+    restaurant: "McDonald's",
+    item: "Big Mac",
+    calories: 550,
+    caloriesFromFat: null,
+    totalFat: null,
+    saturatedFat: null,
+    transFat: null,
+    cholesterol: null,
+    sodium: null,
+    carbs: null,
+    fiber: null,
+    sugars: null,
+    protein: null,
+    weightWatchersPoints: null,
   },
   {
-    id: 2,
-    name: "Margherita Pizza",
-    description: "Fresh mozzarella, basil, tomato",
-    price: "$14.99",
+    restaurant: "Burger King",
+    item: "Whopper",
+    calories: 660,
+    caloriesFromFat: null,
+    totalFat: null,
+    saturatedFat: null,
+    transFat: null,
+    cholesterol: null,
+    sodium: null,
+    carbs: null,
+    fiber: null,
+    sugars: null,
+    protein: null,
+    weightWatchersPoints: null,
   },
   {
-    id: 3,
-    name: "Truffle Mac & Cheese",
-    description: "Three cheese blend, truffle oil",
-    price: "$16.99",
+    restaurant: "Wendy's",
+    item: "Classic Single",
+    calories: 480,
+    caloriesFromFat: null,
+    totalFat: null,
+    saturatedFat: null,
+    transFat: null,
+    cholesterol: null,
+    sodium: null,
+    carbs: null,
+    fiber: null,
+    sugars: null,
+    protein: null,
+    weightWatchersPoints: null,
   },
   {
-    id: 4,
-    name: "Pad Thai Noodles",
-    description: "Rice noodles, peanuts, lime",
-    price: "$13.99",
+    restaurant: "Taco Bell",
+    item: "Burrito Supreme",
+    calories: 390,
+    caloriesFromFat: null,
+    totalFat: null,
+    saturatedFat: null,
+    transFat: null,
+    cholesterol: null,
+    sodium: null,
+    carbs: null,
+    fiber: null,
+    sugars: null,
+    protein: null,
+    weightWatchersPoints: null,
   },
 ];
 
@@ -134,7 +175,8 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
 
   // Filter search results based on user query
   const filteredResults = mockSearchResults.filter((result) =>
-    result.name.toLowerCase().includes(inputValue.toLowerCase())
+    result.item.toLowerCase().includes(inputValue.toLowerCase()) ||
+    result.restaurant.toLowerCase().includes(inputValue.toLowerCase())
   );
 
   return (
