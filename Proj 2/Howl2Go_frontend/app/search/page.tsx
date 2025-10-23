@@ -3,89 +3,11 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, X, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-
-// Mock data for search results
-const mockAllDishes = [
-  {
-    id: 1,
-    name: "Spicy Korean Tacos",
-    description: "Kimchi, sriracha mayo, cilantro",
-    price: "$12.99",
-    category: "Tacos",
-    emoji: "🌮",
-  },
-  {
-    id: 2,
-    name: "Margherita Pizza",
-    description: "Fresh mozzarella, basil, tomato",
-    price: "$14.99",
-    category: "Pizza",
-    emoji: "🍕",
-  },
-  {
-    id: 3,
-    name: "Truffle Mac & Cheese",
-    description: "Three cheese blend, truffle oil",
-    price: "$16.99",
-    category: "Pasta",
-    emoji: "🧀",
-  },
-  {
-    id: 4,
-    name: "Pad Thai Noodles",
-    description: "Rice noodles, peanuts, lime",
-    price: "$13.99",
-    category: "Noodles",
-    emoji: "🍜",
-  },
-  {
-    id: 5,
-    name: "Caesar Salad",
-    description: "Romaine, parmesan, croutons",
-    price: "$10.99",
-    category: "Salads",
-    emoji: "🥗",
-  },
-  {
-    id: 6,
-    name: "Chicken Wings",
-    description: "Buffalo sauce, blue cheese dip",
-    price: "$11.99",
-    category: "Appetizers",
-    emoji: "🍗",
-  },
-  {
-    id: 7,
-    name: "Beef Burger",
-    description: "Wagyu beef, aged cheddar, aioli",
-    price: "$15.99",
-    category: "Burgers",
-    emoji: "🍔",
-  },
-  {
-    id: 8,
-    name: "Sushi Platter",
-    description: "Assorted nigiri and maki rolls",
-    price: "$24.99",
-    category: "Sushi",
-    emoji: "🍣",
-  },
-];
-
-const categories = [
-  "All",
-  "Tacos",
-  "Pizza",
-  "Pasta",
-  "Noodles",
-  "Salads",
-  "Burgers",
-  "Sushi",
-  "Appetizers",
-];
+import type { FoodItem } from "@/types/food";
+import ItemCard from "@/components/ItemCard";
 
 function SmartMenuSearchContent() {
   const searchParams = useSearchParams();
@@ -93,35 +15,215 @@ function SmartMenuSearchContent() {
   const initialQuery = searchParams.get("q") || "";
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  // Simulate loading state
+  // Auto-submit when page loads with initial query from main page
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, [searchQuery, selectedCategory]);
+    if (initialQuery && !foodItems.length && !isLoading && !error) {
+      // Trigger search automatically
+      const submitSearch = async () => {
+        setIsLoading(true);
+        setError(null);
+        setFoodItems([]);
 
-  // Filter results based on search query and category
-  const filteredResults = mockAllDishes.filter((dish) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      dish.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      dish.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" || dish.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+        try {
+          const response = await fetch(
+            "http://localhost:4000/api/food/recommend",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ query: initialQuery }),
+            }
+          );
+
+          if (!response.ok) {
+            if (response.status === 400) {
+              setError(
+                "Invalid search query. Try something like '100 calories food' or 'burger under 300 calories'"
+              );
+            } else if (response.status === 500) {
+              setError("Server error. Please try again later.");
+            } else {
+              setError(`Error: ${response.status}. Please try again.`);
+            }
+            return;
+          }
+
+          const data = await response.json();
+          await parseAndSetFoodItems(data);
+        } catch (error) {
+          console.error("Error fetching recommendations:", error);
+          setError(
+            "Unable to connect to server. Please check your connection and try again."
+          );
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      submitSearch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Helper function to parse API response
+  const parseAndSetFoodItems = async (data: any) => {
+    console.log("API Response:", data);
+
+    let items: FoodItem[] = [];
+
+    // Format 1: API returns recommendations array (ACTUAL FORMAT)
+    if (data.recommendations && Array.isArray(data.recommendations)) {
+      items = data.recommendations.map((item: any) => ({
+        restaurant: item.company || "Unknown", // Map company -> restaurant
+        item: item.item || "Unknown Item",
+        calories: item.calories || 0,
+        caloriesFromFat: item.caloriesFromFat || null,
+        totalFat: item.totalFat || null,
+        saturatedFat: item.saturatedFat || null,
+        transFat: item.transFat || null,
+        cholesterol: item.cholesterol || null,
+        sodium: item.sodium || null,
+        carbs: item.carbs || null,
+        fiber: item.fiber || null,
+        sugars: item.sugars || null,
+        protein: item.protein || null,
+        weightWatchersPoints: item.weightWatchersPoints || null,
+      }));
+    } else if (Array.isArray(data)) {
+      // Format 2: Array of items
+      items = data.map((item: any) => ({
+        restaurant: item.company || item.restaurant || "Unknown",
+        item: item.item || "Unknown Item",
+        calories: item.calories || 0,
+        caloriesFromFat: item.caloriesFromFat || null,
+        totalFat: item.totalFat || null,
+        saturatedFat: item.saturatedFat || null,
+        transFat: item.transFat || null,
+        cholesterol: item.cholesterol || null,
+        sodium: item.sodium || null,
+        carbs: item.carbs || null,
+        fiber: item.fiber || null,
+        sugars: item.sugars || null,
+        protein: item.protein || null,
+        weightWatchersPoints: item.weightWatchersPoints || null,
+      }));
+    } else if (data.results && Array.isArray(data.results)) {
+      // Format 3: Wrapped in results
+      items = data.results.map((item: any) => ({
+        restaurant: item.company || item.restaurant || "Unknown",
+        item: item.item || "Unknown Item",
+        calories: item.calories || 0,
+        caloriesFromFat: item.caloriesFromFat || null,
+        totalFat: item.totalFat || null,
+        saturatedFat: item.saturatedFat || null,
+        transFat: item.transFat || null,
+        cholesterol: item.cholesterol || null,
+        sodium: item.sodium || null,
+        carbs: item.carbs || null,
+        fiber: item.fiber || null,
+        sugars: item.sugars || null,
+        protein: item.protein || null,
+        weightWatchersPoints: item.weightWatchersPoints || null,
+      }));
+    } else if (data.restaurant && data.item) {
+      // Format 4: Single item
+      items = [data];
+    } else if (typeof data === "object" && data !== null) {
+      // Format 5: Object with restaurant names as keys
+      const extractValue = (val: any): number | null => {
+        if (typeof val === "number") return val;
+        if (typeof val === "object" && val !== null) {
+          return val.max || val.value || val.min || null;
+        }
+        return null;
+      };
+
+      items = Object.entries(data).map(
+        ([restaurant, itemData]: [string, any]) => ({
+          restaurant,
+          item: itemData.item || "Unknown Item",
+          calories: extractValue(itemData.calories) || 0,
+          caloriesFromFat: extractValue(itemData.caloriesFromFat),
+          totalFat: extractValue(itemData.totalFat),
+          saturatedFat: extractValue(itemData.saturatedFat),
+          transFat: extractValue(itemData.transFat),
+          cholesterol: extractValue(itemData.cholesterol),
+          sodium: extractValue(itemData.sodium),
+          carbs: extractValue(itemData.carbs),
+          fiber: extractValue(itemData.fiber),
+          sugars: extractValue(itemData.sugars),
+          protein: extractValue(itemData.protein),
+          weightWatchersPoints: extractValue(itemData.weightWatchersPoints),
+        })
+      );
+    } else {
+      setError("Unexpected response format from server.");
+      return;
+    }
+
+    if (items.length === 0) {
+      setError("No results found. Try a different search.");
+      return;
+    }
+
+    setFoodItems(items);
+    console.log("Parsed food items:", items);
+  };
+
+  // Handle search form submission
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    // ✅ Update URL only when pressing Enter / submitting
+    const params = new URLSearchParams();
+    params.set("q", searchQuery);
+    router.replace(`/search?${params.toString()}`, { scroll: false });
+
+    setIsLoading(true);
+    setError(null);
+    setFoodItems([]);
+
+    try {
+      const response = await fetch("http://localhost:4000/api/food/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: searchQuery }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 400) {
+          setError(
+            "Invalid search query. Try something like '100 calories food' or 'burger under 300 calories'"
+          );
+        } else if (response.status === 500) {
+          setError("Server error. Please try again later.");
+        } else {
+          setError(`Error: ${response.status}. Please try again.`);
+        }
+        return;
+      }
+
+      const data = await response.json();
+      await parseAndSetFoodItems(data);
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+      setError(
+        "Unable to connect to server. Please check your connection and try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearchChange = (value: string) => {
+    // Just update the state while typing
     setSearchQuery(value);
-    // Update URL with new query
-    const params = new URLSearchParams();
-    if (value) params.set("q", value);
-    router.replace(`/search?${params.toString()}`, { scroll: false });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -139,7 +241,8 @@ function SmartMenuSearchContent() {
         transition={{ duration: 0.3, delay: 0.8 }}
         className="sticky top-0 z-40 border-b backdrop-blur-sm"
         style={{
-          borderColor: "color-mix(in srgb, var(--howl-neutral) 10%, transparent)",
+          borderColor:
+            "color-mix(in srgb, var(--howl-neutral) 10%, transparent)",
           backgroundColor: "color-mix(in srgb, var(--bg) 95%, transparent)",
         }}
       >
@@ -182,52 +285,50 @@ function SmartMenuSearchContent() {
           transition={{ duration: 0.4 }}
         >
           <div className="w-full max-w-3xl mx-auto">
-            <motion.div
-              className="w-full px-6 py-4 rounded-2xl border-2 flex items-center bg-[var(--bg-card)]"
-              style={{
-                borderColor: "var(--orange)",
-                boxShadow: "0 8px 24px rgba(198, 107, 77, 0.25)",
-              }}
-            >
-              <input
-                type="text"
-                placeholder="Search for any craving..."
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                onKeyDown={handleKeyDown}
-                autoFocus
-                aria-label="Search for food"
-                className="flex-1 bg-transparent outline-none focus:outline-none focus:ring-0 border-0 text-[var(--text)] placeholder:text-[var(--text-muted)] text-lg sm:text-xl"
-              />
-              <Search className="h-6 w-6 text-[var(--orange)] ml-2" />
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Filter Chips */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.85 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            <Filter className="h-5 w-5 text-[var(--text-subtle)] flex-shrink-0" />
-            {categories.map((category) => (
-              <motion.button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all ${
-                  selectedCategory === category
-                    ? "bg-[var(--orange)] text-[var(--text)]"
-                    : "bg-[var(--bg-card)] text-[var(--text-subtle)] hover:bg-[var(--bg-hover)]"
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <form onSubmit={handleSearch}>
+              <motion.div
+                className="w-full px-6 py-4 rounded-2xl border-2 flex items-center bg-[var(--bg-card)]"
+                style={{
+                  borderColor: "var(--orange)",
+                  boxShadow: "0 8px 24px rgba(198, 107, 77, 0.25)",
+                }}
               >
-                {category}
-              </motion.button>
-            ))}
+                <input
+                  type="text"
+                  placeholder="Search for any craving..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  autoFocus
+                  aria-label="Search for food"
+                  className="flex-1 bg-transparent outline-none focus:outline-none focus:ring-0 border-0 text-[var(--text)] placeholder:text-[var(--text-muted)] text-lg sm:text-xl"
+                />
+                <div className="flex items-center gap-2">
+                  <AnimatePresence>
+                    {searchQuery.trim().length > 0 && (
+                      <motion.span
+                        initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                        exit={{ opacity: 0, scale: 0.8, x: -10 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="text-sm font-medium text-[var(--text-subtle)] flex items-center gap-1"
+                      >
+                        <span className="hidden sm:inline">Press</span>
+                        <kbd className="px-2 py-0.5 text-xs bg-[var(--bg-hover)] border border-[var(--border)] rounded">
+                          ↵
+                        </kbd>
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                  <button
+                    type="submit"
+                    className="bg-transparent border-0 p-0 cursor-pointer"
+                  >
+                    <Search className="h-6 w-6 text-[var(--orange)] ml-2" />
+                  </button>
+                </div>
+              </motion.div>
+            </form>
           </div>
         </motion.div>
 
@@ -252,7 +353,29 @@ function SmartMenuSearchContent() {
                 </div>
               ))}
             </motion.div>
-          ) : filteredResults.length > 0 ? (
+          ) : error ? (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="text-center py-20"
+            >
+              <div className="text-6xl mb-4">⚠️</div>
+              <h3 className="text-2xl font-bold text-[var(--text)] mb-2">
+                Oops! Something went wrong
+              </h3>
+              <p className="text-[var(--text-subtle)] mb-6 max-w-md mx-auto">
+                {error}
+              </p>
+              <button
+                onClick={() => setError(null)}
+                className="px-6 py-3 rounded-full font-semibold bg-[var(--orange)] text-[var(--text)] hover:bg-[var(--cream)] hover:text-[var(--bg)] transition-colors"
+              >
+                Try Again
+              </button>
+            </motion.div>
+          ) : foodItems.length > 0 ? (
             <motion.div
               key="results"
               initial={{ opacity: 0 }}
@@ -260,66 +383,32 @@ function SmartMenuSearchContent() {
               exit={{ opacity: 0 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {filteredResults.map((dish, idx) => (
-                <motion.div
-                  key={dish.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9 + idx * 0.05, duration: 0.25 }}
-                  className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 hover:border-[var(--orange)] transition-all cursor-pointer group"
-                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="text-5xl">{dish.emoji}</div>
-                    <span className="text-xl font-bold text-[var(--cream)]">
-                      {dish.price}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-[var(--text)] mb-2 group-hover:text-[var(--orange)] transition-colors">
-                    {dish.name}
-                  </h3>
-                  <p className="text-sm text-[var(--text-subtle)] mb-4">
-                    {dish.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-hover)] px-3 py-1 rounded-full">
-                      {dish.category}
-                    </span>
-                    <motion.button
-                      className="px-4 py-2 rounded-full font-semibold text-sm bg-[var(--orange)] text-[var(--text)] hover:bg-[var(--cream)] hover:text-[var(--bg)] transition-colors"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      Add
-                    </motion.button>
-                  </div>
-                </motion.div>
+              {foodItems.map((item, idx) => (
+                <ItemCard
+                  key={`${item.restaurant}-${item.item}-${idx}`}
+                  restaurant={item.restaurant}
+                  item={item.item}
+                  calories={item.calories}
+                  index={idx}
+                />
               ))}
             </motion.div>
           ) : (
             <motion.div
-              key="no-results"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="text-center py-20"
             >
               <div className="text-6xl mb-4">🔍</div>
               <h3 className="text-2xl font-bold text-[var(--text)] mb-2">
-                No dishes found
+                Start Your Search
               </h3>
-              <p className="text-[var(--text-subtle)] mb-6">
-                Try adjusting your search or filters
+              <p className="text-[var(--text-subtle)]">
+                Try searching for something like &quot;100 calories food&quot;
+                or &quot;burger under 300 calories&quot;
               </p>
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCategory("All");
-                }}
-                className="px-6 py-3 rounded-full font-semibold bg-[var(--orange)] text-[var(--text)] hover:bg-[var(--cream)] hover:text-[var(--bg)] transition-colors"
-              >
-                Clear filters
-              </button>
             </motion.div>
           )}
         </AnimatePresence>
