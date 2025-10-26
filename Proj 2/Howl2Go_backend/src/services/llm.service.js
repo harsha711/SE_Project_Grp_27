@@ -44,25 +44,42 @@ class LLMService {
 For example, the user might ask 'I want to eat something that has at least 30g of protein, less than 500 calories, and is pretty spicy.'
 The response should be a json object with the following fields:
 {
-     "spice_level": {"min": 3},
-     "calories": {"max": 500},
-     "protein": {"min": 30},
-     "item": {"name": "burger"},
+"spice_level": {"min": 3},
+"calories": {"max": 500},
+"protein": {"min": 30},
+"item": {"name": "burger"}
 }
 Respond only with the json object and nothing else. If a field is not mentioned in the prompt, it should be omitted from the response.
 
 IMPORTANT: When the user mentions a specific food item name (like "burger", "Big Mac", "chicken sandwich", "salad", etc.), include it in the response as:
 {"item": {"name": "food_name"}}
 
+You may include both "min" and "max" if the user specifies a range (for example, "between 400 and 600 calories" → "calories": {"min": 400, "max": 600}).
+
+Assume these default units (convert if necessary):
+
+calories → kcal
+
+fats/protein/carbs/fiber/sugars → grams (g)
+
+sodium/cholesterol → milligrams (mg)
+
 Here are some examples:
 User prompt: "I want a meal with at least 20g of fiber and low sugar."
 Response: {"fiber": {"min": 20}, "sugar": {"max": 10}}
+
 User prompt: "Give me a dessert that's not too sweet and has under 300 calories."
 Response: {"sugar": {"max": 15}, "calories": {"max": 300}}
+
+User prompt: "Between 400 and 600 calories, high protein, no sugar."
+Response: {"calories": {"min": 400, "max": 600}, "protein": {"min": 20}, "sugar": {"max": 0}}
+
 User prompt: "Show me Big Mac nutritional information"
 Response: {"item": {"name": "Big Mac"}}
+
 User prompt: "I want a burger with high protein"
 Response: {"item": {"name": "burger"}, "protein": {"min": 20}}
+
 User prompt: "Find chicken sandwiches under 400 calories"
 Response: {"item": {"name": "chicken sandwich"}, "calories": {"max": 400}}
 
@@ -88,8 +105,7 @@ Burger King,
 Wendy's,
 KFC,
 Taco Bell,
-Pizza Hut,
-
+Pizza Hut
 
 If the user prompt is not related to food or nutrition, respond with an empty json object: {} and nothing else.
 
