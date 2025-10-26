@@ -38,10 +38,12 @@ fiber
 sugars
 protein
 
-Each key may have a nested object specifying "min" or "max" values (for example, "protein": {{"min": 30}}).
+Each key may have a nested object specifying "min", "max", or both (for example, "protein": {{"min": 30}} or "calories": {{"min": 400, "max": 600}}).
 
 If a nutrient is not mentioned or cannot be inferred from the user prompt, omit it from the JSON object.
-You must only include keys from the list above. Do not add any other fields under any circumstances. Ignore non-nutritional attributes such as taste, spice level, texture, flavor, or temperature, even if mentioned.
+You must only include keys from the list above. Do not add any other fields under any circumstances.
+Ignore non-nutritional attributes such as taste, spice level, texture, flavor, or temperature, even if mentioned.
+
 You should also handle common synonyms or variants by mapping them to the correct key:
 "fat" or "fats" → "totalFat"
 "saturated" or "saturated fats" → "saturatedFat"
@@ -54,6 +56,11 @@ You should also handle common synonyms or variants by mapping them to the correc
 "protein" or "proteins" → "protein"
 "calorie" or "energy" → "calories"
 "calories from fat" → "caloriesFromFat"
+
+Assume these default units (convert if necessary):
+calories → kcal
+fats/protein/carbs/fiber/sugars → grams (g)
+sodium/cholesterol → milligrams (mg)
 
 If the user prompt is not related to food or nutrition at all, respond with an empty JSON object: {{}}
 Your responses must always be a valid JSON object and must never contain any text or explanation.
@@ -74,6 +81,11 @@ User prompt:
 "I want something spicy with lots of protein."
 Response:
 {{"protein": {{"min": 20}}}}
+
+User prompt:
+"Between 400-500 calories, high protein, no sugar."
+Response:
+{{"calories": {{"min": 400, "max": 500}}, "protein": {{"min": 20}}, "sugars": {{"max": 0}}}}
 
 User prompt:
 "Tell me a joke."
