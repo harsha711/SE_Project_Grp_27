@@ -77,22 +77,13 @@ export default function SearchBar({
             onBlur={onSearchBlur}
             autoFocus={!isDemoMode}
             aria-label="Search for food"
-            className="flex-1 bg-transparent outline-none focus:outline-none focus:ring-0 border-0 focus:border-0 text-[var(--search-bar-text)] placeholder:text-[var(--search-bar-placeholder)] relative z-10"
-            style={{
-              color: isDemoMode ? "transparent" : "var(--search-bar-text)",
-              caretColor: isDemoMode
-                ? "transparent"
-                : "var(--search-bar-cursor)",
-              boxShadow: "none",
-            }}
+            className="flex-1 bg-transparent border-none focus:border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 text-[var(--search-bar-text)] placeholder:text-[var(--search-bar-placeholder)] relative z-10"
           />
 
           {/* Demo Mode: Typewriter text overlay (positioned absolutely, doesn't block input) */}
           {isDemoMode && (
             <div className="absolute inset-0 flex items-center px-6 pointer-events-none select-none">
-              <span className="text-[var(--howl-neutral)]">
-                {typedText}
-              </span>
+              <span className="text-[var(--howl-neutral)]">{typedText}</span>
               <span className="w-0.5 h-7 animate-pulse bg-[var(--howl-primary)] ml-1"></span>
             </div>
           )}

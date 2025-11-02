@@ -285,9 +285,9 @@ function SmartMenuSearchContent() {
           transition={{ duration: 0.4 }}
         >
           <div className="w-full max-w-3xl mx-auto">
-            <form onSubmit={handleSearch}>
+            <form onSubmit={handleSearch} className="outline-none focus:outline-none">
               <motion.div
-                className="w-full px-6 py-4 rounded-2xl border-2 flex items-center bg-[var(--bg-card)]"
+                className="w-full px-6 py-4 rounded-2xl border-2 flex items-center bg-[var(--bg-card)] focus-within:outline-none"
                 style={{
                   borderColor: "var(--orange)",
                   boxShadow: "0 8px 24px rgba(198, 107, 77, 0.25)",
@@ -301,7 +301,7 @@ function SmartMenuSearchContent() {
                   onKeyDown={handleKeyDown}
                   autoFocus
                   aria-label="Search for food"
-                  className="flex-1 bg-transparent outline-none focus:outline-none focus:ring-0 border-0 text-[var(--text)] placeholder:text-[var(--text-muted)] text-lg sm:text-xl"
+                  className="flex-1 bg-transparent outline-none focus:outline-none focus:ring-0 focus-visible:outline-none border-0 text-[var(--text)] placeholder:text-[var(--text-muted)] text-lg sm:text-xl"
                 />
                 <div className="flex items-center gap-2">
                   <AnimatePresence>
@@ -322,7 +322,7 @@ function SmartMenuSearchContent() {
                   </AnimatePresence>
                   <button
                     type="submit"
-                    className="bg-transparent border-0 p-0 cursor-pointer"
+                    className="bg-transparent border-0 p-0 cursor-pointer outline-none focus:outline-none focus-visible:outline-none"
                   >
                     <Search className="h-6 w-6 text-[var(--orange)] ml-2" />
                   </button>
