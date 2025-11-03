@@ -85,6 +85,9 @@ jobs:
                   path: Proj 2/Howl2Go_backend/coverage/**
                   if-no-files-found: warn
 
+            - name: Send coverage to Coveralls
+              run: npm run coverage
+
             # === Optional: Codecov integration (for coverage badges) ===
             # - name: Upload coverage to Codecov
             #   uses: codecov/codecov-action@v4
