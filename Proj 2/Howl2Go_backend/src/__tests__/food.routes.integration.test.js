@@ -44,9 +44,7 @@ test("POST /api/food/parse - returns 400 when query is not a string", async () =
 });
 
 if (hasGroqApiKey) {
-    test("POST /api/food/parse - parses high protein query successfully", async (t) => {
-        t.timeout = 15000; // LLM calls can take time
-
+    test("POST /api/food/parse - parses high protein query successfully", async () => {
         const response = await request(app)
             .post("/api/food/parse")
             .send({ query: "I want a high protein meal" })
@@ -57,11 +55,9 @@ if (hasGroqApiKey) {
         assert.ok(response.body.criteria);
         assert.ok(response.body.criteria.protein);
         assert.ok(response.body.criteria.protein.min);
-    });
+    }, 15000); // LLM calls can take time
 
-    test("POST /api/food/parse - parses low calorie query successfully", async (t) => {
-        t.timeout = 15000;
-
+    test("POST /api/food/parse - parses low calorie query successfully", async () => {
         const response = await request(app)
             .post("/api/food/parse")
             .send({ query: "low calorie dessert" })
@@ -71,11 +67,9 @@ if (hasGroqApiKey) {
         assert.ok(response.body.criteria);
         assert.ok(response.body.criteria.calories);
         assert.ok(response.body.criteria.calories.max);
-    });
+    }, 15000);
 
-    test("POST /api/food/parse - parses complex query with multiple criteria", async (t) => {
-        t.timeout = 15000;
-
+    test("POST /api/food/parse - parses complex query with multiple criteria", async () => {
         const response = await request(app)
             .post("/api/food/parse")
             .send({
@@ -86,11 +80,9 @@ if (hasGroqApiKey) {
         assert.equal(response.body.success, true);
         assert.ok(response.body.criteria.protein);
         assert.ok(response.body.criteria.calories);
-    });
+    }, 15000);
 
-    test("POST /api/food/parse - returns empty criteria for non-food query", async (t) => {
-        t.timeout = 15000;
-
+    test("POST /api/food/parse - returns empty criteria for non-food query", async () => {
         const response = await request(app)
             .post("/api/food/parse")
             .send({ query: "Hello, how are you?" })
@@ -98,7 +90,7 @@ if (hasGroqApiKey) {
 
         assert.equal(response.body.success, true);
         assert.deepEqual(response.body.criteria, {});
-    });
+    }, 15000);
 }
 
 test("POST /api/food/search - returns 400 when query is missing", async () => {
@@ -129,9 +121,7 @@ test("POST /api/food/stats - returns 400 when query is missing", async () => {
 });
 
 if (hasGroqApiKey) {
-    test("POST /api/food/search - returns 400 when query yields no criteria", async (t) => {
-        t.timeout = 15000;
-
+    test("POST /api/food/search - returns 400 when query yields no criteria", async () => {
         const response = await request(app)
             .post("/api/food/search")
             .send({ query: "Hello world" })
@@ -139,18 +129,16 @@ if (hasGroqApiKey) {
 
         assert.equal(response.body.success, false);
         assert.equal(response.body.error, "No nutritional criteria found");
-    });
+    }, 15000);
 
-    test("POST /api/food/recommend - returns 400 when query yields no criteria", async (t) => {
-        t.timeout = 15000;
-
+    test("POST /api/food/recommend - returns 400 when query yields no criteria", async () => {
         const response = await request(app)
             .post("/api/food/recommend")
             .send({ query: "Random text" })
             .expect(400);
 
         assert.equal(response.body.success, false);
-    });
+    }, 15000);
 }
 
 test("POST /api/food/search - handles pagination parameters", async () => {

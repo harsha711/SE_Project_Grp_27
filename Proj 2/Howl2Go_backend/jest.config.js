@@ -30,9 +30,6 @@ export default {
   // Increase timeout for database operations
   testTimeout: 10000,
 
-  // Force exit after tests complete
-  forceExit: true,
-
   // Detect open handles to help debug
   detectOpenHandles: false,
 
