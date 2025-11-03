@@ -189,10 +189,10 @@ body {
 }
 
 /* Focus visible styles for accessibility */
-*:focus-visible {
+/* *:focus-visible {
   outline: 2px solid var(--orange);
   outline-offset: 2px;
-}
+} */
 
 /* Screen reader only content */
 .sr-only {
