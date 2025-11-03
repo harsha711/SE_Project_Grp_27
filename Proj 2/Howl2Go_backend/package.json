@@ -1,39 +1,39 @@
 {
-  "name": "food-delivery-backend",
-  "version": "1.0.0",
-  "description": "Backend service for a food delivery system built with Node.js and Express.",
-  "type": "module",
-  "main": "src/server.js",
-  "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
-    "test": "jest --coverage",
-    "coverage": "cat ./coverage/lcov.info | coveralls",
-    "import:fastfood": "node src/scripts/importFastFoodData.js",
-    "prepare": "husky"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "bcrypt": "^6.0.0",
-    "connect-mongo": "^5.1.0",
-    "cors": "^2.8.5",
-    "csv-parser": "^3.2.0",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "express-session": "^1.18.2",
-    "groq-sdk": "^0.33.0",
-    "jest": "^30.2.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.19.1",
-    "morgan": "^1.10.1"
-  },
-  "devDependencies": {
-    "coveralls": "^3.1.1",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.4",
-    "nodemon": "^3.1.10",
-    "supertest": "^7.1.4"
-  }
+    "name": "food-delivery-backend",
+    "version": "1.0.0",
+    "description": "Backend service for a food delivery system built with Node.js and Express.",
+    "type": "module",
+    "main": "src/server.js",
+    "scripts": {
+        "dev": "nodemon src/server.js",
+        "start": "node src/server.js",
+        "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --coverage",
+        "coverage": "cat ./coverage/lcov.info | coveralls",
+        "import:fastfood": "node src/scripts/importFastFoodData.js",
+        "prepare": "husky"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "bcrypt": "^6.0.0",
+        "connect-mongo": "^5.1.0",
+        "cors": "^2.8.5",
+        "csv-parser": "^3.2.0",
+        "dotenv": "^17.2.3",
+        "express": "^5.1.0",
+        "express-session": "^1.18.2",
+        "groq-sdk": "^0.33.0",
+        "jest": "^30.2.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.19.1",
+        "morgan": "^1.10.1"
+    },
+    "devDependencies": {
+        "coveralls": "^3.1.1",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.2.4",
+        "nodemon": "^3.1.10",
+        "supertest": "^7.1.4"
+    }
 }
