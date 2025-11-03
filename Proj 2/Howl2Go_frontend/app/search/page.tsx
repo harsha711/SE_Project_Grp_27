@@ -9,6 +9,33 @@ import Image from "next/image";
 import type { FoodItem } from "@/types/food";
 import ItemCard from "@/components/ItemCard";
 
+// API Response Types
+interface ApiRecommendation {
+  company?: string;
+  restaurant?: string;
+  item?: string;
+  calories?: number;
+  caloriesFromFat?: number | null;
+  totalFat?: number | null;
+  saturatedFat?: number | null;
+  transFat?: number | null;
+  cholesterol?: number | null;
+  sodium?: number | null;
+  carbs?: number | null;
+  fiber?: number | null;
+  sugars?: number | null;
+  protein?: number | null;
+  weightWatchersPoints?: number | null;
+}
+
+interface ApiResponse {
+  recommendations?: ApiRecommendation[];
+  results?: ApiRecommendation[];
+  [key: string]: unknown;
+}
+
+type ApiData = ApiResponse | ApiRecommendation[] | ApiRecommendation;
+
 function SmartMenuSearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -71,14 +98,14 @@ function SmartMenuSearchContent() {
   }, []);
 
   // Helper function to parse API response
-  const parseAndSetFoodItems = async (data: any) => {
+  const parseAndSetFoodItems = async (data: ApiData) => {
     console.log("API Response:", data);
 
     let items: FoodItem[] = [];
 
     // Format 1: API returns recommendations array (ACTUAL FORMAT)
-    if (data.recommendations && Array.isArray(data.recommendations)) {
-      items = data.recommendations.map((item: any) => ({
+    if (!Array.isArray(data) && 'recommendations' in data && Array.isArray(data.recommendations)) {
+      items = data.recommendations.map((item) => ({
         restaurant: item.company || "Unknown", // Map company -> restaurant
         item: item.item || "Unknown Item",
         calories: item.calories || 0,
@@ -96,7 +123,7 @@ function SmartMenuSearchContent() {
       }));
     } else if (Array.isArray(data)) {
       // Format 2: Array of items
-      items = data.map((item: any) => ({
+      items = data.map((item) => ({
         restaurant: item.company || item.restaurant || "Unknown",
         item: item.item || "Unknown Item",
         calories: item.calories || 0,
@@ -112,9 +139,9 @@ function SmartMenuSearchContent() {
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
       }));
-    } else if (data.results && Array.isArray(data.results)) {
+    } else if (!Array.isArray(data) && 'results' in data && Array.isArray(data.results)) {
       // Format 3: Wrapped in results
-      items = data.results.map((item: any) => ({
+      items = data.results.map((item) => ({
         restaurant: item.company || item.restaurant || "Unknown",
         item: item.item || "Unknown Item",
         calories: item.calories || 0,
@@ -130,36 +157,39 @@ function SmartMenuSearchContent() {
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
       }));
-    } else if (data.restaurant && data.item) {
+    } else if (!Array.isArray(data) && 'restaurant' in data && 'item' in data) {
       // Format 4: Single item
-      items = [data];
-    } else if (typeof data === "object" && data !== null) {
+      items = [data as FoodItem];
+    } else if (typeof data === "object" && data !== null && !Array.isArray(data)) {
       // Format 5: Object with restaurant names as keys
-      const extractValue = (val: any): number | null => {
+      const extractValue = (val: unknown): number | null => {
         if (typeof val === "number") return val;
         if (typeof val === "object" && val !== null) {
-          return val.max || val.value || val.min || null;
+          const obj = val as { max?: number; value?: number; min?: number };
+          return obj.max || obj.value || obj.min || null;
         }
         return null;
       };
 
       items = Object.entries(data).map(
-        ([restaurant, itemData]: [string, any]) => ({
-          restaurant,
-          item: itemData.item || "Unknown Item",
-          calories: extractValue(itemData.calories) || 0,
-          caloriesFromFat: extractValue(itemData.caloriesFromFat),
-          totalFat: extractValue(itemData.totalFat),
-          saturatedFat: extractValue(itemData.saturatedFat),
-          transFat: extractValue(itemData.transFat),
-          cholesterol: extractValue(itemData.cholesterol),
-          sodium: extractValue(itemData.sodium),
-          carbs: extractValue(itemData.carbs),
-          fiber: extractValue(itemData.fiber),
-          sugars: extractValue(itemData.sugars),
-          protein: extractValue(itemData.protein),
-          weightWatchersPoints: extractValue(itemData.weightWatchersPoints),
-        })
+        ([restaurant, itemData]: [string, ApiRecommendation]) => {
+          return {
+            restaurant,
+            item: itemData.item || "Unknown Item",
+            calories: extractValue(itemData.calories) || 0,
+            caloriesFromFat: extractValue(itemData.caloriesFromFat),
+            totalFat: extractValue(itemData.totalFat),
+            saturatedFat: extractValue(itemData.saturatedFat),
+            transFat: extractValue(itemData.transFat),
+            cholesterol: extractValue(itemData.cholesterol),
+            sodium: extractValue(itemData.sodium),
+            carbs: extractValue(itemData.carbs),
+            fiber: extractValue(itemData.fiber),
+            sugars: extractValue(itemData.sugars),
+            protein: extractValue(itemData.protein),
+            weightWatchersPoints: extractValue(itemData.weightWatchersPoints),
+          };
+        }
       );
     } else {
       setError("Unexpected response format from server.");

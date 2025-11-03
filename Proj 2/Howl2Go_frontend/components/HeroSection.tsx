@@ -76,7 +76,7 @@ const mockSearchResults: FoodItem[] = [
 ];
 
 interface HeroSectionProps {
-  onSearchFocusChange: (focused: boolean) => void;
+  onSearchFocusChange?: (focused: boolean) => void;
 }
 
 export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
@@ -100,7 +100,7 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
 
   // Notify parent component of search focus state changes
   useEffect(() => {
-    onSearchFocusChange(isSearchFocused);
+    onSearchFocusChange?.(isSearchFocused);
   }, [isSearchFocused, onSearchFocusChange]);
 
   // Screen reader announcements

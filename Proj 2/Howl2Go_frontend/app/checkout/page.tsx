@@ -10,8 +10,6 @@ import {
   CheckCircle,
   ArrowLeft,
   User,
-  Phone,
-  Mail,
 } from "lucide-react";
 import Link from "next/link";
 
