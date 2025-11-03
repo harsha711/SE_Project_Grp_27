@@ -49,7 +49,7 @@ test("LLM Service - buildMongoQuery handles multiple constraints", () => {
     assert.deepEqual(query, {
         protein: { $gte: 30 },
         calories: { $lte: 500 },
-        total_fat: { $lte: 20 },
+        totalFat: { $lte: 20 },
     });
 });
 
@@ -69,14 +69,14 @@ test("LLM Service - buildMongoQuery handles all supported fields", () => {
     const criteria = {
         calories: { min: 100 },
         protein: { max: 50 },
-        fat: { min: 10 },
+        totalFat: { min: 10 },
         carbs: { max: 30 },
         fiber: { min: 5 },
-        sugar: { max: 15 },
+        sugars: { max: 15 },
         sodium: { max: 1000 },
         cholesterol: { max: 200 },
-        saturated_fat: { max: 10 },
-        trans_fat: { max: 2 },
+        saturatedFat: { max: 10 },
+        transFat: { max: 2 },
     };
 
     const query = llmService.buildMongoQuery(criteria);
@@ -84,14 +84,14 @@ test("LLM Service - buildMongoQuery handles all supported fields", () => {
     assert.deepEqual(query, {
         calories: { $gte: 100 },
         protein: { $lte: 50 },
-        total_fat: { $gte: 10 },
-        total_carb: { $lte: 30 },
+        totalFat: { $gte: 10 },
+        carbs: { $lte: 30 },
         fiber: { $gte: 5 },
-        sugar: { $lte: 15 },
+        sugars: { $lte: 15 },
         sodium: { $lte: 1000 },
         cholesterol: { $lte: 200 },
-        sat_fat: { $lte: 10 },
-        trans_fat: { $lte: 2 },
+        saturatedFat: { $lte: 10 },
+        transFat: { $lte: 2 },
     });
 });
 

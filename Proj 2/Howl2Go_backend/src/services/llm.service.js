@@ -181,14 +181,15 @@ Now, here is the user prompt: ${userPrompt}
             item: "item",
             calories: "calories",
             protein: "protein",
-            fat: "total_fat",
-            carbs: "total_carb",
+            totalFat: "totalFat",
+            carbs: "carbs",
             fiber: "fiber",
-            sugar: "sugar",
+            sugars: "sugars",
             sodium: "sodium",
             cholesterol: "cholesterol",
-            saturated_fat: "sat_fat",
-            trans_fat: "trans_fat",
+            saturatedFat: "saturatedFat",
+            transFat: "transFat",
+            caloriesFromFat: "caloriesFromFat",
         };
 
         for (const [criteriaField, dbField] of Object.entries(fieldMapping)) {

@@ -168,21 +168,21 @@ test("recommendFood - determines sort criteria for low calories", async () => {
 });
 
 test("recommendFood - determines sort criteria for low fat", async () => {
-    const parsedCriteria = { fat: { max: 20 } };
+    const parsedCriteria = { totalFat: { max: 20 } };
     let sortCriteria = {};
 
-    if (parsedCriteria.fat?.max) {
-        sortCriteria.total_fat = 1;
+    if (parsedCriteria.totalFat?.max) {
+        sortCriteria.totalFat = 1;
     }
 
-    assert.deepEqual(sortCriteria, { total_fat: 1 });
+    assert.deepEqual(sortCriteria, { totalFat: 1 });
 });
 
 test("getFoodStats - calculates averages correctly", () => {
     const items = [
-        { calories: 300, protein: 20, total_fat: 10, total_carb: 30 },
-        { calories: 400, protein: 30, total_fat: 15, total_carb: 40 },
-        { calories: 500, protein: 40, total_fat: 20, total_carb: 50 },
+        { calories: 300, protein: 20, totalFat: 10, carbs: 30 },
+        { calories: 400, protein: 30, totalFat: 15, carbs: 40 },
+        { calories: 500, protein: 40, totalFat: 20, carbs: 50 },
     ];
 
     const avgCalories = Math.round(
