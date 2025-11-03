@@ -1,16 +1,42 @@
 import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import env from './config/env.js';
 import routes from './routes/index.js';
 
 const app = express();
 
 // Global middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true, // Allow cookies to be sent
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
+
+// Session middleware
+app.use(session({
+  secret: env.session.secret,
+  name: env.session.name,
+  resave: false,
+  saveUninitialized: true, // Create session even if not modified (needed for cart)
+  store: MongoStore.create({
+    mongoUrl: env.mongodbUri,
+    touchAfter: 24 * 3600, // lazy session update (in seconds)
+    crypto: {
+      secret: env.session.secret
+    }
+  }),
+  cookie: {
+    maxAge: env.session.maxAge,
+    httpOnly: true,
+    secure: env.nodeEnv === 'production', // Use secure cookies in production
+    sameSite: env.nodeEnv === 'production' ? 'none' : 'lax',
+  }
+}));
 
 // API routes
 app.use('/api', routes);
