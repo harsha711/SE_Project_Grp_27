@@ -98,8 +98,8 @@ export const recommendFood = async (req, res) => {
             sortCriteria.protein = -1; // High protein first
         } else if (req.parsedCriteria.calories?.max) {
             sortCriteria.calories = 1; // Low calories first
-        } else if (req.parsedCriteria.fat?.max) {
-            sortCriteria.total_fat = 1; // Low fat first
+        } else if (req.parsedCriteria.totalFat?.max) {
+            sortCriteria.totalFat = 1; // Low fat first
         }
 
         const recommendations = await FastFoodItem.find(mongoQuery)
@@ -165,13 +165,13 @@ export const getFoodStats = async (req, res) => {
                 ),
                 fat: Math.round(
                     items.reduce(
-                        (sum, item) => sum + (item.total_fat || 0),
+                        (sum, item) => sum + (item.totalFat || 0),
                         0
                     ) / items.length
                 ),
                 carbs: Math.round(
                     items.reduce(
-                        (sum, item) => sum + (item.total_carb || 0),
+                        (sum, item) => sum + (item.carbs || 0),
                         0
                     ) / items.length
                 ),

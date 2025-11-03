@@ -31,10 +31,10 @@ export const parseLLMQuery = async (req, res, next) => {
     req.llmRawResponse = result.rawResponse;
 
     // Log for debugging
-    console.log('Parsed Query:', {
-      original: query,
-      criteria: result.criteria
-    });
+    // console.log('Parsed Query:', {
+    //   original: query,
+    //   criteria: result.criteria
+    // });
 
     next();
   } catch (error) {
@@ -66,7 +66,7 @@ export const buildMongoQuery = (req, res, next) => {
     const mongoQuery = llmService.buildMongoQuery(req.parsedCriteria);
     req.mongoQuery = mongoQuery;
 
-    console.log('MongoDB Query:', mongoQuery);
+    // console.log('MongoDB Query:', mongoQuery);
 
     next();
   } catch (error) {
