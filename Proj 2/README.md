@@ -12,7 +12,7 @@
 [![Express](https://img.shields.io/badge/express-4.21.1-black.svg)](https://expressjs.com/)
 [![Next.js](https://img.shields.io/badge/Next.js-15.0.0-white.svg)](https://nextjs.org/)
 [![Groq AI](https://img.shields.io/badge/Groq_AI-Enabled-orange.svg)](https://groq.com/)
-[![Coverage Status](https://coveralls.io/repos/github/JaiRumz/Howl2Go/badge.svg?branch=main)](https://coveralls.io/github/harsha711/SE_Project_Grp_27?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/harsha711/SE_Project_Grp_27/badge.svg?branch=main)](https://coveralls.io/github/harsha711/SE_Project_Grp_27?branch=main)
 
 
 
