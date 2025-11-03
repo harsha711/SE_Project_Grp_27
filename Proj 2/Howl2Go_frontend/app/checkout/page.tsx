@@ -2,106 +2,89 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  CreditCard,
-  Truck,
-  MapPin,
-  Clock,
-  CheckCircle,
-  ArrowLeft,
-  User,
-  Phone,
-  Mail,
-} from "lucide-react";
+import { CheckCircle, ArrowLeft, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
-// Order Summary Interface
-interface OrderSummary {
-  subtotal: number;
-  tax: number;
-  deliveryFee: number;
-  total: number;
-  itemCount: number;
+// Cart Item Interface
+interface CartItem {
+  id: string;
+  restaurant: string;
+  item: string;
+  calories: number;
+  protein: number | null;
+  price: number;
+  quantity: number;
 }
 
 export default function CheckoutPage() {
   const router = useRouter();
 
-  // Order summary (would come from cart context in real app)
-  const orderSummary: OrderSummary = {
-    subtotal: 18.43,
-    tax: 1.47,
-    deliveryFee: 3.99,
-    total: 23.89,
-    itemCount: 4,
-  };
+  // Sample cart items (in real app, this would come from cart context/state)
+  const [cartItems] = useState<CartItem[]>([
+    {
+      id: "1",
+      restaurant: "McDonald's",
+      item: "Big Mac",
+      calories: 563,
+      protein: 25,
+      price: 5.99,
+      quantity: 2,
+    },
+    {
+      id: "2",
+      restaurant: "Subway",
+      item: "Grilled Chicken Breast",
+      calories: 165,
+      protein: 31,
+      price: 7.49,
+      quantity: 1,
+    },
+    {
+      id: "3",
+      restaurant: "Starbucks",
+      item: "Greek Yogurt Parfait",
+      calories: 150,
+      protein: 20,
+      price: 4.95,
+      quantity: 1,
+    },
+  ]);
 
-  // Form state
-  const [deliveryType, setDeliveryType] = useState<"delivery" | "pickup">(
-    "delivery"
-  );
-  const [paymentMethod, setPaymentMethod] = useState<
-    "credit" | "debit" | "cash"
-  >("credit");
-
-  // Contact Information
-  const [contactInfo, setContactInfo] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-
-  // Delivery Address
-  const [address, setAddress] = useState({
-    street: "",
-    apartment: "",
-    city: "",
-    zipCode: "",
-    instructions: "",
-  });
-
-  // Payment Information
-  const [paymentInfo, setPaymentInfo] = useState({
-    cardNumber: "",
-    cardName: "",
-    expiryDate: "",
-    cvv: "",
-  });
-
-  // Delivery Time
-  const [deliveryTime, setDeliveryTime] = useState("asap");
-
-  // Processing state
+  // Order state
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
 
+  // Calculate totals
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const tax = subtotal * 0.08; // 8% tax
+  const deliveryFee = cartItems.length > 0 ? 3.99 : 0;
+  const total = subtotal + tax + deliveryFee;
+
   // Handle order placement
-  const handlePlaceOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePlaceOrder = () => {
     setIsProcessing(true);
 
-    // Simulate API call
+    // Simulate order processing
     setTimeout(() => {
       console.log("Order placed successfully!");
-      console.log("Contact Info:", contactInfo);
-      console.log("Delivery Type:", deliveryType);
-      console.log("Address:", address);
-      console.log("Payment Method:", paymentMethod);
-      console.log("Payment Info:", paymentInfo);
-      console.log("Delivery Time:", deliveryTime);
-      console.log("Order Total:", orderSummary.total);
+      console.log("Cart Items:", cartItems);
+      console.log("Total:", total.toFixed(2));
 
       setIsProcessing(false);
       setOrderPlaced(true);
 
-      // Redirect to order confirmation after 2 seconds
+      // Redirect to home after 3 seconds
       setTimeout(() => {
         router.push("/");
       }, 3000);
     }, 2000);
   };
 
-  // Success state
+  // Success Animation State
   if (orderPlaced) {
     return (
       <div
@@ -109,46 +92,100 @@ export default function CheckoutPage() {
         style={{ backgroundColor: "var(--bg)" }}
       >
         <div
-          className="max-w-md w-full mx-4 rounded-2xl p-8 text-center"
+          className="max-w-md w-full mx-4 rounded-2xl p-8 text-center animate-fade-in"
           style={{
             backgroundColor: "var(--bg-card)",
             borderWidth: "1px",
             borderColor: "var(--border)",
           }}
         >
-          <CheckCircle
-            className="w-20 h-20 mx-auto mb-4"
-            style={{ color: "var(--success)" }}
-          />
+          {/* Success Icon with pulse animation */}
+          <div className="relative mb-6">
+            <div
+              className="absolute inset-0 w-24 h-24 mx-auto rounded-full animate-ping opacity-20"
+              style={{ backgroundColor: "var(--success)" }}
+            />
+            <CheckCircle
+              className="w-24 h-24 mx-auto relative animate-bounce"
+              style={{ color: "var(--success)" }}
+            />
+          </div>
+
           <h1
-            className="text-3xl font-bold mb-2"
+            className="text-4xl font-bold mb-3"
             style={{ color: "var(--text)" }}
           >
             Order Placed!
           </h1>
-          <p className="mb-6" style={{ color: "var(--text-subtle)" }}>
-            Your order has been confirmed and will be delivered soon.
+
+          <p className="text-lg mb-6" style={{ color: "var(--text-subtle)" }}>
+            Your delicious food is on the way!
           </p>
+
           <div
-            className="text-sm mb-6 p-4 rounded-lg"
-            style={{ backgroundColor: "var(--bg)" }}
+            className="p-6 rounded-xl mb-6"
+            style={{
+              backgroundColor: "var(--bg)",
+              border: "1px solid var(--border)",
+            }}
           >
-            <p style={{ color: "var(--text-muted)" }}>Order Total</p>
+            <p className="text-sm mb-2" style={{ color: "var(--text-muted)" }}>
+              Order Total
+            </p>
             <p
-              className="text-2xl font-bold"
+              className="text-3xl font-bold"
               style={{ color: "var(--cream)" }}
             >
-              ${orderSummary.total.toFixed(2)}
+              ${total.toFixed(2)}
+            </p>
+            <p className="text-sm mt-2" style={{ color: "var(--text-subtle)" }}>
+              {totalItems} {totalItems === 1 ? "item" : "items"}
             </p>
           </div>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            Redirecting to home page...
-          </p>
+
+          <div
+            className="flex items-center justify-center gap-2 text-sm"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <div className="flex gap-1">
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: "var(--orange)", animationDelay: "0s" }}
+              />
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: "var(--orange)", animationDelay: "0.2s" }}
+              />
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: "var(--orange)", animationDelay: "0.4s" }}
+              />
+            </div>
+            <span>Redirecting to home...</span>
+          </div>
         </div>
+
+        <style jsx>{`
+          @keyframes fade-in {
+            from {
+              opacity: 0;
+              transform: scale(0.9);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+
+          .animate-fade-in {
+            animation: fade-in 0.5s ease-out;
+          }
+        `}</style>
       </div>
     );
   }
 
+  // Main Checkout Page
   return (
     <div
       className="min-h-screen pb-20"
@@ -167,7 +204,9 @@ export default function CheckoutPage() {
             <Link
               href="/cart"
               className="p-2 rounded-lg transition-colors"
-              style={{ color: "var(--text-subtle)" }}
+              style={{
+                color: "var(--text-subtle)",
+              }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = "var(--bg-hover)";
               }}
@@ -178,7 +217,7 @@ export default function CheckoutPage() {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div className="flex items-center gap-3">
-              <CreditCard
+              <ShoppingBag
                 className="w-8 h-8"
                 style={{ color: "var(--orange)" }}
               />
@@ -194,855 +233,217 @@ export default function CheckoutPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <form onSubmit={handlePlaceOrder}>
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Left Column - Checkout Form */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Contact Information */}
-              <div
-                className="rounded-2xl p-6 border"
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  borderColor: "var(--border)",
-                }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <User
-                    className="w-6 h-6"
-                    style={{ color: "var(--orange)" }}
-                  />
-                  <h2
-                    className="text-xl font-bold"
-                    style={{ color: "var(--text)" }}
-                  >
-                    Contact Information
-                  </h2>
-                </div>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left Column - Order Items */}
+          <div className="lg:col-span-2">
+            <h2
+              className="text-2xl font-bold mb-6"
+              style={{ color: "var(--text)" }}
+            >
+              Your Order
+            </h2>
 
-                <div className="space-y-4">
-                  <div>
-                    <label
-                      className="block text-sm font-medium mb-2"
-                      style={{ color: "var(--text-subtle)" }}
-                    >
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={contactInfo.name}
-                      onChange={(e) =>
-                        setContactInfo({ ...contactInfo, name: e.target.value })
-                      }
-                      className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all"
-                      style={{
-                        backgroundColor: "var(--bg)",
-                        borderColor: "var(--border)",
-                        color: "var(--text)",
-                      }}
-                      onFocus={(e) => {
-                        e.currentTarget.style.borderColor = "var(--orange)";
-                      }}
-                      onBlur={(e) => {
-                        e.currentTarget.style.borderColor = "var(--border)";
-                      }}
-                      placeholder="John Doe"
-                    />
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        className="block text-sm font-medium mb-2"
-                        style={{ color: "var(--text-subtle)" }}
-                      >
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        value={contactInfo.email}
-                        onChange={(e) =>
-                          setContactInfo({
-                            ...contactInfo,
-                            email: e.target.value,
-                          })
-                        }
-                        className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                        style={{
-                          backgroundColor: "var(--bg)",
-                          borderColor: "var(--border)",
-                          color: "var(--text)",
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--orange)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                        }}
-                        placeholder="john@example.com"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        className="block text-sm font-medium mb-2"
-                        style={{ color: "var(--text-subtle)" }}
-                      >
-                        Phone *
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        value={contactInfo.phone}
-                        onChange={(e) =>
-                          setContactInfo({
-                            ...contactInfo,
-                            phone: e.target.value,
-                          })
-                        }
-                        className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                        style={{
-                          backgroundColor: "var(--bg)",
-                          borderColor: "var(--border)",
-                          color: "var(--text)",
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--orange)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                        }}
-                        placeholder="(555) 123-4567"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Delivery Type */}
-              <div
-                className="rounded-2xl p-6 border"
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  borderColor: "var(--border)",
-                }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <Truck
-                    className="w-6 h-6"
-                    style={{ color: "var(--orange)" }}
-                  />
-                  <h2
-                    className="text-xl font-bold"
-                    style={{ color: "var(--text)" }}
-                  >
-                    Delivery Method
-                  </h2>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setDeliveryType("delivery")}
-                    className="p-4 rounded-lg border-2 text-left transition-all"
-                    style={{
-                      backgroundColor:
-                        deliveryType === "delivery"
-                          ? "var(--bg)"
-                          : "transparent",
-                      borderColor:
-                        deliveryType === "delivery"
-                          ? "var(--orange)"
-                          : "var(--border)",
-                    }}
-                  >
-                    <Truck
-                      className="w-5 h-5 mb-2"
-                      style={{
-                        color:
-                          deliveryType === "delivery"
-                            ? "var(--orange)"
-                            : "var(--text-subtle)",
-                      }}
-                    />
-                    <div
-                      className="font-semibold"
-                      style={{ color: "var(--text)" }}
-                    >
-                      Delivery
-                    </div>
-                    <div
-                      className="text-sm"
-                      style={{ color: "var(--text-subtle)" }}
-                    >
-                      30-45 mins • $3.99
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setDeliveryType("pickup")}
-                    className="p-4 rounded-lg border-2 text-left transition-all"
-                    style={{
-                      backgroundColor:
-                        deliveryType === "pickup" ? "var(--bg)" : "transparent",
-                      borderColor:
-                        deliveryType === "pickup"
-                          ? "var(--orange)"
-                          : "var(--border)",
-                    }}
-                  >
-                    <MapPin
-                      className="w-5 h-5 mb-2"
-                      style={{
-                        color:
-                          deliveryType === "pickup"
-                            ? "var(--orange)"
-                            : "var(--text-subtle)",
-                      }}
-                    />
-                    <div
-                      className="font-semibold"
-                      style={{ color: "var(--text)" }}
-                    >
-                      Pickup
-                    </div>
-                    <div
-                      className="text-sm"
-                      style={{ color: "var(--text-subtle)" }}
-                    >
-                      15-20 mins • Free
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              {/* Delivery Address (only for delivery) */}
-              {deliveryType === "delivery" && (
+            <div className="space-y-4">
+              {cartItems.map((item) => (
                 <div
+                  key={item.id}
                   className="rounded-2xl p-6 border"
                   style={{
                     backgroundColor: "var(--bg-card)",
                     borderColor: "var(--border)",
                   }}
                 >
-                  <div className="flex items-center gap-3 mb-6">
-                    <MapPin
-                      className="w-6 h-6"
-                      style={{ color: "var(--orange)" }}
-                    />
-                    <h2
-                      className="text-xl font-bold"
-                      style={{ color: "var(--text)" }}
-                    >
-                      Delivery Address
-                    </h2>
-                  </div>
-
-                  <div className="space-y-4">
+                  <div className="flex justify-between items-start mb-3">
                     <div>
-                      <label
-                        className="block text-sm font-medium mb-2"
-                        style={{ color: "var(--text-subtle)" }}
-                      >
-                        Street Address *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={address.street}
-                        onChange={(e) =>
-                          setAddress({ ...address, street: e.target.value })
-                        }
-                        className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                        style={{
-                          backgroundColor: "var(--bg)",
-                          borderColor: "var(--border)",
-                          color: "var(--text)",
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--orange)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                        }}
-                        placeholder="123 Main St"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        className="block text-sm font-medium mb-2"
-                        style={{ color: "var(--text-subtle)" }}
-                      >
-                        Apartment, Suite, etc. (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        value={address.apartment}
-                        onChange={(e) =>
-                          setAddress({ ...address, apartment: e.target.value })
-                        }
-                        className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                        style={{
-                          backgroundColor: "var(--bg)",
-                          borderColor: "var(--border)",
-                          color: "var(--text)",
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--orange)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                        }}
-                        placeholder="Apt 4B"
-                      />
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          className="block text-sm font-medium mb-2"
-                          style={{ color: "var(--text-subtle)" }}
-                        >
-                          City *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={address.city}
-                          onChange={(e) =>
-                            setAddress({ ...address, city: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                          style={{
-                            backgroundColor: "var(--bg)",
-                            borderColor: "var(--border)",
-                            color: "var(--text)",
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--orange)";
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--border)";
-                          }}
-                          placeholder="New York"
-                        />
-                      </div>
-
-                      <div>
-                        <label
-                          className="block text-sm font-medium mb-2"
-                          style={{ color: "var(--text-subtle)" }}
-                        >
-                          ZIP Code *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={address.zipCode}
-                          onChange={(e) =>
-                            setAddress({ ...address, zipCode: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                          style={{
-                            backgroundColor: "var(--bg)",
-                            borderColor: "var(--border)",
-                            color: "var(--text)",
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--orange)";
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--border)";
-                          }}
-                          placeholder="10001"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label
-                        className="block text-sm font-medium mb-2"
-                        style={{ color: "var(--text-subtle)" }}
-                      >
-                        Delivery Instructions (Optional)
-                      </label>
-                      <textarea
-                        value={address.instructions}
-                        onChange={(e) =>
-                          setAddress({
-                            ...address,
-                            instructions: e.target.value,
-                          })
-                        }
-                        rows={3}
-                        className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all resize-none"
-                        style={{
-                          backgroundColor: "var(--bg)",
-                          borderColor: "var(--border)",
-                          color: "var(--text)",
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = "var(--orange)";
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = "var(--border)";
-                        }}
-                        placeholder="Leave at door, ring bell, etc."
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Delivery Time */}
-              <div
-                className="rounded-2xl p-6 border"
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  borderColor: "var(--border)",
-                }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <Clock
-                    className="w-6 h-6"
-                    style={{ color: "var(--orange)" }}
-                  />
-                  <h2
-                    className="text-xl font-bold"
-                    style={{ color: "var(--text)" }}
-                  >
-                    Delivery Time
-                  </h2>
-                </div>
-
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-all">
-                    <input
-                      type="radio"
-                      name="deliveryTime"
-                      value="asap"
-                      checked={deliveryTime === "asap"}
-                      onChange={(e) => setDeliveryTime(e.target.value)}
-                      className="w-4 h-4 accent-[var(--orange)]"
-                    />
-                    <div>
-                      <div
-                        className="font-semibold"
+                      <h3
+                        className="font-semibold text-lg mb-1"
                         style={{ color: "var(--text)" }}
                       >
-                        ASAP
-                      </div>
-                      <div
-                        className="text-sm"
-                        style={{ color: "var(--text-subtle)" }}
-                      >
-                        {deliveryType === "delivery" ? "30-45" : "15-20"}{" "}
-                        minutes
-                      </div>
-                    </div>
-                  </label>
-
-                  <label className="flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-all">
-                    <input
-                      type="radio"
-                      name="deliveryTime"
-                      value="scheduled"
-                      checked={deliveryTime === "scheduled"}
-                      onChange={(e) => setDeliveryTime(e.target.value)}
-                      className="w-4 h-4 accent-[var(--orange)]"
-                    />
-                    <div>
-                      <div
-                        className="font-semibold"
-                        style={{ color: "var(--text)" }}
-                      >
-                        Schedule for Later
-                      </div>
-                      <div
-                        className="text-sm"
-                        style={{ color: "var(--text-subtle)" }}
-                      >
-                        Choose a specific time
-                      </div>
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-              {/* Payment Method */}
-              <div
-                className="rounded-2xl p-6 border"
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  borderColor: "var(--border)",
-                }}
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <CreditCard
-                    className="w-6 h-6"
-                    style={{ color: "var(--orange)" }}
-                  />
-                  <h2
-                    className="text-xl font-bold"
-                    style={{ color: "var(--text)" }}
-                  >
-                    Payment Method
-                  </h2>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="grid sm:grid-cols-3 gap-4 mb-4">
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod("credit")}
-                      className="p-3 rounded-lg border-2 font-medium transition-all"
-                      style={{
-                        backgroundColor:
-                          paymentMethod === "credit"
-                            ? "var(--bg)"
-                            : "transparent",
-                        borderColor:
-                          paymentMethod === "credit"
-                            ? "var(--orange)"
-                            : "var(--border)",
-                        color:
-                          paymentMethod === "credit"
-                            ? "var(--orange)"
-                            : "var(--text-subtle)",
-                      }}
-                    >
-                      Credit Card
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod("debit")}
-                      className="p-3 rounded-lg border-2 font-medium transition-all"
-                      style={{
-                        backgroundColor:
-                          paymentMethod === "debit"
-                            ? "var(--bg)"
-                            : "transparent",
-                        borderColor:
-                          paymentMethod === "debit"
-                            ? "var(--orange)"
-                            : "var(--border)",
-                        color:
-                          paymentMethod === "debit"
-                            ? "var(--orange)"
-                            : "var(--text-subtle)",
-                      }}
-                    >
-                      Debit Card
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod("cash")}
-                      className="p-3 rounded-lg border-2 font-medium transition-all"
-                      style={{
-                        backgroundColor:
-                          paymentMethod === "cash"
-                            ? "var(--bg)"
-                            : "transparent",
-                        borderColor:
-                          paymentMethod === "cash"
-                            ? "var(--orange)"
-                            : "var(--border)",
-                        color:
-                          paymentMethod === "cash"
-                            ? "var(--orange)"
-                            : "var(--text-subtle)",
-                      }}
-                    >
-                      Cash
-                    </button>
-                  </div>
-
-                  {(paymentMethod === "credit" || paymentMethod === "debit") && (
-                    <div className="space-y-4 pt-4">
-                      <div>
-                        <label
-                          className="block text-sm font-medium mb-2"
-                          style={{ color: "var(--text-subtle)" }}
-                        >
-                          Card Number *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={paymentInfo.cardNumber}
-                          onChange={(e) =>
-                            setPaymentInfo({
-                              ...paymentInfo,
-                              cardNumber: e.target.value,
-                            })
-                          }
-                          className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                          style={{
-                            backgroundColor: "var(--bg)",
-                            borderColor: "var(--border)",
-                            color: "var(--text)",
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--orange)";
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--border)";
-                          }}
-                          placeholder="1234 5678 9012 3456"
-                          maxLength={19}
-                        />
-                      </div>
-
-                      <div>
-                        <label
-                          className="block text-sm font-medium mb-2"
-                          style={{ color: "var(--text-subtle)" }}
-                        >
-                          Cardholder Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={paymentInfo.cardName}
-                          onChange={(e) =>
-                            setPaymentInfo({
-                              ...paymentInfo,
-                              cardName: e.target.value,
-                            })
-                          }
-                          className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                          style={{
-                            backgroundColor: "var(--bg)",
-                            borderColor: "var(--border)",
-                            color: "var(--text)",
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--orange)";
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--border)";
-                          }}
-                          placeholder="John Doe"
-                        />
-                      </div>
-
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <div>
-                          <label
-                            className="block text-sm font-medium mb-2"
-                            style={{ color: "var(--text-subtle)" }}
-                          >
-                            Expiry Date *
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={paymentInfo.expiryDate}
-                            onChange={(e) =>
-                              setPaymentInfo({
-                                ...paymentInfo,
-                                expiryDate: e.target.value,
-                              })
-                            }
-                            className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                            style={{
-                              backgroundColor: "var(--bg)",
-                              borderColor: "var(--border)",
-                              color: "var(--text)",
-                            }}
-                            onFocus={(e) => {
-                              e.currentTarget.style.borderColor =
-                                "var(--orange)";
-                            }}
-                            onBlur={(e) => {
-                              e.currentTarget.style.borderColor =
-                                "var(--border)";
-                            }}
-                            placeholder="MM/YY"
-                            maxLength={5}
-                          />
-                        </div>
-
-                        <div>
-                          <label
-                            className="block text-sm font-medium mb-2"
-                            style={{ color: "var(--text-subtle)" }}
-                          >
-                            CVV *
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={paymentInfo.cvv}
-                            onChange={(e) =>
-                              setPaymentInfo({
-                                ...paymentInfo,
-                                cvv: e.target.value,
-                              })
-                            }
-                            className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all"
-                            style={{
-                              backgroundColor: "var(--bg)",
-                              borderColor: "var(--border)",
-                              color: "var(--text)",
-                            }}
-                            onFocus={(e) => {
-                              e.currentTarget.style.borderColor =
-                                "var(--orange)";
-                            }}
-                            onBlur={(e) => {
-                              e.currentTarget.style.borderColor =
-                                "var(--border)";
-                            }}
-                            placeholder="123"
-                            maxLength={4}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {paymentMethod === "cash" && (
-                    <div
-                      className="p-4 rounded-lg"
-                      style={{
-                        backgroundColor:
-                          "color-mix(in srgb, var(--warning) 15%, transparent)",
-                      }}
-                    >
+                        {item.item}
+                      </h3>
                       <p
                         className="text-sm"
                         style={{ color: "var(--text-subtle)" }}
                       >
-                        Please have exact change ready. Our driver will collect
-                        payment upon delivery.
+                        {item.restaurant}
                       </p>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column - Order Summary */}
-            <div className="lg:col-span-1">
-              <div
-                className="rounded-2xl p-6 border sticky top-24"
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  borderColor: "var(--border)",
-                }}
-              >
-                <h2
-                  className="text-xl font-bold mb-6"
-                  style={{ color: "var(--text)" }}
-                >
-                  Order Summary
-                </h2>
-
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between">
-                    <span style={{ color: "var(--text-subtle)" }}>
-                      Subtotal ({orderSummary.itemCount} items)
-                    </span>
-                    <span
-                      className="font-semibold"
-                      style={{ color: "var(--text)" }}
-                    >
-                      ${orderSummary.subtotal.toFixed(2)}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span style={{ color: "var(--text-subtle)" }}>
-                      Tax (8%)
-                    </span>
-                    <span
-                      className="font-semibold"
-                      style={{ color: "var(--text)" }}
-                    >
-                      ${orderSummary.tax.toFixed(2)}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span style={{ color: "var(--text-subtle)" }}>
-                      {deliveryType === "delivery"
-                        ? "Delivery Fee"
-                        : "Pickup Fee"}
-                    </span>
-                    <span
-                      className="font-semibold"
-                      style={{ color: "var(--text)" }}
-                    >
-                      {deliveryType === "delivery"
-                        ? `$${orderSummary.deliveryFee.toFixed(2)}`
-                        : "Free"}
-                    </span>
-                  </div>
-
-                  <div
-                    className="border-t pt-4"
-                    style={{ borderColor: "var(--border)" }}
-                  >
-                    <div className="flex justify-between items-center">
-                      <span
-                        className="text-lg font-semibold"
-                        style={{ color: "var(--text)" }}
-                      >
-                        Total
-                      </span>
-                      <span
-                        className="text-2xl font-bold"
+                    <div className="text-right">
+                      <div
+                        className="text-xl font-bold"
                         style={{ color: "var(--cream)" }}
                       >
-                        $
-                        {(deliveryType === "delivery"
-                          ? orderSummary.total
-                          : orderSummary.total - orderSummary.deliveryFee
-                        ).toFixed(2)}
-                      </span>
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </div>
+                      <div
+                        className="text-sm"
+                        style={{ color: "var(--text-muted)" }}
+                      >
+                        ${item.price.toFixed(2)} × {item.quantity}
+                      </div>
                     </div>
                   </div>
+
+                  {/* Nutritional Info */}
+                  <div className="flex gap-3">
+                    <span
+                      className="text-sm px-3 py-1 rounded-full"
+                      style={{
+                        backgroundColor:
+                          "color-mix(in srgb, var(--cream) 15%, transparent)",
+                        color: "var(--cream)",
+                      }}
+                    >
+                      {item.calories} cal
+                    </span>
+                    {item.protein && (
+                      <span
+                        className="text-sm px-3 py-1 rounded-full"
+                        style={{
+                          backgroundColor:
+                            "color-mix(in srgb, var(--success) 15%, transparent)",
+                          color: "var(--success)",
+                        }}
+                      >
+                        {item.protein}g protein
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column - Order Summary */}
+          <div className="lg:col-span-1">
+            <div
+              className="rounded-2xl p-6 border sticky top-24"
+              style={{
+                backgroundColor: "var(--bg-card)",
+                borderColor: "var(--border)",
+              }}
+            >
+              <h2
+                className="text-xl font-bold mb-6"
+                style={{ color: "var(--text)" }}
+              >
+                Order Summary
+              </h2>
+
+              <div className="space-y-4 mb-6">
+                {/* Subtotal */}
+                <div className="flex justify-between">
+                  <span style={{ color: "var(--text-subtle)" }}>
+                    Subtotal ({totalItems} {totalItems === 1 ? "item" : "items"})
+                  </span>
+                  <span
+                    className="font-semibold"
+                    style={{ color: "var(--text)" }}
+                  >
+                    ${subtotal.toFixed(2)}
+                  </span>
                 </div>
 
-                {/* Place Order Button */}
-                <button
-                  type="submit"
-                  disabled={isProcessing}
-                  className="w-full py-4 rounded-full font-bold text-lg transition-all hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{
-                    backgroundColor: "var(--orange)",
-                    color: "var(--text)",
-                  }}
-                >
-                  {isProcessing ? "Processing..." : "Place Order"}
-                </button>
+                {/* Tax */}
+                <div className="flex justify-between">
+                  <span style={{ color: "var(--text-subtle)" }}>
+                    Tax (8%)
+                  </span>
+                  <span
+                    className="font-semibold"
+                    style={{ color: "var(--text)" }}
+                  >
+                    ${tax.toFixed(2)}
+                  </span>
+                </div>
 
+                {/* Delivery Fee */}
+                <div className="flex justify-between">
+                  <span style={{ color: "var(--text-subtle)" }}>
+                    Delivery Fee
+                  </span>
+                  <span
+                    className="font-semibold"
+                    style={{ color: "var(--text)" }}
+                  >
+                    ${deliveryFee.toFixed(2)}
+                  </span>
+                </div>
+
+                {/* Divider */}
+                <div
+                  className="border-t pt-4"
+                  style={{ borderColor: "var(--border)" }}
+                >
+                  <div className="flex justify-between items-center">
+                    <span
+                      className="text-lg font-semibold"
+                      style={{ color: "var(--text)" }}
+                    >
+                      Total
+                    </span>
+                    <span
+                      className="text-2xl font-bold"
+                      style={{ color: "var(--cream)" }}
+                    >
+                      ${total.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Place Order Button */}
+              <button
+                onClick={handlePlaceOrder}
+                disabled={isProcessing}
+                className="w-full py-4 rounded-full font-bold text-lg transition-all hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: "var(--orange)",
+                  color: "var(--text)",
+                }}
+              >
+                {isProcessing ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg
+                      className="animate-spin h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Processing...
+                  </span>
+                ) : (
+                  "Place Order"
+                )}
+              </button>
+
+              {/* Additional Info */}
+              <div className="mt-4 text-center">
                 <p
-                  className="text-xs text-center mt-4"
+                  className="text-sm"
                   style={{ color: "var(--text-muted)" }}
                 >
-                  By placing this order, you agree to our Terms of Service and
-                  Privacy Policy
+                  Estimated delivery: 30-45 min
                 </p>
               </div>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
