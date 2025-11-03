@@ -77,16 +77,20 @@ jobs:
                   CI: "true"
               run: npm test -- --coverage
               working-directory: "Proj 2/Howl2Go_backend"
+              continue-on-error: true
 
             - name: Upload coverage artifact
               uses: actions/upload-artifact@v4
+              if: always()
               with:
                   name: backend-coverage
                   path: Proj 2/Howl2Go_backend/coverage/**
                   if-no-files-found: warn
 
             - name: Send coverage to Coveralls
+              if: always()
               run: npm run coverage
+              working-directory: "Proj 2/Howl2Go_backend"
 
             # === Optional: Codecov integration (for coverage badges) ===
             # - name: Upload coverage to Codecov

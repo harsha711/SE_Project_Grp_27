@@ -31,7 +31,10 @@ export default {
   testTimeout: 10000,
 
   // Detect open handles to help debug
-  detectOpenHandles: false,
+  detectOpenHandles: true,
+
+  // Force exit after tests complete
+  forceExit: true,
 
   // Clear mocks between tests
   clearMocks: true,
