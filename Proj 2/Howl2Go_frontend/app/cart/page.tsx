@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -17,7 +16,6 @@ interface CartItem {
 }
 
 export default function CartPage() {
-  const router = useRouter();
 
   // Initial cart state with sample items
   const [cartItems, setCartItems] = useState<CartItem[]>([
