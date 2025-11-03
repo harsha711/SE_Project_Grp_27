@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  /* Charred Wood Dark Theme */
+  --howl-bg: #332E29;                  /* Background - Charred Wood */
+  --howl-primary: #FD7E14;             /* Primary Accent / CTA - Spiced Orange */
+  --howl-secondary: #FFB81C;           /* Secondary Accent - Golden Amber */
+  --howl-neutral: #FFF9F3;             /* Neutral - Warm Ivory */
+  --howl-cta: #FD7E14;                 /* CTA/Alert - Spiced Orange */
+
+  /* Surface colors for cards and elevated elements */
+  --howl-surface: hsl(30, 10%, 22%);   /* Slightly lighter than background */
+  --howl-surface-elevated: hsl(30, 10%, 26%); /* For cards and modals */
+
+  /* Legacy variables for compatibility */
+  --background: #332E29;
+  --foreground: #FFF9F3;
+}
+
+
+@theme inline {
+  --color-background: var(--howl-bg);
+  --color-foreground: var(--howl-neutral);
+  --color-primary: var(--howl-primary);
+  --color-secondary: var(--howl-secondary);
+  --color-cta: var(--howl-cta);
+  --color-surface: var(--howl-surface);
+  --color-surface-elevated: var(--howl-surface-elevated);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--howl-bg);
+  color: var(--howl-neutral);
+  font-family: Arial, Helvetica, sans-serif;
+}

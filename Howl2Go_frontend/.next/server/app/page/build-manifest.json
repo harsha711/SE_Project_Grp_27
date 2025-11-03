@@ -1,0 +1,21 @@
+{
+  "devFiles": [],
+  "ampDevFiles": [],
+  "polyfillFiles": [
+    "static/chunks/3373f_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_c87c0ff2._.js",
+    "static/chunks/3373f_next_dist_compiled_react-dom_3e84e159._.js",
+    "static/chunks/3373f_next_dist_compiled_next-devtools_index_f0ca2dd1.js",
+    "static/chunks/3373f_next_dist_compiled_03c73472._.js",
+    "static/chunks/3373f_next_dist_client_1a4efc18._.js",
+    "static/chunks/3373f_next_dist_4d9b45a5._.js",
+    "static/chunks/3373f_@swc_helpers_cjs_39d33031._.js",
+    "static/chunks/Desktop_Programs_SE_Project_Grp_27_Howl2Go_frontend_a0ff3932._.js",
+    "static/chunks/turbopack-Desktop_Programs_SE_Project_Grp_27_Howl2Go_frontend_16ea2c6b._.js"
+  ],
+  "pages": {},
+  "ampFirstPages": []
+}
