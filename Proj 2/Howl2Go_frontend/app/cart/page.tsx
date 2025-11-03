@@ -88,7 +88,7 @@ export default function CartPage() {
     console.log("Proceeding to checkout with Next.js router...");
     console.log("Cart Items:", cartItems);
     console.log("Total:", total.toFixed(2));
-    // Future: router.push('/checkout')
+    router.push('/checkout');
   };
 
   return (
