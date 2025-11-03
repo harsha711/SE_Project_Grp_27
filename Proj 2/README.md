@@ -5,9 +5,15 @@
 **Smart Menu Food Discovery - Find your next favorite meal instantly. No traditional menu - just search for what you're craving and discover amazing dishes.**
 
 [![Version](https://img.shields.io/badge/version-1.0.0-orange.svg)](https://github.com/harsha711/SE_Project_Grp_27)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](../LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/react-19.1.0-blue.svg)](https://react.dev/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-%3E%3D7.0.0-green.svg)](https://www.mongodb.com/)
+[![Express](https://img.shields.io/badge/express-4.21.1-black.svg)](https://expressjs.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.0.0-white.svg)](https://nextjs.org/)
+[![Groq AI](https://img.shields.io/badge/Groq_AI-Enabled-orange.svg)](https://groq.com/)
+
+
 
 ---
 
