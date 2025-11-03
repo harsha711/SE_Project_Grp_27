@@ -24,6 +24,7 @@ export default function Header() {
           >
             <Menu className="h-6 w-6 text-[var(--howl-neutral)]" />
           </button>
+          
           <Link href="/">
             <Image
               src="/Howl2go_orange_logo_transparent.png"
@@ -48,6 +49,13 @@ export default function Header() {
             className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
           >
             Log In
+          </Link>
+
+          <Link
+            href="/cart"
+            className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
+          >
+            Cart  
           </Link>
           <Link
             href="/dashboard"
