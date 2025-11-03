@@ -1,5 +1,4 @@
-// import { describe, it, before, after, beforeEach } from 'node:test';
-import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
+import { describe, test, expect, beforeAll, afterAll, beforeEach } from "@jest/globals";
 import assert from "node:assert";
 import request from "supertest";
 import app from "../app.js";
@@ -12,7 +11,7 @@ describe("Cart API Tests", () => {
     let agent;
     let testFoodItem;
 
-    before(async () => {
+    beforeAll(async () => {
         // Connect to test database
         await connectDB();
 
@@ -27,7 +26,7 @@ describe("Cart API Tests", () => {
         });
     });
 
-    after(async () => {
+    afterAll(async () => {
         // Clean up test data
         await FastFoodItem.deleteMany({ company: "Test Restaurant" });
         await Cart.deleteMany({});
@@ -40,7 +39,7 @@ describe("Cart API Tests", () => {
     });
 
     describe("GET /api/cart", () => {
-        it("should return empty cart for new session", async () => {
+        test("should return empty cart for new session", async () => {
             const response = await agent.get("/api/cart");
 
             assert.strictEqual(response.status, 200);
@@ -52,7 +51,7 @@ describe("Cart API Tests", () => {
     });
 
     describe("POST /api/cart/items", () => {
-        it("should add item to cart", async () => {
+        test("should add item to cart", async () => {
             const response = await agent.post("/api/cart/items").send({
                 foodItemId: testFoodItem._id.toString(),
                 quantity: 2,
@@ -65,7 +64,7 @@ describe("Cart API Tests", () => {
             assert.strictEqual(response.body.data.cart.items[0].quantity, 2);
         });
 
-        it("should increase quantity when adding same item twice", async () => {
+        test("should increase quantity when adding same item twice", async () => {
             // Add item first time
             await agent.post("/api/cart/items").send({
                 foodItemId: testFoodItem._id.toString(),
@@ -83,7 +82,7 @@ describe("Cart API Tests", () => {
             assert.strictEqual(response.body.data.cart.items[0].quantity, 3);
         });
 
-        it("should return 400 if foodItemId is missing", async () => {
+        test("should return 400 if foodItemId is missing", async () => {
             const response = await agent
                 .post("/api/cart/items")
                 .send({ quantity: 1 });
@@ -92,7 +91,7 @@ describe("Cart API Tests", () => {
             assert.strictEqual(response.body.success, false);
         });
 
-        it("should return 404 if food item does not exist", async () => {
+        test("should return 404 if food item does not exist", async () => {
             const fakeId = new mongoose.Types.ObjectId();
             const response = await agent.post("/api/cart/items").send({
                 foodItemId: fakeId.toString(),
@@ -105,7 +104,7 @@ describe("Cart API Tests", () => {
     });
 
     describe("PATCH /api/cart/items/:foodItemId", () => {
-        it("should update item quantity", async () => {
+        test("should update item quantity", async () => {
             // Add item first
             await agent.post("/api/cart/items").send({
                 foodItemId: testFoodItem._id.toString(),
@@ -122,7 +121,7 @@ describe("Cart API Tests", () => {
             assert.strictEqual(response.body.data.cart.items[0].quantity, 5);
         });
 
-        it("should remove item when quantity is 0", async () => {
+        test("should remove item when quantity is 0", async () => {
             // Add item first
             await agent.post("/api/cart/items").send({
                 foodItemId: testFoodItem._id.toString(),
@@ -141,7 +140,7 @@ describe("Cart API Tests", () => {
     });
 
     describe("DELETE /api/cart/items/:foodItemId", () => {
-        it("should remove item from cart", async () => {
+        test("should remove item from cart", async () => {
             // Add item first
             await agent.post("/api/cart/items").send({
                 foodItemId: testFoodItem._id.toString(),
@@ -160,7 +159,7 @@ describe("Cart API Tests", () => {
     });
 
     describe("DELETE /api/cart", () => {
-        it("should clear entire cart", async () => {
+        test("should clear entire cart", async () => {
             // Add item first
             await agent.post("/api/cart/items").send({
                 foodItemId: testFoodItem._id.toString(),
@@ -177,7 +176,7 @@ describe("Cart API Tests", () => {
     });
 
     describe("Session persistence", () => {
-        it("should maintain cart across multiple requests", async () => {
+        test("should maintain cart across multiple requests", async () => {
             // Add first item
             await agent.post("/api/cart/items").send({
                 foodItemId: testFoodItem._id.toString(),

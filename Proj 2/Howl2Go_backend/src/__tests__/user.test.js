@@ -1,4 +1,3 @@
-// import test from 'node:test';
 import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
 import assert from "node:assert/strict";
 import request from "supertest";
@@ -14,7 +13,7 @@ let adminToken;
 let adminUser;
 
 // Setup before tests
-test.before(async () => {
+beforeAll(async () => {
     await connectDB();
     await User.deleteMany({});
 
@@ -29,7 +28,7 @@ test.before(async () => {
 });
 
 // Cleanup after tests
-test.after(async () => {
+afterAll(async () => {
     await User.deleteMany({});
     await mongoose.connection.close();
 });

@@ -1,5 +1,4 @@
-// import test from 'node:test';
-import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
+import { describe, test, expect, beforeAll, afterAll, afterEach } from "@jest/globals";
 import assert from "node:assert/strict";
 import request from "supertest";
 import mongoose from "mongoose";
@@ -47,7 +46,7 @@ const setMockedLlmResponse = (prompt, criteria) => {
     llmResponses.set(prompt, criteria);
 };
 
-test.before(async () => {
+beforeAll(async () => {
     originalParseQuery = llmService.parseQuery;
 
     llmService.parseQuery = async (prompt) => {
@@ -77,11 +76,11 @@ test.before(async () => {
     await FastFoodItem.insertMany(SEED_ITEMS);
 });
 
-test.afterEach(() => {
+afterEach(() => {
     llmResponses.clear();
 });
 
-test.after(async () => {
+afterAll(async () => {
     llmService.parseQuery = originalParseQuery;
     await FastFoodItem.deleteMany({
         company: { $in: [TEST_COMPANY, "Outside Vendor"] },

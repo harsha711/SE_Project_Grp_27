@@ -1,4 +1,3 @@
-// import test from 'node:test';
 import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
 import assert from "node:assert/strict";
 import jwt from "jsonwebtoken";
@@ -17,14 +16,14 @@ const ORIGINAL_ENV = {
     JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
 };
 
-test.before(() => {
+beforeAll(() => {
     process.env.JWT_SECRET = "test-access-secret";
     process.env.JWT_REFRESH_SECRET = "test-refresh-secret";
     process.env.JWT_EXPIRES_IN = "1h";
     process.env.JWT_REFRESH_EXPIRES_IN = "7d";
 });
 
-test.after(() => {
+afterAll(() => {
     process.env.JWT_SECRET = ORIGINAL_ENV.JWT_SECRET;
     process.env.JWT_REFRESH_SECRET = ORIGINAL_ENV.JWT_REFRESH_SECRET;
     process.env.JWT_EXPIRES_IN = ORIGINAL_ENV.JWT_EXPIRES_IN;

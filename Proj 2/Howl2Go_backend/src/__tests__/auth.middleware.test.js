@@ -1,5 +1,4 @@
-// import test from 'node:test';
-import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
+import { describe, test, expect, beforeAll, afterAll, afterEach } from "@jest/globals";
 import assert from "node:assert/strict";
 import jwt from "jsonwebtoken";
 import {
@@ -55,15 +54,15 @@ const createAccessToken = (overrides = {}) => {
     });
 };
 
-test.before(() => {
+beforeAll(() => {
     process.env.JWT_SECRET = "unit-test-secret";
 });
 
-test.afterEach(() => {
+afterEach(() => {
     User.findById = originalFindById;
 });
 
-test.after(() => {
+afterAll(() => {
     process.env.JWT_SECRET = ORIGINAL_ENV.JWT_SECRET;
     User.findById = originalFindById;
 });
