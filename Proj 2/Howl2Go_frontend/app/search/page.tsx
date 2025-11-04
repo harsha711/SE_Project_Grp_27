@@ -406,23 +406,39 @@ function SmartMenuSearchContent() {
               </button>
             </motion.div>
           ) : foodItems.length > 0 ? (
-            <motion.div
+            <div
               key="results"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
               {foodItems.map((item, idx) => (
-                <ItemCard
+                <div
                   key={`${item.restaurant}-${item.item}-${idx}`}
-                  restaurant={item.restaurant}
-                  item={item.item}
-                  calories={item.calories}
-                  index={idx}
-                />
+                  className="opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]"
+                  style={{
+                    animationDelay: `${idx * 100}ms`,
+                  }}
+                >
+                  <ItemCard
+                    restaurant={item.restaurant}
+                    item={item.item}
+                    calories={item.calories}
+                    disableAnimation={true}
+                  />
+                </div>
               ))}
-            </motion.div>
+              <style jsx>{`
+                @keyframes fadeInUp {
+                  from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                  }
+                  to {
+                    opacity: 1;
+                    transform: translateY(0);
+                  }
+                }
+              `}</style>
+            </div>
           ) : (
             <motion.div
               key="empty"

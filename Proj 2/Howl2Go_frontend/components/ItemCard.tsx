@@ -9,6 +9,7 @@ interface ItemCardProps extends Partial<FoodItem> {
   item: string;
   calories: number;
   index?: number;
+  disableAnimation?: boolean;
 }
 
 // Get restaurant logo with flexible matching to handle API name variations
@@ -32,12 +33,13 @@ export default function ItemCard({
   item,
   calories,
   index = 0,
+  disableAnimation = false,
 }: ItemCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.25 }}
+      initial={disableAnimation ? false : { opacity: 0, y: 20 }}
+      animate={disableAnimation ? false : { opacity: 1, y: 0 }}
+      transition={disableAnimation ? undefined : { delay: index * 0.05, duration: 0.25 }}
       className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 hover:border-[var(--orange)] transition-all cursor-pointer group"
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
     >

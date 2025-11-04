@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
 import ItemCard from "./ItemCard";
 import type { FoodItem } from "@/types/food";
 
@@ -72,76 +71,94 @@ export default function SearchResults({
   recommendations,
 }: SearchResultsProps) {
   return (
-    <AnimatePresence mode="wait">
+    <>
       {/* ========== DEMO MODE: Animated Dish Preview Cards ========== */}
       {isDemoMode && showDemoCards && (
-        <motion.div
+        <div
           key="demo-cards"
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 overflow-hidden"
-          initial={{ height: 0, opacity: 0 }}
-          animate={{
-            height: "auto",
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6 transition-all duration-500"
+          style={{
             opacity: isSearchFocused ? 0.4 : 1,
             filter: isSearchFocused ? "blur(2px)" : "blur(0px)",
           }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.4, ease: "easeInOut" }}
         >
           {demoDishes.map((dish, idx) => (
-            <div key={`${dish.restaurant}-${dish.item}-${idx}`}>
+            <div
+              key={`${dish.restaurant}-${dish.item}-${idx}`}
+              className="opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]"
+              style={{
+                animationDelay: `${idx * 100}ms`,
+              }}
+            >
               <ItemCard
                 restaurant={dish.restaurant}
                 item={dish.item}
                 calories={dish.calories}
-                index={idx}
+                disableAnimation={true}
               />
             </div>
           ))}
-        </motion.div>
+          <style jsx>{`
+            @keyframes fadeInUp {
+              from {
+                opacity: 0;
+                transform: translateY(20px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+          `}</style>
+        </div>
       )}
 
       {/* ========== LIVE MODE: Search Recommendations ========== */}
       {!isDemoMode && showLiveResults && (
-        <motion.div
-          key="search-recommendations"
-          className="overflow-hidden"
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.4, ease: "easeInOut" }}
-        >
+        <div key="search-recommendations">
           {/* Header */}
-          <motion.h3
-            className="text-xl font-semibold text-[var(--text)] mb-4"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.3 }}
-          >
+          <h3 className="text-xl font-semibold text-[var(--text)] mb-4 opacity-0 animate-[fadeInDown_0.4s_ease-out_forwards]">
             Try searching for:
-          </motion.h3>
+          </h3>
 
           {/* Recommendations List - Simple Text */}
-          <motion.ul
-            className="space-y-3"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.3 }}
-          >
+          <ul className="space-y-3">
             {recommendations.map((suggestion, idx) => (
-              <motion.li
+              <li
                 key={`suggestion-${idx}`}
-                className="text-lg text-[var(--text)] bg-[var(--bg-card)] border border-[var(--border)] rounded-lg px-5 py-3 hover:border-[var(--orange)] hover:bg-[var(--bg-hover)] transition-all cursor-pointer"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.05 * idx, duration: 0.2 }}
-                whileHover={{ x: 4 }}
+                className="text-lg text-[var(--text)] bg-[var(--bg-card)] border border-[var(--border)] rounded-lg px-5 py-3 hover:border-[var(--orange)] hover:bg-[var(--bg-hover)] hover:translate-x-1 transition-all cursor-pointer opacity-0 animate-[slideInLeft_0.3s_ease-out_forwards]"
+                style={{
+                  animationDelay: `${idx * 50}ms`,
+                }}
               >
                 {suggestion}
-              </motion.li>
+              </li>
             ))}
-          </motion.ul>
-        </motion.div>
+          </ul>
+          <style jsx>{`
+            @keyframes fadeInDown {
+              from {
+                opacity: 0;
+                transform: translateY(-10px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            @keyframes slideInLeft {
+              from {
+                opacity: 0;
+                transform: translateX(-20px);
+              }
+              to {
+                opacity: 1;
+                transform: translateX(0);
+              }
+            }
+          `}</style>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 }
