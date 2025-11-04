@@ -3,7 +3,6 @@ import {
   register,
   login,
   getProfile,
-  updateProfile,
   changePassword,
   refreshAccessToken,
   deactivateAccount,
@@ -26,7 +25,6 @@ router.use(authenticate); // All routes below this require authentication
 
 // User profile routes
 router.get('/profile', getProfile);
-router.patch('/profile', updateProfile);
 router.delete('/profile', deactivateAccount);
 
 // Password management

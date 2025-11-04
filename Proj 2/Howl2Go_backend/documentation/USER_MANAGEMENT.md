@@ -62,7 +62,6 @@ This document describes the complete user management and authentication system i
 
 - **Protected Endpoints (User):**
   - `getProfile` - Get current user profile
-  - `updateProfile` - Update user profile
   - `changePassword` - Change user password
   - `deactivateAccount` - Deactivate user account
 
@@ -198,47 +197,7 @@ Authorization: Bearer <access_token>
 }
 ```
 
-#### 5. Update User Profile
-```http
-PATCH /api/users/profile
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-  "name": "John Updated",
-  "preferences": {
-    "dietaryRestrictions": ["vegetarian"],
-    "favoriteRestaurants": ["McDonald's", "Subway"],
-    "maxCalories": 2000,
-    "minProtein": 50
-  }
-}
-```
-
-**Response (200 OK):**
-```json
-{
-  "success": true,
-  "message": "Profile updated successfully",
-  "data": {
-    "user": {
-      "id": "user_id",
-      "name": "John Updated",
-      "email": "john@example.com",
-      "role": "user",
-      "preferences": {
-        "dietaryRestrictions": ["vegetarian"],
-        "favoriteRestaurants": ["McDonald's", "Subway"],
-        "maxCalories": 2000,
-        "minProtein": 50
-      },
-      "updatedAt": "2024-01-01T00:00:00.000Z"
-    }
-  }
-}
-```
-
-#### 6. Change Password
+#### 5. Change Password
 ```http
 POST /api/users/change-password
 Authorization: Bearer <access_token>
@@ -262,7 +221,7 @@ Content-Type: application/json
 }
 ```
 
-#### 7. Deactivate Account
+#### 6. Deactivate Account
 ```http
 DELETE /api/users/profile
 Authorization: Bearer <access_token>
@@ -280,7 +239,7 @@ Authorization: Bearer <access_token>
 
 These endpoints require authentication AND admin role.
 
-#### 8. Get All Users (Admin)
+#### 7. Get All Users (Admin)
 ```http
 GET /api/users?page=1&limit=10&role=user&isActive=true
 Authorization: Bearer <admin_access_token>
@@ -317,13 +276,13 @@ Authorization: Bearer <admin_access_token>
 }
 ```
 
-#### 9. Get User by ID (Admin)
+#### 8. Get User by ID (Admin)
 ```http
 GET /api/users/:id
 Authorization: Bearer <admin_access_token>
 ```
 
-#### 10. Update User by ID (Admin)
+#### 9. Update User by ID (Admin)
 ```http
 PATCH /api/users/:id
 Authorization: Bearer <admin_access_token>
@@ -336,7 +295,7 @@ Content-Type: application/json
 }
 ```
 
-#### 11. Delete User by ID (Admin)
+#### 10. Delete User by ID (Admin)
 ```http
 DELETE /api/users/:id
 Authorization: Bearer <admin_access_token>
@@ -425,8 +384,6 @@ The test suite (`src/__tests__/user.test.js`) covers:
    - Get profile with valid token
    - Get profile without token
    - Get profile with invalid token
-   - Update profile successfully
-   - Attempt to update email (should be blocked)
 
 4. **Password Tests:**
    - Change password successfully
@@ -545,26 +502,7 @@ const getProfile = async () => {
   throw new Error(data.message);
 };
 
-// 4. Update profile
-const updateProfile = async (updates) => {
-  const token = localStorage.getItem('accessToken');
-  const response = await fetch('http://localhost:4000/api/users/profile', {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify(updates)
-  });
-  const data = await response.json();
-
-  if (data.success) {
-    return data.data.user;
-  }
-  throw new Error(data.message);
-};
-
-// 5. Refresh token
+// 4. Refresh token
 const refreshToken = async () => {
   const refreshToken = localStorage.getItem('refreshToken');
   const response = await fetch('http://localhost:4000/api/users/refresh-token', {
@@ -581,7 +519,7 @@ const refreshToken = async () => {
   throw new Error(data.message);
 };
 
-// 6. Logout
+// 5. Logout
 const logout = () => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');

@@ -15,6 +15,18 @@ let adminUser;
 // Setup before tests
 beforeAll(async () => {
     await connectDB();
+
+    // SAFETY CHECK: Prevent running tests against production database
+    const dbName = mongoose.connection.name;
+    if (!dbName || (!dbName.includes('test') && process.env.NODE_ENV !== 'test')) {
+        throw new Error(
+            `DANGER: Tests are trying to run against non-test database: "${dbName}". ` +
+            `Database name must include "test" or NODE_ENV must be "test". ` +
+            `Current NODE_ENV: "${process.env.NODE_ENV}"`
+        );
+    }
+
+    console.log(`Running tests against database: ${dbName}`);
     await User.deleteMany({});
 
     // Create admin user for admin tests
@@ -164,41 +176,6 @@ test("GET /api/users/profile - should fail with invalid token", async () => {
 
     assert.equal(response.status, 401);
     assert.equal(response.body.success, false);
-});
-
-// Update Profile Tests
-test("PATCH /api/users/profile - should update profile successfully", async () => {
-    const response = await request(app)
-        .patch("/api/users/profile")
-        .set("Authorization", `Bearer ${authToken}`)
-        .send({
-            name: "Updated Test User",
-            preferences: {
-                dietaryRestrictions: ["vegetarian"],
-                maxCalories: 2000,
-            },
-        });
-
-    assert.equal(response.status, 200);
-    assert.equal(response.body.success, true);
-    assert.equal(response.body.data.user.name, "Updated Test User");
-    assert.deepEqual(response.body.data.user.preferences.dietaryRestrictions, [
-        "vegetarian",
-    ]);
-    assert.equal(response.body.data.user.preferences.maxCalories, 2000);
-});
-
-test("PATCH /api/users/profile - should not update email", async () => {
-    await request(app)
-        .patch("/api/users/profile")
-        .set("Authorization", `Bearer ${authToken}`)
-        .send({
-            email: "newemail@example.com",
-        });
-
-    const user = await User.findOne({ email: "test@example.com" });
-    assert.ok(user);
-    assert.equal(user.email, "test@example.com");
 });
 
 // Password Change Tests
