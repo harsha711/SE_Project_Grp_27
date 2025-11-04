@@ -1,5 +1,8 @@
 // Shared types for food items and API responses
 
+export interface mockSearchResults {
+  [key: string]: string;
+}
 export interface FoodItem {
   restaurant: string;
   item: string;

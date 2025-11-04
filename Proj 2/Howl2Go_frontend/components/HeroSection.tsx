@@ -5,74 +5,16 @@ import { useRouter } from "next/navigation";
 import AnimatedHeadline from "./AnimatedHeadline";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
-import type { FoodItem } from "@/types/food";
-
-// Realistic mock search results matching API structure
-const mockSearchResults: FoodItem[] = [
-  {
-    restaurant: "McDonald's",
-    item: "Big Mac",
-    calories: 550,
-    caloriesFromFat: null,
-    totalFat: null,
-    saturatedFat: null,
-    transFat: null,
-    cholesterol: null,
-    sodium: null,
-    carbs: null,
-    fiber: null,
-    sugars: null,
-    protein: null,
-    weightWatchersPoints: null,
-  },
-  {
-    restaurant: "Burger King",
-    item: "Whopper",
-    calories: 660,
-    caloriesFromFat: null,
-    totalFat: null,
-    saturatedFat: null,
-    transFat: null,
-    cholesterol: null,
-    sodium: null,
-    carbs: null,
-    fiber: null,
-    sugars: null,
-    protein: null,
-    weightWatchersPoints: null,
-  },
-  {
-    restaurant: "Wendy's",
-    item: "Classic Single",
-    calories: 480,
-    caloriesFromFat: null,
-    totalFat: null,
-    saturatedFat: null,
-    transFat: null,
-    cholesterol: null,
-    sodium: null,
-    carbs: null,
-    fiber: null,
-    sugars: null,
-    protein: null,
-    weightWatchersPoints: null,
-  },
-  {
-    restaurant: "Taco Bell",
-    item: "Burrito Supreme",
-    calories: 390,
-    caloriesFromFat: null,
-    totalFat: null,
-    saturatedFat: null,
-    transFat: null,
-    cholesterol: null,
-    sodium: null,
-    carbs: null,
-    fiber: null,
-    sugars: null,
-    protein: null,
-    weightWatchersPoints: null,
-  },
+// Search recommendations to show when user focuses on search (simple text suggestions)
+const searchRecommendations: string[] = [
+  "100 calorie burger",
+  "200 calories pizza",
+  "300 calorie salad",
+  // "400 calories chicken",
+  // "500 calorie sandwich",
+  // "Low calorie breakfast",
+  // "High protein meal",
+  // "Healthy fast food",
 ];
 
 interface HeroSectionProps {
@@ -110,7 +52,8 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
       announcement.setAttribute("role", "status");
       announcement.setAttribute("aria-live", "polite");
       announcement.className = "sr-only";
-      announcement.textContent = "Search activated. Type your query and press Enter to search.";
+      announcement.textContent =
+        "Search activated. Type your query and press Enter to search.";
       document.body.appendChild(announcement);
 
       return () => {
@@ -173,12 +116,6 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
     }
   };
 
-  // Filter search results based on user query
-  const filteredResults = mockSearchResults.filter((result) =>
-    result.item.toLowerCase().includes(inputValue.toLowerCase()) ||
-    result.restaurant.toLowerCase().includes(inputValue.toLowerCase())
-  );
-
   return (
     <section className="relative flex items-center justify-center px-4 sm:px-8 py-16 pb-8 bg-[var(--howl-bg)]">
       <div className="w-full max-w-4xl mx-auto">
@@ -203,7 +140,7 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
           isSearchFocused={isSearchFocused}
           showDemoCards={showDemoCards}
           showLiveResults={showLiveResults}
-          filteredResults={filteredResults}
+          recommendations={searchRecommendations}
         />
       </div>
     </section>

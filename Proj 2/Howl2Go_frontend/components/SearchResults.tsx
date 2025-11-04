@@ -61,7 +61,7 @@ interface SearchResultsProps {
   isSearchFocused: boolean;
   showDemoCards: boolean;
   showLiveResults: boolean;
-  filteredResults: FoodItem[];
+  recommendations: string[];
 }
 
 export default function SearchResults({
@@ -69,7 +69,7 @@ export default function SearchResults({
   isSearchFocused,
   showDemoCards,
   showLiveResults,
-  filteredResults,
+  recommendations,
 }: SearchResultsProps) {
   return (
     <AnimatePresence mode="wait">
@@ -82,7 +82,7 @@ export default function SearchResults({
           animate={{
             height: "auto",
             opacity: isSearchFocused ? 0.4 : 1,
-            filter: isSearchFocused ? "blur(4px)" : "blur(0px)",
+            filter: isSearchFocused ? "blur(2px)" : "blur(0px)",
           }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -100,37 +100,46 @@ export default function SearchResults({
         </motion.div>
       )}
 
-      {/* ========== LIVE MODE: Search Results ========== */}
+      {/* ========== LIVE MODE: Search Recommendations ========== */}
       {!isDemoMode && showLiveResults && (
         <motion.div
-          key="search-results"
+          key="search-recommendations"
           className="overflow-hidden"
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.4, ease: "easeInOut" }}
         >
-          {filteredResults.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredResults.map((result, idx) => (
-                <ItemCard
-                  key={`${result.restaurant}-${result.item}-${idx}`}
-                  restaurant={result.restaurant}
-                  item={result.item}
-                  calories={result.calories}
-                  index={idx}
-                />
-              ))}
-            </div>
-          ) : (
-            <motion.p
-              className="text-center text-[var(--howl-neutral)] opacity-60 py-12 text-lg"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              Search something like: &quot;100 calories food&quot;!
-            </motion.p>
-          )}
+          {/* Header */}
+          <motion.h3
+            className="text-xl font-semibold text-[var(--text)] mb-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+          >
+            Try searching for:
+          </motion.h3>
+
+          {/* Recommendations List - Simple Text */}
+          <motion.ul
+            className="space-y-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+          >
+            {recommendations.map((suggestion, idx) => (
+              <motion.li
+                key={`suggestion-${idx}`}
+                className="text-lg text-[var(--text)] bg-[var(--bg-card)] border border-[var(--border)] rounded-lg px-5 py-3 hover:border-[var(--orange)] hover:bg-[var(--bg-hover)] transition-all cursor-pointer"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.05 * idx, duration: 0.2 }}
+                whileHover={{ x: 4 }}
+              >
+                {suggestion}
+              </motion.li>
+            ))}
+          </motion.ul>
         </motion.div>
       )}
     </AnimatePresence>
