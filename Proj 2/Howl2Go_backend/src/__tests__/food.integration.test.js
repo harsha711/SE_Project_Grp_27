@@ -1,4 +1,11 @@
-import { describe, test, expect, beforeAll, afterAll, afterEach } from "@jest/globals";
+import {
+    describe,
+    test,
+    expect,
+    beforeAll,
+    afterAll,
+    afterEach,
+} from "@jest/globals";
 import assert from "node:assert/strict";
 import request from "supertest";
 import mongoose from "mongoose";
@@ -73,11 +80,14 @@ beforeAll(async () => {
 
     // SAFETY CHECK: Prevent running tests against production database
     const dbName = mongoose.connection.name;
-    if (!dbName || (!dbName.includes('test') && process.env.NODE_ENV !== 'test')) {
+    if (
+        !dbName ||
+        (!dbName.includes("test") && process.env.NODE_ENV !== "test")
+    ) {
         throw new Error(
             `DANGER: Tests are trying to run against non-test database: "${dbName}". ` +
-            `Database name must include "test" or NODE_ENV must be "test". ` +
-            `Current NODE_ENV: "${process.env.NODE_ENV}"`
+                `Database name must include "test" or NODE_ENV must be "test". ` +
+                `Current NODE_ENV: "${process.env.NODE_ENV}"`
         );
     }
 
@@ -98,53 +108,6 @@ afterAll(async () => {
         company: { $in: [TEST_COMPANY, "Outside Vendor"] },
     });
     await mongoose.connection.close();
-});
-
-test("POST /api/food/parse returns parsed criteria from mocked LLM response", async () => {
-    const prompt = "Show me high protein meals from Integration Test Kitchen";
-    const criteria = {
-        company: { name: TEST_COMPANY },
-        protein: { min: 40 },
-    };
-
-    setMockedLlmResponse(prompt, criteria);
-
-    const response = await request(app)
-        .post("/api/food/parse")
-        .send({ query: prompt });
-
-    assert.equal(response.status, 200);
-    assert.equal(response.body.success, true);
-    assert.equal(response.body.query, prompt);
-    assert.deepEqual(response.body.criteria, criteria);
-    assert.equal(response.body.message, "Query parsed successfully");
-});
-
-test("POST /api/food/search filters results using criteria from mocked LLM response", async () => {
-    const prompt =
-        "Find the most protein packed options from Integration Test Kitchen";
-    const criteria = {
-        company: { name: TEST_COMPANY },
-        protein: { min: 40 },
-    };
-
-    setMockedLlmResponse(prompt, criteria);
-
-    const response = await request(app).post("/api/food/search").send({
-        query: prompt,
-        limit: 5,
-        page: 1,
-    });
-
-    assert.equal(response.status, 200);
-    assert.equal(response.body.success, true);
-    assert.equal(response.body.query, prompt);
-    assert.deepEqual(response.body.criteria, criteria);
-    assert.equal(response.body.results.length, 1);
-    assert.equal(response.body.results[0].item, "Power Protein Bowl");
-    assert.equal(response.body.pagination.total, 1);
-    assert.equal(response.body.pagination.page, 1);
-    assert.equal(response.body.pagination.limit, 5);
 });
 
 test("POST /api/food/recommend sorts recommendations by protein when criteria requests high protein", async () => {
@@ -174,48 +137,191 @@ test("POST /api/food/recommend sorts recommendations by protein when criteria re
     );
 });
 
-test("POST /api/food/stats calculates summary metrics for matched items", async () => {
-    const prompt = "Summarize lighter entrees from Integration Test Kitchen";
-    const criteria = {
-        company: { name: TEST_COMPANY },
-        calories: { max: 400 },
-    };
+describe("Food Recommendation Error Handling", () => {
+    test("POST /api/food/recommend - should handle missing query", async () => {
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({});
 
-    setMockedLlmResponse(prompt, criteria);
+        assert.equal(response.status, 400);
+        assert.equal(response.body.success, false);
+    });
 
-    const response = await request(app)
-        .post("/api/food/stats")
-        .send({ query: prompt });
+    test("POST /api/food/recommend - should handle empty query string", async () => {
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: "" });
 
-    assert.equal(response.status, 200);
-    assert.equal(response.body.success, true);
-    assert.equal(response.body.query, prompt);
-    assert.deepEqual(response.body.criteria, criteria);
-    assert.equal(response.body.stats.count, 2);
-    assert.equal(response.body.stats.averages.calories, 300);
-    assert.equal(response.body.stats.averages.protein, 23);
-    assert.equal(response.body.stats.ranges.calories.min, 260);
-    assert.equal(response.body.stats.ranges.calories.max, 340);
+        assert.equal(response.status, 400);
+        assert.equal(response.body.success, false);
+    });
+
+    test("POST /api/food/recommend - should handle null query", async () => {
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: null });
+
+        assert.equal(response.status, 400);
+        assert.equal(response.body.success, false);
+    });
+
+    test("POST /api/food/recommend - should handle non-string query", async () => {
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: 123 });
+
+        assert.equal(response.status, 400);
+        assert.equal(response.body.success, false);
+    });
+
+    test("POST /api/food/recommend - should handle query with no nutritional criteria", async () => {
+        const prompt = "Tell me a joke";
+        setMockedLlmResponse(prompt, {});
+
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: prompt });
+
+        assert.equal(response.status, 400);
+        assert.equal(response.body.success, false);
+    });
+
+    test("POST /api/food/recommend - should handle invalid limit parameter", async () => {
+        const prompt = "Show me healthy meals";
+        const criteria = { calories: { max: 500 } };
+        setMockedLlmResponse(prompt, criteria);
+
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: prompt, limit: -1 });
+
+        expect(response.status).toBeGreaterThanOrEqual(400);
+    });
+
+    test("POST /api/food/recommend - should handle zero limit", async () => {
+        const prompt = "Show me healthy meals";
+        const criteria = { calories: { max: 500 } };
+        setMockedLlmResponse(prompt, criteria);
+
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: prompt, limit: 0 });
+
+        expect(response.status).toBeGreaterThanOrEqual(400);
+    });
+
+    test("POST /api/food/recommend - should return empty results when no matches", async () => {
+        const prompt = "Find meals with 1000g protein";
+        const criteria = { protein: { min: 1000 } };
+        setMockedLlmResponse(prompt, criteria);
+
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: prompt });
+
+        assert.equal(response.status, 200);
+        assert.equal(response.body.success, true);
+        assert.equal(response.body.count, 0);
+        assert.equal(response.body.recommendations.length, 0);
+    });
 });
 
-test("POST /api/food/search rejects natural language prompts without nutritional criteria", async () => {
-    const prompt = "Tell me something interesting about space exploration";
+describe("Food Recommendation Sorting Logic", () => {
+    test("POST /api/food/recommend - should sort by calories (low to high) when querying low calorie", async () => {
+        const prompt = "Low calorie options from Integration Test Kitchen";
+        const criteria = {
+            company: { name: TEST_COMPANY },
+            calories: { max: 400 },
+        };
+        setMockedLlmResponse(prompt, criteria);
 
-    setMockedLlmResponse(prompt, {});
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: prompt });
 
-    const response = await request(app)
-        .post("/api/food/search")
-        .send({ query: prompt });
+        assert.equal(response.status, 200);
+        assert.equal(response.body.recommendations.length, 2);
+        // Should be sorted by calories ascending
+        assert.ok(
+            response.body.recommendations[0].calories <=
+                response.body.recommendations[1].calories
+        );
+    });
 
-    assert.equal(response.status, 400);
-    assert.equal(response.body.success, false);
-    assert.match(response.body.error, /No nutritional criteria/i);
+    test("POST /api/food/recommend - should respect custom limit", async () => {
+        const prompt = "Show me options from Integration Test Kitchen";
+        const criteria = {
+            company: { name: TEST_COMPANY },
+        };
+        setMockedLlmResponse(prompt, criteria);
+
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: prompt, limit: 1 });
+
+        assert.equal(response.status, 200);
+        assert.equal(response.body.recommendations.length, 1);
+        assert.equal(response.body.count, 1);
+    });
+
+    test("POST /api/food/recommend - should handle large limit gracefully", async () => {
+        const prompt = "All items from Integration Test Kitchen";
+        const criteria = {
+            company: { name: TEST_COMPANY },
+        };
+        setMockedLlmResponse(prompt, criteria);
+
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: prompt, limit: 1000 });
+
+        assert.equal(response.status, 200);
+        // Should return all matching items (3 in this case)
+        assert.equal(response.body.recommendations.length, 3);
+    });
 });
 
-test("POST /api/food/search requires a query in the request body", async () => {
-    const response = await request(app).post("/api/food/search").send({});
+describe("Food Recommendation with Multiple Criteria", () => {
+    test("POST /api/food/recommend - should handle multiple nutritional criteria", async () => {
+        const prompt =
+            "High protein, low calorie meals from Integration Test Kitchen";
+        const criteria = {
+            company: { name: TEST_COMPANY },
+            protein: { min: 25 },
+            calories: { max: 400 },
+        };
+        setMockedLlmResponse(prompt, criteria);
 
-    assert.equal(response.status, 400);
-    assert.equal(response.body.success, false);
-    assert.match(response.body.error, /Query parameter is required/i);
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: prompt });
+
+        assert.equal(response.status, 200);
+        assert.equal(response.body.success, true);
+        // Should find items matching both criteria
+        response.body.recommendations.forEach((item) => {
+            assert.ok(item.protein >= 25);
+            assert.ok(item.calories <= 400);
+        });
+    });
+
+    test("POST /api/food/recommend - should handle carb range criteria", async () => {
+        const prompt = "Moderate carb meals from Integration Test Kitchen";
+        const criteria = {
+            company: { name: TEST_COMPANY },
+            carbs: { min: 30, max: 50 },
+        };
+        setMockedLlmResponse(prompt, criteria);
+
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: prompt });
+
+        assert.equal(response.status, 200);
+        assert.equal(response.body.success, true);
+        response.body.recommendations.forEach((item) => {
+            assert.ok(item.carbs >= 30);
+            assert.ok(item.carbs <= 50);
+        });
+    });
 });

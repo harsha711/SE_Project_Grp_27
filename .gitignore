@@ -38,3 +38,9 @@ Thumbs.db
 
 # Node modules
 node_modules/
+
+.claude
+.secrets
+
+.github/workflows/backend-ci.yml
+

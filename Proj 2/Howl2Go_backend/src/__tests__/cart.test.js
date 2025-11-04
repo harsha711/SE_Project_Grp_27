@@ -203,4 +203,204 @@ describe("Cart API Tests", () => {
             assert.strictEqual(response.body.data.cart.items.length, 1);
         });
     });
+
+    describe("Error Handling Tests", () => {
+        test("POST /api/cart/items - should handle invalid foodItemId format", async () => {
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: "invalid-id-format",
+                quantity: 1,
+            });
+
+            expect(response.status).toBeGreaterThanOrEqual(400);
+            assert.strictEqual(response.body.success, false);
+        });
+
+        test("POST /api/cart/items - should handle missing quantity", async () => {
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+            });
+
+            expect(response.status).toBeGreaterThanOrEqual(400);
+            assert.strictEqual(response.body.success, false);
+        });
+
+        test("POST /api/cart/items - should handle negative quantity", async () => {
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: -1,
+            });
+
+            expect(response.status).toBeGreaterThanOrEqual(400);
+            assert.strictEqual(response.body.success, false);
+        });
+
+        test("POST /api/cart/items - should handle zero quantity", async () => {
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 0,
+            });
+
+            expect(response.status).toBeGreaterThanOrEqual(400);
+            assert.strictEqual(response.body.success, false);
+        });
+
+        test("PATCH /api/cart/items/:id - should handle invalid item ID", async () => {
+            const response = await agent
+                .patch("/api/cart/items/invalid-id")
+                .send({ quantity: 5 });
+
+            expect(response.status).toBeGreaterThanOrEqual(400);
+            assert.strictEqual(response.body.success, false);
+        });
+
+        test("PATCH /api/cart/items/:id - should handle non-existent item", async () => {
+            const fakeId = new mongoose.Types.ObjectId();
+            const response = await agent
+                .patch(`/api/cart/items/${fakeId}`)
+                .send({ quantity: 5 });
+
+            expect(response.status).toBeGreaterThanOrEqual(400);
+            assert.strictEqual(response.body.success, false);
+        });
+
+        test("PATCH /api/cart/items/:id - should handle negative quantity update", async () => {
+            // Add item first
+            await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 2,
+            });
+
+            const response = await agent
+                .patch(`/api/cart/items/${testFoodItem._id}`)
+                .send({ quantity: -5 });
+
+            expect(response.status).toBeGreaterThanOrEqual(400);
+            assert.strictEqual(response.body.success, false);
+        });
+
+        test("DELETE /api/cart/items/:id - should handle invalid item ID", async () => {
+            const response = await agent.delete("/api/cart/items/invalid-id");
+
+            expect(response.status).toBeGreaterThanOrEqual(400);
+            assert.strictEqual(response.body.success, false);
+        });
+
+        test("DELETE /api/cart/items/:id - should handle non-existent item", async () => {
+            const fakeId = new mongoose.Types.ObjectId();
+            const response = await agent.delete(`/api/cart/items/${fakeId}`);
+
+            expect(response.status).toBeGreaterThanOrEqual(400);
+            assert.strictEqual(response.body.success, false);
+        });
+    });
+
+    describe("Cart Calculations", () => {
+        test("should calculate total price correctly", async () => {
+            // Add items
+            await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 2,
+            });
+
+            const response = await agent.get("/api/cart");
+
+            assert.strictEqual(response.status, 200);
+            expect(response.body.data.cart.totalPrice).toBeGreaterThan(0);
+            assert.strictEqual(response.body.data.cart.totalItems, 2);
+        });
+
+        test("should calculate total calories correctly", async () => {
+            await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 2,
+            });
+
+            const response = await agent.get("/api/cart");
+
+            assert.strictEqual(response.status, 200);
+            expect(response.body.data.cart.totalCalories).toBe(testFoodItem.calories * 2);
+        });
+
+        test("should recalculate totals when quantity changes", async () => {
+            // Add item
+            await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 1,
+            });
+
+            const initialResponse = await agent.get("/api/cart");
+            const initialTotal = initialResponse.body.data.cart.totalItems;
+
+            // Update quantity
+            await agent
+                .patch(`/api/cart/items/${testFoodItem._id}`)
+                .send({ quantity: 3 });
+
+            const updatedResponse = await agent.get("/api/cart");
+            const updatedTotal = updatedResponse.body.data.cart.totalItems;
+
+            assert.strictEqual(initialTotal, 1);
+            assert.strictEqual(updatedTotal, 3);
+        });
+    });
+
+    describe("Multiple Items", () => {
+        let secondFoodItem;
+
+        beforeAll(async () => {
+            secondFoodItem = await FastFoodItem.create({
+                company: "Test Restaurant",
+                item: "Test Fries",
+                calories: 300,
+                totalFat: 15,
+                protein: 5,
+                carbs: 35,
+            });
+        });
+
+        test("should handle multiple different items in cart", async () => {
+            // Add first item
+            await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 2,
+            });
+
+            // Add second item
+            await agent.post("/api/cart/items").send({
+                foodItemId: secondFoodItem._id.toString(),
+                quantity: 1,
+            });
+
+            const response = await agent.get("/api/cart");
+
+            assert.strictEqual(response.status, 200);
+            assert.strictEqual(response.body.data.cart.items.length, 2);
+            assert.strictEqual(response.body.data.cart.totalItems, 3);
+        });
+
+        test("should remove specific item without affecting others", async () => {
+            // Add two items
+            await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 2,
+            });
+            await agent.post("/api/cart/items").send({
+                foodItemId: secondFoodItem._id.toString(),
+                quantity: 1,
+            });
+
+            // Remove first item
+            await agent.delete(`/api/cart/items/${testFoodItem._id}`);
+
+            const response = await agent.get("/api/cart");
+
+            assert.strictEqual(response.status, 200);
+            assert.strictEqual(response.body.data.cart.items.length, 1);
+            assert.strictEqual(response.body.data.cart.totalItems, 1);
+            assert.strictEqual(
+                response.body.data.cart.items[0].foodItem.toString(),
+                secondFoodItem._id.toString()
+            );
+        });
+    });
 });
