@@ -22,117 +22,14 @@ http://localhost:4000/api/food
    - `validateCriteria`: Ensures meaningful criteria exists
 
 3. **Controller** (`src/controllers/food.controller.js`)
-   - `parseQuery`: Returns parsed criteria without search
-   - `searchFood`: Searches database with pagination
    - `recommendFood`: Gets smart recommendations
-   - `getFoodStats`: Returns statistics about matches
 
 4. **Routes** (`src/routes/food.routes.js`)
    - Defines API endpoints and middleware chain
 
 ## API Endpoints
 
-### 1. Parse Query (Test LLM)
-
-Parse a natural language query to see structured criteria without searching.
-
-**Endpoint:** `POST /api/food/parse`
-
-**Request Body:**
-```json
-{
-  "query": "I want a high protein meal with low carbs"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "query": "I want a high protein meal with low carbs",
-  "criteria": {
-    "protein": { "min": 20 },
-    "carbs": { "max": 30 }
-  },
-  "message": "Query parsed successfully"
-}
-```
-
-**Use Cases:**
-- Testing the LLM's understanding of queries
-- Debugging query parsing
-- Understanding what criteria will be generated
-
----
-
-### 2. Search Food Items
-
-Search for food items based on natural language query with pagination.
-
-**Endpoint:** `POST /api/food/search`
-
-**Request Body:**
-```json
-{
-  "query": "I want something with at least 30g of protein and less than 500 calories",
-  "limit": 10,
-  "page": 1
-}
-```
-
-**Parameters:**
-- `query` (required): Natural language food query
-- `limit` (optional): Number of results per page (default: 10)
-- `page` (optional): Page number (default: 1)
-
-**Response:**
-```json
-{
-  "success": true,
-  "query": "I want something with at least 30g of protein and less than 500 calories",
-  "criteria": {
-    "protein": { "min": 30 },
-    "calories": { "max": 500 }
-  },
-  "results": [
-    {
-      "_id": "...",
-      "item": "Grilled Chicken Breast",
-      "calories": 165,
-      "protein": 31,
-      "total_fat": 3.6,
-      "total_carb": 0,
-      "restaurant": "Fast Food Chain"
-    }
-  ],
-  "pagination": {
-    "total": 45,
-    "page": 1,
-    "limit": 10,
-    "pages": 5
-  },
-  "message": "Found 10 items matching your criteria"
-}
-```
-
-**Example Queries:**
-```javascript
-// High protein, low calorie
-{ "query": "I need a high protein meal under 400 calories" }
-
-// Low fat dessert
-{ "query": "Give me a dessert with low fat and low sugar" }
-
-// Fiber-rich meal
-{ "query": "I want something with at least 20g of fiber" }
-
-// Complex query
-{ "query": "I'm looking for a meal with 25-35g of protein, less than 600 calories, and low sodium" }
-```
-
----
-
-### 3. Get Recommendations
+### 1. Get Recommendations
 
 Get smart food recommendations based on preferences with intelligent sorting.
 
@@ -176,52 +73,6 @@ Get smart food recommendations based on preferences with intelligent sorting.
 - High protein queries → Sort by protein (descending)
 - Low calorie queries → Sort by calories (ascending)
 - Low fat queries → Sort by fat (ascending)
-
----
-
-### 4. Get Statistics
-
-Get statistics about food items matching your criteria.
-
-**Endpoint:** `POST /api/food/stats`
-
-**Request Body:**
-```json
-{
-  "query": "low calorie desserts"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "query": "low calorie desserts",
-  "criteria": {
-    "calories": { "max": 300 }
-  },
-  "stats": {
-    "count": 15,
-    "averages": {
-      "calories": 245,
-      "protein": 5,
-      "fat": 8,
-      "carbs": 35
-    },
-    "ranges": {
-      "calories": {
-        "min": 150,
-        "max": 300
-      },
-      "protein": {
-        "min": 2,
-        "max": 10
-      }
-    }
-  },
-  "message": "Statistics for 15 items matching your criteria"
-}
-```
 
 ---
 
@@ -324,32 +175,12 @@ npm run dev
 
 ### 4. Test the API
 ```bash
-curl -X POST http://localhost:4000/api/food/parse \
+curl -X POST http://localhost:4000/api/food/recommend \
   -H "Content-Type: application/json" \
   -d '{"query": "I want a high protein meal"}'
 ```
 
 ## Testing with cURL
-
-### Parse Query
-```bash
-curl -X POST http://localhost:4000/api/food/parse \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "I want something with at least 30g of protein and less than 500 calories"
-  }'
-```
-
-### Search Food
-```bash
-curl -X POST http://localhost:4000/api/food/search \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "high protein low carb meal",
-    "limit": 5,
-    "page": 1
-  }'
-```
 
 ### Get Recommendations
 ```bash
@@ -361,29 +192,19 @@ curl -X POST http://localhost:4000/api/food/recommend \
   }'
 ```
 
-### Get Statistics
-```bash
-curl -X POST http://localhost:4000/api/food/stats \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "low calorie snacks"
-  }'
-```
-
 ## Integration with Frontend
 
 ### JavaScript/Fetch Example
 ```javascript
-async function searchFood(query) {
-  const response = await fetch('http://localhost:4000/api/food/search', {
+async function getRecommendations(query) {
+  const response = await fetch('http://localhost:4000/api/food/recommend', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       query: query,
-      limit: 10,
-      page: 1
+      limit: 5
     })
   });
 
@@ -392,31 +213,31 @@ async function searchFood(query) {
 }
 
 // Usage
-const results = await searchFood("I want a high protein meal under 500 calories");
-console.log(results.results);
+const results = await getRecommendations("I want a high protein meal under 500 calories");
+console.log(results.recommendations);
 ```
 
 ### React Example
 ```javascript
 import { useState } from 'react';
 
-function FoodSearch() {
+function FoodRecommendations() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handleSearch = async () => {
+  const handleGetRecommendations = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:4000/api/food/search', {
+      const response = await fetch('http://localhost:4000/api/food/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query })
       });
       const data = await response.json();
-      setResults(data.results);
+      setRecommendations(data.recommendations);
     } catch (error) {
-      console.error('Search failed:', error);
+      console.error('Get recommendations failed:', error);
     } finally {
       setLoading(false);
     }
@@ -429,11 +250,11 @@ function FoodSearch() {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="What are you looking for?"
       />
-      <button onClick={handleSearch} disabled={loading}>
-        {loading ? 'Searching...' : 'Search'}
+      <button onClick={handleGetRecommendations} disabled={loading}>
+        {loading ? 'Getting Recommendations...' : 'Get Recommendations'}
       </button>
       <ul>
-        {results.map(item => (
+        {recommendations.map(item => (
           <li key={item._id}>{item.item} - {item.calories} cal, {item.protein}g protein</li>
         ))}
       </ul>
@@ -462,9 +283,9 @@ function FoodSearch() {
    }
    ```
 
-4. **Execute Search** → Query MongoDB and return results
+4. **Execute Recommendation Query** → Query MongoDB with intelligent sorting and return results
 
-5. **Return Response** → Send formatted results back to client
+5. **Return Response** → Send formatted recommendations back to client
 
 ## Performance Considerations
 
@@ -499,7 +320,7 @@ function FoodSearch() {
 ### "No items found"
 - Criteria might be too restrictive
 - Database might not have matching items
-- Use `/parse` endpoint to debug criteria
+- Try relaxing your query constraints
 
 ## License
 Part of Howl2Go project - SE_Project_Grp_27

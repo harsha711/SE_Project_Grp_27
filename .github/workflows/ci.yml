@@ -47,9 +47,17 @@ jobs:
                   # Overwrite with sensitive/test credentials from GitHub Secrets
                   {
                     echo "PORT=4000"
-                    echo "NODE_ENV=development"
+                    echo "NODE_ENV=test"
 
-                    echo "MONGODB_URI=${{ secrets.MONGODB_URI }}"
+                    # IMPORTANT: Use TEST database, NOT production
+                    # Either use a separate test database URI from secrets, or append -test to database name
+                    if [ -n "${{ secrets.MONGODB_TEST_URI }}" ]; then
+                      echo "MONGODB_URI=${{ secrets.MONGODB_TEST_URI }}"
+                    else
+                      # Fallback: append -test to the production database name
+                      TEST_URI=$(echo "${{ secrets.MONGODB_URI }}" | sed 's/\(mongodb.*\/\)\([^?]*\)/\1\2-test/')
+                      echo "MONGODB_URI=$TEST_URI"
+                    fi
 
                     echo "JWT_SECRET=${{ secrets.JWT_SECRET }}"
                     echo "JWT_EXPIRES_IN=7d"
@@ -69,6 +77,7 @@ jobs:
                   } > .env
 
                   echo ".env created with $(grep -c '=' .env) entries"
+                  echo "Using test database (not production)"
               working-directory: "Proj 2/Howl2Go_backend"
 
             # Run backend tests (they will connect to Atlas)

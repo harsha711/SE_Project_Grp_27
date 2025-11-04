@@ -70,6 +70,18 @@ beforeAll(async () => {
     };
 
     await connectDB();
+
+    // SAFETY CHECK: Prevent running tests against production database
+    const dbName = mongoose.connection.name;
+    if (!dbName || (!dbName.includes('test') && process.env.NODE_ENV !== 'test')) {
+        throw new Error(
+            `DANGER: Tests are trying to run against non-test database: "${dbName}". ` +
+            `Database name must include "test" or NODE_ENV must be "test". ` +
+            `Current NODE_ENV: "${process.env.NODE_ENV}"`
+        );
+    }
+
+    console.log(`Running tests against database: ${dbName}`);
     await FastFoodItem.deleteMany({
         company: { $in: [TEST_COMPANY, "Outside Vendor"] },
     });
