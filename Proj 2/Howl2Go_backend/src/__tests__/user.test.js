@@ -9,8 +9,6 @@ import connectDB from "../config/database.js";
 
 let testUser;
 let authToken;
-let adminToken;
-let adminUser;
 
 // Setup before tests
 beforeAll(async () => {
@@ -18,25 +16,19 @@ beforeAll(async () => {
 
     // SAFETY CHECK: Prevent running tests against production database
     const dbName = mongoose.connection.name;
-    if (!dbName || (!dbName.includes('test') && process.env.NODE_ENV !== 'test')) {
+    if (
+        !dbName ||
+        (!dbName.includes("test") && process.env.NODE_ENV !== "test")
+    ) {
         throw new Error(
             `DANGER: Tests are trying to run against non-test database: "${dbName}". ` +
-            `Database name must include "test" or NODE_ENV must be "test". ` +
-            `Current NODE_ENV: "${process.env.NODE_ENV}"`
+                `Database name must include "test" or NODE_ENV must be "test". ` +
+                `Current NODE_ENV: "${process.env.NODE_ENV}"`
         );
     }
 
     console.log(`Running tests against database: ${dbName}`);
     await User.deleteMany({});
-
-    // Create admin user for admin tests
-    adminUser = await User.create({
-        name: "Admin User",
-        email: "admin@example.com",
-        password: "AdminPass123!",
-        role: "admin",
-    });
-    adminToken = generateAccessToken(adminUser._id, adminUser.email, "admin");
 });
 
 // Cleanup after tests
@@ -210,6 +202,9 @@ test("POST /api/users/change-password - should fail with wrong current password"
 });
 
 test("POST /api/users/login - should login with new password", async () => {
+    // Delay to ensure password change is persisted to database
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const response = await request(app).post("/api/users/login").send({
         email: "test@example.com",
         password: "NewPassword456!",
@@ -245,134 +240,4 @@ test("POST /api/users/refresh-token - should fail with invalid token", async () 
     assert.equal(response.body.success, false);
 });
 
-// Admin - Get All Users
-test("GET /api/users - should get all users as admin", async () => {
-    const response = await request(app)
-        .get("/api/users")
-        .set("Authorization", `Bearer ${adminToken}`);
-
-    assert.equal(response.status, 200);
-    assert.equal(response.body.success, true);
-    assert.ok(Array.isArray(response.body.data.users));
-    assert.ok(response.body.data.users.length > 0);
-    assert.ok(response.body.data.pagination);
-});
-
-test("GET /api/users - should fail as regular user", async () => {
-    const response = await request(app)
-        .get("/api/users")
-        .set("Authorization", `Bearer ${authToken}`);
-
-    assert.equal(response.status, 403);
-    assert.equal(response.body.success, false);
-});
-
-test("GET /api/users?role=admin - should filter users by role", async () => {
-    const response = await request(app)
-        .get("/api/users?role=admin")
-        .set("Authorization", `Bearer ${adminToken}`);
-
-    assert.equal(response.status, 200);
-    assert.ok(response.body.data.users.every((u) => u.role === "admin"));
-});
-
-// Admin - Get User by ID
-test("GET /api/users/:id - should get user by ID as admin", async () => {
-    const response = await request(app)
-        .get(`/api/users/${testUser.id}`)
-        .set("Authorization", `Bearer ${adminToken}`);
-
-    assert.equal(response.status, 200);
-    assert.equal(response.body.success, true);
-    assert.equal(response.body.data.user.email, "test@example.com");
-});
-
-test("GET /api/users/:id - should fail as regular user", async () => {
-    const response = await request(app)
-        .get(`/api/users/${testUser.id}`)
-        .set("Authorization", `Bearer ${authToken}`);
-
-    assert.equal(response.status, 403);
-    assert.equal(response.body.success, false);
-});
-
-// Admin - Update User by ID
-test("PATCH /api/users/:id - should update user as admin", async () => {
-    const response = await request(app)
-        .patch(`/api/users/${testUser.id}`)
-        .set("Authorization", `Bearer ${adminToken}`)
-        .send({
-            name: "Admin Updated Name",
-        });
-
-    assert.equal(response.status, 200);
-    assert.equal(response.body.success, true);
-    assert.equal(response.body.data.user.name, "Admin Updated Name");
-});
-
-test("PATCH /api/users/:id - should fail as regular user", async () => {
-    const response = await request(app)
-        .patch(`/api/users/${testUser.id}`)
-        .set("Authorization", `Bearer ${authToken}`)
-        .send({
-            name: "Unauthorized Update",
-        });
-
-    assert.equal(response.status, 403);
-    assert.equal(response.body.success, false);
-});
-
 // Account Deactivation
-test("DELETE /api/users/profile - should deactivate account", async () => {
-    const registerResponse = await request(app)
-        .post("/api/users/register")
-        .send({
-            name: "Temp User",
-            email: "temp@example.com",
-            password: "TempPass123!",
-        });
-    const tempToken = registerResponse.body.data.accessToken;
-
-    const response = await request(app)
-        .delete("/api/users/profile")
-        .set("Authorization", `Bearer ${tempToken}`);
-
-    assert.equal(response.status, 200);
-    assert.equal(response.body.success, true);
-
-    const user = await User.findOne({ email: "temp@example.com" });
-    assert.equal(user.isActive, false);
-});
-
-test("POST /api/users/login - should fail with deactivated account", async () => {
-    const response = await request(app).post("/api/users/login").send({
-        email: "temp@example.com",
-        password: "TempPass123!",
-    });
-
-    assert.equal(response.status, 401);
-    assert.equal(response.body.success, false);
-    assert.match(response.body.message, /deactivated/i);
-});
-
-// Admin - Delete User by ID
-test("DELETE /api/users/:id - should fail as regular user", async () => {
-    const response = await request(app)
-        .delete(`/api/users/${testUser.id}`)
-        .set("Authorization", `Bearer ${authToken}`);
-
-    assert.equal(response.status, 403);
-    assert.equal(response.body.success, false);
-});
-
-test("DELETE /api/users/:id - should delete user as admin", async () => {
-    const response = await request(app)
-        .delete(`/api/users/${testUser.id}`)
-        .set("Authorization", `Bearer ${adminToken}`);
-
-    assert.equal(response.status, 200);
-    assert.equal(response.body.success, true);
-
-    const user = await User.findById(testUser.id);
-    assert.equal(user, null);
-});

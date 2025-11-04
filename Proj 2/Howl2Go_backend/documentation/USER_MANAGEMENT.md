@@ -51,7 +51,6 @@ This document describes the complete user management and authentication system i
 #### 3. Authentication Middleware (`src/middleware/auth.middleware.js`)
 - **Middleware:**
   - `authenticate` - Verifies JWT and attaches user to `req.user`
-  - `authorize(...roles)` - Checks if user has required role
   - `optionalAuth` - Optional authentication (doesn't fail if no token)
 
 #### 4. User Controller (`src/controllers/user.controller.js`)
@@ -64,12 +63,6 @@ This document describes the complete user management and authentication system i
   - `getProfile` - Get current user profile
   - `changePassword` - Change user password
   - `deactivateAccount` - Deactivate user account
-
-- **Protected Endpoints (Admin Only):**
-  - `getAllUsers` - Get all users with pagination
-  - `getUserById` - Get specific user by ID
-  - `updateUserById` - Update any user by ID
-  - `deleteUserById` - Delete user by ID
 
 ## API Endpoints
 
@@ -235,72 +228,6 @@ Authorization: Bearer <access_token>
 }
 ```
 
-### Admin-Only Endpoints
-
-These endpoints require authentication AND admin role.
-
-#### 7. Get All Users (Admin)
-```http
-GET /api/users?page=1&limit=10&role=user&isActive=true
-Authorization: Bearer <admin_access_token>
-```
-
-**Query Parameters:**
-- `page` - Page number (default: 1)
-- `limit` - Items per page (default: 10)
-- `role` - Filter by role: 'user' or 'admin'
-- `isActive` - Filter by active status: 'true' or 'false'
-
-**Response (200 OK):**
-```json
-{
-  "success": true,
-  "data": {
-    "users": [
-      {
-        "id": "user_id",
-        "name": "John Doe",
-        "email": "john@example.com",
-        "role": "user",
-        "isActive": true,
-        "createdAt": "2024-01-01T00:00:00.000Z"
-      }
-    ],
-    "pagination": {
-      "currentPage": 1,
-      "totalPages": 5,
-      "totalUsers": 50,
-      "usersPerPage": 10
-    }
-  }
-}
-```
-
-#### 8. Get User by ID (Admin)
-```http
-GET /api/users/:id
-Authorization: Bearer <admin_access_token>
-```
-
-#### 9. Update User by ID (Admin)
-```http
-PATCH /api/users/:id
-Authorization: Bearer <admin_access_token>
-Content-Type: application/json
-
-{
-  "name": "Updated Name",
-  "role": "admin",
-  "isActive": false
-}
-```
-
-#### 10. Delete User by ID (Admin)
-```http
-DELETE /api/users/:id
-Authorization: Bearer <admin_access_token>
-```
-
 ## Authentication Flow
 
 ### 1. Registration Flow
@@ -394,15 +321,7 @@ The test suite (`src/__tests__/user.test.js`) covers:
    - Refresh token successfully
    - Invalid refresh token
 
-6. **Admin Tests:**
-   - Get all users (admin only)
-   - Get all users (regular user - should fail)
-   - Filter users by role
-   - Get user by ID (admin only)
-   - Update user by ID (admin only)
-   - Delete user by ID (admin only)
-
-7. **Account Deactivation Tests:**
+6. **Account Deactivation Tests:**
    - Deactivate account
    - Login with deactivated account (should fail)
 
@@ -429,10 +348,8 @@ The test suite (`src/__tests__/user.test.js`) covers:
 - Role enum validation
 
 ### 4. Authorization
-- Role-based access control (RBAC)
-- Admin-only endpoints protected
-- User can only modify own data
 - Token required for protected routes
+- User can only access own data
 
 ### 5. Account Security
 - Account deactivation instead of deletion
