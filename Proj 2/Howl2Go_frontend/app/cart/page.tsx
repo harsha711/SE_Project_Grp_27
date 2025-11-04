@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 // Cart Item Interface
@@ -16,6 +17,11 @@ interface CartItem {
 }
 
 export default function CartPage() {
+  const router = useRouter();
+
+  // Order state
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
 
   // Initial cart state with sample items
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -83,13 +89,126 @@ export default function CartPage() {
   const deliveryFee = cartItems.length > 0 ? 3.99 : 0;
   const total = subtotal + tax + deliveryFee;
 
-  // Checkout handler
-  const handleCheckout = () => {
-    console.log("Proceeding to checkout with Next.js router...");
-    console.log("Cart Items:", cartItems);
-    console.log("Total:", total.toFixed(2));
-    router.push('/checkout');
+  // Place Order handler
+  const handlePlaceOrder = () => {
+    setIsProcessing(true);
+
+    // Simulate order processing
+    setTimeout(() => {
+      console.log("Order placed successfully!");
+      console.log("Cart Items:", cartItems);
+      console.log("Total:", total.toFixed(2));
+
+      setIsProcessing(false);
+      setOrderPlaced(true);
+
+      // Redirect to home after 3 seconds
+      setTimeout(() => {
+        router.push("/");
+      }, 3000);
+    }, 2000);
   };
+
+  // Success Animation State
+  if (orderPlaced) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: "var(--bg)" }}
+      >
+        <div
+          className="max-w-md w-full mx-4 rounded-2xl p-8 text-center animate-fade-in"
+          style={{
+            backgroundColor: "var(--bg-card)",
+            borderWidth: "1px",
+            borderColor: "var(--border)",
+          }}
+        >
+          {/* Success Icon with pulse animation */}
+          <div className="relative mb-6">
+            <div
+              className="absolute inset-0 w-24 h-24 mx-auto rounded-full animate-ping opacity-20"
+              style={{ backgroundColor: "var(--success)" }}
+            />
+            <CheckCircle
+              className="w-24 h-24 mx-auto relative animate-bounce"
+              style={{ color: "var(--success)" }}
+            />
+          </div>
+
+          <h1
+            className="text-4xl font-bold mb-3"
+            style={{ color: "var(--text)" }}
+          >
+            Order Placed!
+          </h1>
+
+          <p className="text-lg mb-6" style={{ color: "var(--text-subtle)" }}>
+            Your delicious food is on the way!
+          </p>
+
+          <div
+            className="p-6 rounded-xl mb-6"
+            style={{
+              backgroundColor: "var(--bg)",
+              border: "1px solid var(--border)",
+            }}
+          >
+            <p className="text-sm mb-2" style={{ color: "var(--text-muted)" }}>
+              Order Total
+            </p>
+            <p
+              className="text-3xl font-bold"
+              style={{ color: "var(--cream)" }}
+            >
+              ${total.toFixed(2)}
+            </p>
+            <p className="text-sm mt-2" style={{ color: "var(--text-subtle)" }}>
+              {totalItems} {totalItems === 1 ? "item" : "items"}
+            </p>
+          </div>
+
+          <div
+            className="flex items-center justify-center gap-2 text-sm"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <div className="flex gap-1">
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: "var(--orange)", animationDelay: "0s" }}
+              />
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: "var(--orange)", animationDelay: "0.2s" }}
+              />
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: "var(--orange)", animationDelay: "0.4s" }}
+              />
+            </div>
+            <span>Redirecting to home...</span>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes fade-in {
+            from {
+              opacity: 0;
+              transform: scale(0.9);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+
+          .animate-fade-in {
+            animation: fade-in 0.5s ease-out;
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -420,16 +539,43 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* Checkout Button */}
+                {/* Place Order Button */}
                 <button
-                  onClick={handleCheckout}
-                  className="w-full py-4 rounded-full font-bold text-lg transition-all hover:scale-105 hover:shadow-lg"
+                  onClick={handlePlaceOrder}
+                  disabled={isProcessing}
+                  className="w-full py-4 rounded-full font-bold text-lg transition-all hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     backgroundColor: "var(--orange)",
                     color: "var(--text)",
                   }}
                 >
-                  Proceed to Checkout
+                  {isProcessing ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg
+                        className="animate-spin h-5 w-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    "Place Order"
+                  )}
                 </button>
 
                 {/* Additional Info */}
