@@ -66,13 +66,13 @@ sodium/cholesterol → milligrams (mg)
 
 Here are some examples:
 User prompt: "I want a meal with at least 20g of fiber and low sugar."
-Response: {"fiber": {"min": 20}, "sugar": {"max": 10}}
+Response: {"fiber": {"min": 20}, "sugars": {"max": 10}}
 
 User prompt: "Give me a dessert that's not too sweet and has under 300 calories."
-Response: {"sugar": {"max": 15}, "calories": {"max": 300}}
+Response: {"sugars": {"max": 15}, "calories": {"max": 300}}
 
 User prompt: "Between 400 and 600 calories, high protein, no sugar."
-Response: {"calories": {"min": 400, "max": 600}, "protein": {"min": 20}, "sugar": {"max": 0}}
+Response: {"calories": {"min": 400, "max": 600}, "protein": {"min": 20}, "sugars": {"max": 0}}
 
 User prompt: "Show me Big Mac nutritional information"
 Response: {"item": {"name": "Big Mac"}}
