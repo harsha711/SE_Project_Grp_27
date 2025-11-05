@@ -14,6 +14,7 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb)](https://www.mongodb.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Coverage Status](https://coveralls.io/repos/github/harsha711/SE_Project_Grp_27/badge.svg?branch=main)](https://coveralls.io/github/harsha711/SE_Project_Grp_27?branch=main)
 
 [Documentation](Proj%202/docs/) • [Getting Started](Proj%202/docs/GETTING_STARTED.md) • [API Docs](Proj%202/docs/API_DOCUMENTATION.md) • [Features](Proj%202/docs/FEATURES.md)
 
