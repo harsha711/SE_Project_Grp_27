@@ -16,6 +16,15 @@ export default function AnimatedHeadline({ isSearchFocused }: AnimatedHeadlinePr
         delayChildren: 0.2,
       },
     },
+    focused: {
+      opacity: 0,
+      scale: 0.98,
+      filter: "blur(4px)",
+      transition: {
+        duration: 0.5,
+        ease: [0.4, 0, 0.2, 1], // Smooth easing curve
+      },
+    },
   };
 
   const wordVariants = {
@@ -36,17 +45,8 @@ export default function AnimatedHeadline({ isSearchFocused }: AnimatedHeadlinePr
     <motion.h1
       className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-12 text-[var(--howl-neutral)]"
       initial="hidden"
-      animate={
-        isSearchFocused
-          ? {
-              opacity: 0.3,
-              scale: 0.95,
-              filter: "blur(2px)",
-            }
-          : "visible"
-      }
+      animate={isSearchFocused ? "focused" : "visible"}
       variants={headlineContainerVariants}
-      transition={{ duration: 0.3, ease: "easeOut" }}
     >
       {words.map((word, index) => (
         <motion.span

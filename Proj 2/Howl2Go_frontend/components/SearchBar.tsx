@@ -1,6 +1,5 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
 import { Search } from "lucide-react";
 
 interface SearchBarProps {
@@ -28,42 +27,16 @@ export default function SearchBar({
     <div className="w-full">
       {/* Search Bar - Hero Element with Shared Layout ID */}
       <div className="mb-8">
-        <motion.div
-          layoutId="hero-search-bar"
-          className="w-full px-6 py-5 text-xl sm:text-2xl rounded-full border-2 flex items-center min-h-[70px] relative focus-within:outline-none"
+        <div
+          className={`w-full px-6 py-5 text-xl sm:text-2xl rounded-full border-2 flex items-center min-h-[70px] relative transition-all duration-500 ease-out ${
+            isSearchFocused
+              ? 'border-[var(--orange)] shadow-[0_8px_24px_rgba(198,107,77,0.25)] scale-[1.02]'
+              : 'border-[var(--search-bar-border)] shadow-none scale-100'
+          }`}
           style={{
             backgroundColor: isDemoMode
               ? "var(--search-bar-bg-demo)"
               : "var(--search-bar-bg-live)",
-            outline: "none",
-          }}
-          initial={{ borderColor: "var(--search-bar-border)" }}
-          animate={{
-            borderColor: isSearchFocused
-              ? "var(--orange)"
-              : "var(--search-bar-border)",
-            boxShadow: isSearchFocused
-              ? "0 8px 24px rgba(198, 107, 77, 0.25)"
-              : "0 0 0 0 transparent",
-            scale: isSearchFocused ? 1.02 : 1,
-          }}
-          transition={{
-            borderColor: {
-              type: "spring",
-              stiffness: 300,
-              damping: 20,
-            },
-            boxShadow: { duration: 0.25, ease: "easeOut" },
-            scale: { duration: 0.15, ease: "easeOut" },
-            layout: {
-              duration: 0.6,
-              ease: [0.4, 0, 0.2, 1],
-            },
-          }}
-          whileHover={{
-            boxShadow: isSearchFocused
-              ? "0 8px 24px rgba(198, 107, 77, 0.25)"
-              : "0 0 0 2px var(--search-bar-hover-glow)",
           }}
         >
           {/* Always-present search input - focusable in both demo and live modes */}
@@ -91,51 +64,43 @@ export default function SearchBar({
           {/* Search icon in Live Mode with Enter CTA */}
           {!isDemoMode && (
             <div className="flex items-center gap-2 ml-2 relative z-10">
-              <motion.div
-                animate={{
-                  color: isSearchFocused
-                    ? "var(--orange)"
-                    : "var(--howl-secondary)",
-                }}
-                transition={{ duration: 0.3 }}
+              <div
+                className={`transition-colors duration-300 ${
+                  isSearchFocused ? 'text-[var(--orange)]' : 'text-[var(--howl-secondary)]'
+                }`}
               >
                 <Search className="h-6 w-6" />
-              </motion.div>
-              <AnimatePresence>
-                {isSearchFocused && inputValue.trim().length > 0 && (
-                  <motion.span
-                    initial={{ opacity: 0, scale: 0.8, x: -10 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    exit={{ opacity: 0, scale: 0.8, x: -10 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                    className="text-sm font-medium text-[var(--cream)] flex items-center gap-1"
-                  >
-                    <span className="hidden sm:inline">Press</span>
-                    <kbd className="px-2 py-0.5 text-xs bg-[var(--bg-hover)] border border-[var(--border)] rounded">
-                      ↵
-                    </kbd>
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              </div>
+              {isSearchFocused && inputValue.trim().length > 0 && (
+                <span className="text-sm font-medium text-[var(--cream)] flex items-center gap-1 animate-[fadeIn_0.3s_ease-out]">
+                  <span className="hidden sm:inline">Press</span>
+                  <kbd className="px-2 py-0.5 text-xs bg-[var(--bg-hover)] border border-[var(--border)] rounded">
+                    ↵
+                  </kbd>
+                </span>
+              )}
             </div>
           )}
-        </motion.div>
+        </div>
 
-        {/* CTA Text Below Search Bar (Alternative/Additional Option) */}
-        <AnimatePresence>
-          {isSearchFocused && inputValue.trim().length > 1 && (
-            <motion.p
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 0.7, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="text-center text-sm text-[var(--cream)] mt-3"
-            >
-              Press Enter to find your craving
-            </motion.p>
-          )}
-        </AnimatePresence>
+        {/* CTA Text Below Search Bar */}
+        {isSearchFocused && inputValue.trim().length > 1 && (
+          <p className="text-center text-sm text-[var(--cream)] mt-3 opacity-70 animate-[fadeIn_0.3s_ease-out]">
+            Press Enter to find your craving
+          </p>
+        )}
       </div>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 0.7;
+          }
+        }
+      `}</style>
     </div>
   );
 }

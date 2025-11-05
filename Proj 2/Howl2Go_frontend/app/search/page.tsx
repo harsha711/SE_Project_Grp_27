@@ -57,7 +57,7 @@ function SmartMenuSearchContent() {
 
         try {
           const response = await fetch(
-            "http://localhost:4000/api/food/recommend",
+            "/api/food/recommend",
             {
               method: "POST",
               headers: {
@@ -220,7 +220,7 @@ function SmartMenuSearchContent() {
     setFoodItems([]);
 
     try {
-      const response = await fetch("http://localhost:4000/api/food/recommend", {
+      const response = await fetch("/api/food/recommend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: searchQuery }),
