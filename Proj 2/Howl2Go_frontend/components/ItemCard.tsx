@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useState } from "react";
 import type { FoodItem } from "@/types/food";
 
 interface ItemCardProps extends Partial<FoodItem> {
@@ -10,6 +11,8 @@ interface ItemCardProps extends Partial<FoodItem> {
   calories: number;
   index?: number;
   disableAnimation?: boolean;
+  onAdd?: (item: FoodItem) => void;
+  onShowDescription?: (item: FoodItem) => void;
 }
 
 // Get restaurant logo with flexible matching to handle API name variations
@@ -34,13 +37,44 @@ export default function ItemCard({
   calories,
   index = 0,
   disableAnimation = false,
+  onAdd,
+  onShowDescription,
+  ...restProps
 }: ItemCardProps) {
+  const [showDescription, setShowDescription] = useState(false);
+
+  const foodItem: FoodItem = {
+    restaurant,
+    item,
+    calories,
+    ...restProps,
+  };
+
+  const handleAdd = () => {
+    if (onAdd) {
+      onAdd(foodItem);
+    } else {
+      // Default behavior: add to cart (placeholder for now)
+      console.log("Added to cart:", foodItem);
+      alert(`Added ${item} to cart!`);
+    }
+  };
+
+  const handleShowDescription = () => {
+    if (onShowDescription) {
+      onShowDescription(foodItem);
+    } else {
+      // Default behavior: toggle description
+      setShowDescription(!showDescription);
+    }
+  };
+
   return (
     <motion.div
       initial={disableAnimation ? false : { opacity: 0, y: 20 }}
       animate={disableAnimation ? false : { opacity: 1, y: 0 }}
       transition={disableAnimation ? undefined : { delay: index * 0.05, duration: 0.25 }}
-      className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 hover:border-[var(--orange)] transition-all cursor-pointer group"
+      className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 hover:border-[var(--orange)] transition-all group"
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
     >
       {/* Header: Restaurant Logo and Price */}
@@ -91,13 +125,51 @@ export default function ItemCard({
         </div>
       </div>
 
-      {/* Footer: Category and Add Button */}
-      <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
-        <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-hover)] px-3 py-1 rounded-full">
-          Fast Food
-        </span>
+      {/* Description Section (Collapsible) */}
+      {showDescription && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="mb-4 p-3 bg-[var(--bg-hover)] rounded-lg text-sm text-[var(--text-subtle)]"
+        >
+          <h4 className="font-semibold text-[var(--text)] mb-2">Nutrition Details:</h4>
+          <div className="grid grid-cols-2 gap-2">
+            {restProps.totalFat !== undefined && restProps.totalFat !== null && (
+              <div>Total Fat: {restProps.totalFat}g</div>
+            )}
+            {restProps.protein !== undefined && restProps.protein !== null && (
+              <div>Protein: {restProps.protein}g</div>
+            )}
+            {restProps.carbs !== undefined && restProps.carbs !== null && (
+              <div>Carbs: {restProps.carbs}g</div>
+            )}
+            {restProps.sodium !== undefined && restProps.sodium !== null && (
+              <div>Sodium: {restProps.sodium}mg</div>
+            )}
+            {restProps.sugars !== undefined && restProps.sugars !== null && (
+              <div>Sugars: {restProps.sugars}g</div>
+            )}
+            {restProps.fiber !== undefined && restProps.fiber !== null && (
+              <div>Fiber: {restProps.fiber}g</div>
+            )}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Footer: Buttons */}
+      <div className="flex items-center gap-2 pt-3 border-t border-[var(--border)]">
         <motion.button
-          className="px-4 py-2 rounded-full font-semibold text-sm bg-[var(--orange)] text-[var(--text)] hover:bg-[var(--cream)] hover:text-[var(--bg)] transition-colors"
+          onClick={handleShowDescription}
+          className="flex-1 px-4 py-2 rounded-full font-semibold text-sm bg-[var(--bg-hover)] text-[var(--text)] hover:bg-[var(--border)] transition-colors border border-[var(--border)]"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          {showDescription ? "Hide" : "Details"}
+        </motion.button>
+        <motion.button
+          onClick={handleAdd}
+          className="flex-1 px-4 py-2 rounded-full font-semibold text-sm bg-[var(--orange)] text-[var(--text)] hover:bg-[var(--cream)] hover:text-[var(--bg)] transition-colors"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >

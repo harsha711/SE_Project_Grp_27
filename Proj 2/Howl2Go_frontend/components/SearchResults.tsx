@@ -76,18 +76,20 @@ export default function SearchResults({
       {isDemoMode && showDemoCards && (
         <div
           key="demo-cards"
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 transition-all duration-500"
-          style={{
-            opacity: isSearchFocused ? 0.4 : 1,
-            filter: isSearchFocused ? "blur(2px)" : "blur(0px)",
-          }}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6"
         >
           {demoDishes.map((dish, idx) => (
             <div
               key={`${dish.restaurant}-${dish.item}-${idx}`}
-              className="opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]"
+              className={`transition-all duration-500 ease-out ${
+                isSearchFocused
+                  ? 'opacity-0 blur-sm translate-y-4'
+                  : 'opacity-100 blur-0 translate-y-0'
+              }`}
               style={{
-                animationDelay: `${idx * 100}ms`,
+                transitionDelay: isSearchFocused
+                  ? `${idx * 100}ms`
+                  : `${(demoDishes.length - idx - 1) * 100}ms`,
               }}
             >
               <ItemCard
@@ -98,18 +100,6 @@ export default function SearchResults({
               />
             </div>
           ))}
-          <style jsx>{`
-            @keyframes fadeInUp {
-              from {
-                opacity: 0;
-                transform: translateY(20px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0);
-              }
-            }
-          `}</style>
         </div>
       )}
 
