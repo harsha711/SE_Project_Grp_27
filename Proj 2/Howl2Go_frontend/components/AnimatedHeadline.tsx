@@ -6,7 +6,9 @@ interface AnimatedHeadlineProps {
   isSearchFocused: boolean;
 }
 
-export default function AnimatedHeadline({ isSearchFocused }: AnimatedHeadlineProps) {
+export default function AnimatedHeadline({
+  isSearchFocused,
+}: AnimatedHeadlineProps) {
   const headlineContainerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -14,6 +16,15 @@ export default function AnimatedHeadline({ isSearchFocused }: AnimatedHeadlinePr
       transition: {
         staggerChildren: 0.15,
         delayChildren: 0.2,
+      },
+    },
+    focused: {
+      opacity: 0,
+      scale: 0.98,
+      filter: "blur(4px)",
+      transition: {
+        duration: 0.5,
+        cubicBezier: [0.4, 0, 0.2, 1], // Smooth easing curve
       },
     },
   };
@@ -25,7 +36,7 @@ export default function AnimatedHeadline({ isSearchFocused }: AnimatedHeadlinePr
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+        cubicBezier: [0.22, 1, 0.36, 1] as [number, number, number, number],
       },
     },
   };
@@ -36,17 +47,8 @@ export default function AnimatedHeadline({ isSearchFocused }: AnimatedHeadlinePr
     <motion.h1
       className="text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-12 text-[var(--howl-neutral)]"
       initial="hidden"
-      animate={
-        isSearchFocused
-          ? {
-              opacity: 0.3,
-              scale: 0.95,
-              filter: "blur(2px)",
-            }
-          : "visible"
-      }
+      animate={isSearchFocused ? "focused" : "visible"}
       variants={headlineContainerVariants}
-      transition={{ duration: 0.3, ease: "easeOut" }}
     >
       {words.map((word, index) => (
         <motion.span

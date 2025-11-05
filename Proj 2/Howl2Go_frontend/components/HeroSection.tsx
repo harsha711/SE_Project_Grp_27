@@ -5,16 +5,13 @@ import { useRouter } from "next/navigation";
 import AnimatedHeadline from "./AnimatedHeadline";
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
-// Search recommendations to show when user focuses on search (simple text suggestions)
+import { motion, AnimatePresence } from "framer-motion";
+
+// Search recommendations shown in Live Mode
 const searchRecommendations: string[] = [
   "100 calorie burger",
   "200 calories pizza",
   "300 calorie salad",
-  // "400 calories chicken",
-  // "500 calorie sandwich",
-  // "Low calorie breakfast",
-  // "High protein meal",
-  // "Healthy fast food",
 ];
 
 interface HeroSectionProps {
@@ -24,15 +21,15 @@ interface HeroSectionProps {
 export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
   const router = useRouter();
 
-  // Core state for switching between Demonstration Mode and Live Mode
+  // Demo Mode vs Live Search Mode
   const [isDemoMode, setIsDemoMode] = useState(true);
 
-  // Demo mode states
+  // Demo typing animation
   const [demoStep, setDemoStep] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [showDemoCards, setShowDemoCards] = useState(false);
 
-  // Live mode states
+  // Live search state
   const [inputValue, setInputValue] = useState("");
   const [showLiveResults, setShowLiveResults] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -40,12 +37,11 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
   const cravings = ["spicy ramen", "cheesy pizza", "healthy salad"];
   const currentCraving = cravings[demoStep % cravings.length];
 
-  // Notify parent component of search focus state changes
   useEffect(() => {
     onSearchFocusChange?.(isSearchFocused);
   }, [isSearchFocused, onSearchFocusChange]);
 
-  // Screen reader announcements
+  // Screen reader accessibility
   useEffect(() => {
     if (isSearchFocused && !isDemoMode) {
       const announcement = document.createElement("div");
@@ -62,7 +58,7 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
     }
   }, [isSearchFocused, isDemoMode]);
 
-  // Typewriter effect that cycles through different food cravings
+  // Typewriter loop for demo mode
   useEffect(() => {
     if (!isDemoMode) return;
 
@@ -76,7 +72,7 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
         charIndex++;
       } else {
         clearInterval(typingInterval);
-        setTimeout(() => setShowDemoCards(true), 300);
+        setTimeout(() => setShowDemoCards(true), 450);
         setTimeout(() => {
           setDemoStep((prev) => prev + 1);
         }, 3500);
@@ -86,14 +82,12 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
     return () => clearInterval(typingInterval);
   }, [demoStep, currentCraving, isDemoMode]);
 
-  // Switches from Demo Mode to Live Mode when user focuses on search
   const handleSearchFocus = () => {
     setIsDemoMode(false);
     setShowLiveResults(true);
     setIsSearchFocused(true);
   };
 
-  // Returns to Demo Mode if user abandons search (only if search is empty)
   const handleSearchBlur = () => {
     setIsSearchFocused(false);
     if (inputValue === "") {
@@ -102,7 +96,6 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
     }
   };
 
-  // Handle Enter key press to navigate to search page
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputValue.trim()) {
       const query = encodeURIComponent(inputValue.trim());
@@ -119,7 +112,7 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
   return (
     <section className="relative flex items-center justify-center px-4 sm:px-8 py-16 pb-8 bg-[var(--howl-bg)]">
       <div className="w-full max-w-4xl mx-auto">
-        {/* Animated Headline */}
+        {/* Headline */}
         <AnimatedHeadline isSearchFocused={isSearchFocused} />
 
         {/* Search Bar */}
@@ -134,14 +127,47 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
           onSearchBlur={handleSearchBlur}
         />
 
-        {/* Search Results */}
-        <SearchResults
-          isDemoMode={isDemoMode}
-          isSearchFocused={isSearchFocused}
-          showDemoCards={showDemoCards}
-          showLiveResults={showLiveResults}
-          recommendations={searchRecommendations}
-        />
+        {/* Demo Mode Cards */}
+        <AnimatePresence>
+          {showDemoCards && isDemoMode && (
+            <motion.div
+              key="demoCards"
+              initial={{ opacity: 0, scale: 0.95, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: 8 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+            >
+              <SearchResults
+                isDemoMode={isDemoMode}
+                isSearchFocused={isSearchFocused}
+                showDemoCards={showDemoCards}
+                showLiveResults={false}
+                recommendations={searchRecommendations}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Live Search Results */}
+        <AnimatePresence>
+          {showLiveResults && !isDemoMode && (
+            <motion.div
+              key="liveResults"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <SearchResults
+                isDemoMode={isDemoMode}
+                isSearchFocused={isSearchFocused}
+                showDemoCards={false}
+                showLiveResults={showLiveResults}
+                recommendations={searchRecommendations}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
