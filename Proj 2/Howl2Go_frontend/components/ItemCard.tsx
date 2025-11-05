@@ -3,7 +3,11 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import type { FoodItem } from "@/types/food";
+import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 
 interface ItemCardProps extends Partial<FoodItem> {
   restaurant: string;
@@ -11,6 +15,7 @@ interface ItemCardProps extends Partial<FoodItem> {
   calories: number;
   index?: number;
   disableAnimation?: boolean;
+  variant?: "default" | "compact" | "dashboard";
   onAdd?: (item: FoodItem) => void;
   onShowDescription?: (item: FoodItem) => void;
 }
@@ -39,11 +44,15 @@ export default function ItemCard({
   calories,
   index = 0,
   disableAnimation = false,
+  variant = "default",
   onAdd,
   onShowDescription,
   ...restProps
 }: ItemCardProps) {
   const [showDescription, setShowDescription] = useState(false);
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+  const { addToCart } = useCart();
 
   const foodItem: FoodItem = {
     restaurant,
@@ -55,10 +64,33 @@ export default function ItemCard({
   const handleAdd = () => {
     if (onAdd) {
       onAdd(foodItem);
+      return;
+    }
+
+    // Check authentication for all variants except custom onAdd
+    if (!isAuthenticated) {
+      // Redirect to login with return URL
+      const currentPath = typeof window !== "undefined" ? window.location.pathname + window.location.search : "";
+      router.push(`/login?returnUrl=${encodeURIComponent(currentPath)}`);
+      return;
+    }
+
+    if (variant === "dashboard") {
+      // Dashboard variant: add to today's log
+      // TODO: Call API to add to meal log
+      console.log("Added to today's log:", foodItem);
+      toast.success(`Added ${item} to today's log!`, {
+        duration: 3000,
+      });
+      // In production: await addMealToLog(foodItem, selectedMealType)
     } else {
-      // Default behavior: add to cart (placeholder for now)
+      // Default behavior: add to cart
+      addToCart(foodItem);
       console.log("Added to cart:", foodItem);
-      alert(`Added ${item} to cart!`);
+      toast.success(`Added ${item} to cart!`, {
+        duration: 2000,
+        icon: "🛒",
+      });
     }
   };
 
@@ -176,7 +208,7 @@ export default function ItemCard({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          Add
+          {variant === "dashboard" ? "Add to Today" : "Add"}
         </motion.button>
       </div>
     </motion.div>

@@ -40,6 +40,8 @@ function SmartMenuSearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQuery = searchParams.get("q") || "";
+  const source = searchParams.get("source") || "";
+  const isDashboardSource = source === "dashboard";
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [isLoading, setIsLoading] = useState(false);
@@ -423,6 +425,7 @@ function SmartMenuSearchContent() {
                     item={item.item}
                     calories={item.calories}
                     disableAnimation={true}
+                    variant={isDashboardSource ? "dashboard" : "default"}
                   />
                 </div>
               ))}

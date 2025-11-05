@@ -4,90 +4,34 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
-
-// Cart Item Interface
-interface CartItem {
-  id: string;
-  restaurant: string;
-  item: string;
-  calories: number;
-  protein: number | null;
-  price: number;
-  quantity: number;
-}
+import { useCart } from "@/context/CartContext";
 
 export default function CartPage() {
   const router = useRouter();
+  const { items: cartItems, removeFromCart, updateQuantity, clearCart, summary } = useCart();
 
   // Order state
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
 
-  // Initial cart state with sample items
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "1",
-      restaurant: "McDonald's",
-      item: "Big Mac",
-      calories: 563,
-      protein: 25,
-      price: 5.99,
-      quantity: 2,
-    },
-    {
-      id: "2",
-      restaurant: "Subway",
-      item: "Grilled Chicken Breast",
-      calories: 165,
-      protein: 31,
-      price: 7.49,
-      quantity: 1,
-    },
-    {
-      id: "3",
-      restaurant: "Starbucks",
-      item: "Greek Yogurt Parfait Meusli",
-      calories: 150,
-      protein: 20,
-      price: 4.95,
-      quantity: 1,
-    },
-  ]);
-
   // Increase quantity
   const increaseQuantity = (id: string) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+    const item = cartItems.find((i) => i.id === id);
+    if (item) {
+      updateQuantity(id, item.quantity + 1);
+    }
   };
 
   // Decrease quantity
   const decreaseQuantity = (id: string) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
+    const item = cartItems.find((i) => i.id === id);
+    if (item && item.quantity > 1) {
+      updateQuantity(id, item.quantity - 1);
+    }
   };
 
-  // Remove item from cart
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
-
-  // Calculate totals
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const tax = subtotal * 0.08; // 8% tax
-  const deliveryFee = cartItems.length > 0 ? 3.99 : 0;
-  const total = subtotal + tax + deliveryFee;
+  // Destructure summary
+  const { totalItems, subtotal, tax, deliveryFee, total } = summary;
 
   // Place Order handler
   const handlePlaceOrder = () => {
@@ -98,6 +42,9 @@ export default function CartPage() {
       console.log("Order placed successfully!");
       console.log("Cart Items:", cartItems);
       console.log("Total:", total.toFixed(2));
+
+      // Clear the cart
+      clearCart();
 
       setIsProcessing(false);
       setOrderPlaced(true);
@@ -298,7 +245,7 @@ export default function CartPage() {
                   {totalItems} {totalItems === 1 ? "Item" : "Items"}
                 </h2>
                 <button
-                  onClick={() => setCartItems([])}
+                  onClick={() => clearCart()}
                   className="text-sm font-medium transition-colors"
                   style={{ color: "var(--text-subtle)" }}
                   onMouseEnter={(e) => {
@@ -312,9 +259,9 @@ export default function CartPage() {
                 </button>
               </div>
 
-              {cartItems.map((item) => (
+              {cartItems.map((cartItem) => (
                 <div
-                  key={item.id}
+                  key={cartItem.id}
                   className="rounded-2xl p-6 border transition-all"
                   style={{
                     backgroundColor: "var(--bg-card)",
@@ -330,17 +277,17 @@ export default function CartPage() {
                             className="font-semibold text-lg mb-1"
                             style={{ color: "var(--text)" }}
                           >
-                            {item.item}
+                            {cartItem.foodItem.item}
                           </h3>
                           <p
                             className="text-sm"
                             style={{ color: "var(--text-subtle)" }}
                           >
-                            {item.restaurant}
+                            {cartItem.foodItem.restaurant}
                           </p>
                         </div>
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeFromCart(cartItem.id)}
                           className="p-2 rounded-lg transition-colors"
                           style={{ color: "var(--text-muted)" }}
                           onMouseEnter={(e) => {
@@ -369,9 +316,9 @@ export default function CartPage() {
                             color: "var(--cream)",
                           }}
                         >
-                          {item.calories} cal
+                          {cartItem.foodItem.calories} cal
                         </span>
-                        {item.protein && (
+                        {cartItem.foodItem.protein && (
                           <span
                             className="text-sm px-3 py-1 rounded-full"
                             style={{
@@ -380,7 +327,7 @@ export default function CartPage() {
                               color: "var(--success)",
                             }}
                           >
-                            {item.protein}g protein
+                            {cartItem.foodItem.protein}g protein
                           </span>
                         )}
                       </div>
@@ -395,7 +342,7 @@ export default function CartPage() {
                           }}
                         >
                           <button
-                            onClick={() => decreaseQuantity(item.id)}
+                            onClick={() => decreaseQuantity(cartItem.id)}
                             className="p-1 rounded transition-colors"
                             style={{ color: "var(--text-subtle)" }}
                             onMouseEnter={(e) => {
@@ -417,10 +364,10 @@ export default function CartPage() {
                             className="font-semibold min-w-[2rem] text-center"
                             style={{ color: "var(--text)" }}
                           >
-                            {item.quantity}
+                            {cartItem.quantity}
                           </span>
                           <button
-                            onClick={() => increaseQuantity(item.id)}
+                            onClick={() => increaseQuantity(cartItem.id)}
                             className="p-1 rounded transition-colors"
                             style={{ color: "var(--text-subtle)" }}
                             onMouseEnter={(e) => {
@@ -445,13 +392,13 @@ export default function CartPage() {
                             className="text-xl font-bold"
                             style={{ color: "var(--cream)" }}
                           >
-                            ${(item.price * item.quantity).toFixed(2)}
+                            ${(cartItem.price * cartItem.quantity).toFixed(2)}
                           </div>
                           <div
                             className="text-sm"
                             style={{ color: "var(--text-muted)" }}
                           >
-                            ${item.price.toFixed(2)} each
+                            ${cartItem.price.toFixed(2)} each
                           </div>
                         </div>
                       </div>
