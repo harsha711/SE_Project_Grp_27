@@ -46,3 +46,48 @@ src/
 - Flesh out domain modules for restaurants, menus, orders, and couriers.
 - Add persistence (e.g., PostgreSQL, MongoDB) and related data access layers.
 - Introduce logging, validation, authentication, and testing infrastructure as requirements evolve.
+
+
+## 👥 Team
+
+**SE_Project_Grp_27**
+- Lead Developers: [Harsha](https://github.com/harsha711)[Pratham](https://github.com/pratham2879)[Samarth](https://github.com/Samarth061)[Jai](https://github.com/JaiRumz)
+- Course: Software Engineering
+- Institution: NC State University
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 🙏 Acknowledgments
+
+- **Groq** for LLM API access
+- **MongoDB Atlas** for database hosting
+- **Next.js Team** for the amazing framework
+- **Open Source Community** for inspiration and tools
+
+## 📞 Support
+
+- 📧 Email: support_howl2go@gmail.com
+- 🐛 Issues: [GitHub Issues](https://github.com/harsha711/SE_Project_Grp_27/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/harsha711/SE_Project_Grp_27/discussions)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by SE_Project_Grp_27**
+
+*Crave it. Find it. Instantly.*
+
+</div>

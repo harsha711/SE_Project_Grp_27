@@ -1,9 +1,5 @@
 # Howl2Go
 
-<div align="center">
-
-<img src="Howl2Go_frontend/public/Howl2go_orange_logo_transparent.png" alt="Howl2Go Logo" width="200"/>
-
 **AI-Powered Food Discovery Platform**
 
 [![Version](https://img.shields.io/badge/version-1.0.0-orange.svg)](https://github.com/harsha711/SE_Project_Grp_27)
@@ -13,8 +9,6 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > *Crave it. Find it. Instantly.*
-
-</div>
 
 ---
 
@@ -183,44 +177,39 @@ npm test
 
 ---
 
-## 📞 Support
-
-- 📧 Email: support@howl2go.com
-- 🐛 Issues: [GitHub Issues](https://github.com/harsha711/SE_Project_Grp_27/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/harsha711/SE_Project_Grp_27/discussions)
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing`)
-3. Commit changes (`git commit -m 'Add feature'`)
-4. Push to branch (`git push origin feature/amazing`)
-5. Open Pull Request
-
----
-
 ## 👥 Team
 
 **SE_Project_Grp_27**
-- Lead Developer: [Harsha](https://github.com/harsha711)
+- Lead Developers: [Harsha](https://github.com/harsha711)[Pratham](https://github.com/pratham2879)[Samarth](https://github.com/Samarth061)[Jai](https://github.com/JaiRumz)
+- Course: Software Engineering
 - Institution: NC State University
-
----
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## 🙏 Acknowledgments
 
 - **Groq** for LLM API access
 - **MongoDB Atlas** for database hosting
-- **Next.js Team** for the framework
-- **Open Source Community**
+- **Next.js Team** for the amazing framework
+- **Open Source Community** for inspiration and tools
+
+## 📞 Support
+
+- 📧 Email: support_howl2go@gmail.com
+- 🐛 Issues: [GitHub Issues](https://github.com/harsha711/SE_Project_Grp_27/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/harsha711/SE_Project_Grp_27/discussions)
 
 ---
 
@@ -229,7 +218,5 @@ MIT License - see [LICENSE](LICENSE) file for details
 **Made with ❤️ by SE_Project_Grp_27**
 
 *Crave it. Find it. Instantly.*
-
-⭐ Star us on [GitHub](https://github.com/harsha711/SE_Project_Grp_27)
 
 </div>
