@@ -24,8 +24,10 @@ const getRestaurantLogo = (restaurant: string): string => {
   if (normalized.includes("mcdonald")) return "/mcdonalds-5.svg";
   if (normalized.includes("burger king")) return "/burger-king-4.svg";
   if (normalized.includes("wendy")) return "/wendys-logo-1.svg";
-  if (normalized.includes("kfc") || normalized.includes("kentucky")) return "/kfc-4.svg";
-  if (normalized.includes("taco bell") || normalized.includes("tacobell")) return "/taco-bell-1.svg";
+  if (normalized.includes("kfc") || normalized.includes("kentucky"))
+    return "/kfc-4.svg";
+  if (normalized.includes("taco bell") || normalized.includes("tacobell"))
+    return "/taco-bell-1.svg";
 
   // Fallback to generic fast food icon
   return "/fast-food-svgrepo-com.svg";
@@ -73,7 +75,9 @@ export default function ItemCard({
     <motion.div
       initial={disableAnimation ? false : { opacity: 0, y: 20 }}
       animate={disableAnimation ? false : { opacity: 1, y: 0 }}
-      transition={disableAnimation ? undefined : { delay: index * 0.05, duration: 0.25 }}
+      transition={
+        disableAnimation ? undefined : { delay: index * 0.05, duration: 0.25 }
+      }
       className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 hover:border-[var(--orange)] transition-all group"
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
     >
@@ -88,9 +92,7 @@ export default function ItemCard({
             className="object-contain"
           />
         </div>
-        <span className="text-xl font-bold text-[var(--cream)]">
-          $--.--
-        </span>
+        <span className="text-xl font-bold text-[var(--cream)]">$--.--</span>
       </div>
 
       {/* Item Name */}
@@ -99,9 +101,7 @@ export default function ItemCard({
       </h3>
 
       {/* Restaurant Name */}
-      <p className="text-sm text-[var(--text-subtle)] mb-3">
-        {restaurant}
-      </p>
+      <p className="text-sm text-[var(--text-subtle)] mb-3">{restaurant}</p>
 
       {/* Nutrition Info */}
       <div className="mb-4">
@@ -133,11 +133,14 @@ export default function ItemCard({
           exit={{ opacity: 0, height: 0 }}
           className="mb-4 p-3 bg-[var(--bg-hover)] rounded-lg text-sm text-[var(--text-subtle)]"
         >
-          <h4 className="font-semibold text-[var(--text)] mb-2">Nutrition Details:</h4>
+          <h4 className="font-semibold text-[var(--text)] mb-2">
+            Nutrition Details:
+          </h4>
           <div className="grid grid-cols-2 gap-2">
-            {restProps.totalFat !== undefined && restProps.totalFat !== null && (
-              <div>Total Fat: {restProps.totalFat}g</div>
-            )}
+            {restProps.totalFat !== undefined &&
+              restProps.totalFat !== null && (
+                <div>Total Fat: {restProps.totalFat}g</div>
+              )}
             {restProps.protein !== undefined && restProps.protein !== null && (
               <div>Protein: {restProps.protein}g</div>
             )}

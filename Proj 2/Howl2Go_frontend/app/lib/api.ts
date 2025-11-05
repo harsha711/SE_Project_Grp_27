@@ -1,4 +1,4 @@
-export async function apiFetch(path: string, options: any = {}) {
+export async function apiFetch(path: string, options: RequestInit = {}) {
   const res = await fetch(`/api/proxy?path=${encodeURIComponent(path)}`, {
     ...options
   });

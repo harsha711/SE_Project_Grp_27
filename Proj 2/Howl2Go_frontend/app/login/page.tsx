@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 
-export default function page() {
+export default function LoginPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
@@ -72,7 +72,7 @@ export default function page() {
 
         <div className="mt-6 text-center">
           <p className="text-[var(--login-input-text)] text-sm">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/signup"
               className="text-[var(--orange)] hover:underline font-semibold"
