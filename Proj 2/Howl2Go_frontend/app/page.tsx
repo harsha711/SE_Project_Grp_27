@@ -5,12 +5,11 @@ import HeroSection from "@/components/HeroSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
-
   return (
-    <div className="min-h-screen bg-[var(--howl-bg)] ">
+    <div className=" bg-[var(--howl-bg)] ">
       <Header />
 
-      <div className="pt-15 ">
+      <div className="pt-15 min-h-screen">
         <HeroSection />
       </div>
 

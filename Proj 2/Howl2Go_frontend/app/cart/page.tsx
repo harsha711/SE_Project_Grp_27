@@ -13,6 +13,7 @@ export default function CartPage() {
   // Order state
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderSummary, setOrderSummary] = useState({ total: 0, totalItems: 0 });
 
   // Increase quantity
   const increaseQuantity = (id: string) => {
@@ -36,6 +37,12 @@ export default function CartPage() {
   // Place Order handler
   const handlePlaceOrder = () => {
     setIsProcessing(true);
+
+    // Save order summary before clearing cart
+    setOrderSummary({
+      total: total,
+      totalItems: totalItems,
+    });
 
     // Simulate order processing
     setTimeout(() => {
@@ -108,10 +115,10 @@ export default function CartPage() {
               className="text-3xl font-bold"
               style={{ color: "var(--cream)" }}
             >
-              ${total.toFixed(2)}
+              ${orderSummary.total.toFixed(2)}
             </p>
             <p className="text-sm mt-2" style={{ color: "var(--text-subtle)" }}>
-              {totalItems} {totalItems === 1 ? "item" : "items"}
+              {orderSummary.totalItems} {orderSummary.totalItems === 1 ? "item" : "items"}
             </p>
           </div>
 

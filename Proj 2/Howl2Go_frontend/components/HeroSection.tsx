@@ -9,9 +9,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // Search recommendations shown in Live Mode
 const searchRecommendations: string[] = [
-  "100 calorie burger",
-  "200 calories pizza",
-  "300 calorie salad",
+  "high protein burger with low saturated fat",
+  "meal with less than 600 calories and over 30g of protein",
+  "high protein salad",
 ];
 
 interface HeroSectionProps {
@@ -84,6 +84,7 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
 
   const handleSearchFocus = () => {
     setIsDemoMode(false);
+    setShowDemoCards(false); // Hide demo cards when switching to live mode
     setShowLiveResults(true);
     setIsSearchFocused(true);
   };
@@ -91,8 +92,8 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
   const handleSearchBlur = () => {
     setIsSearchFocused(false);
     if (inputValue === "") {
-      setIsDemoMode(true);
       setShowLiveResults(false);
+      setIsDemoMode(true);
     }
   };
 
@@ -107,6 +108,12 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
         setIsSearchFocused(false);
       }
     }
+  };
+
+  const handleRecommendationClick = (recommendation: string) => {
+    // Navigate to search page with the recommendation
+    const query = encodeURIComponent(recommendation);
+    router.push(`/search?q=${query}`);
   };
 
   return (
@@ -143,6 +150,7 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
                 showDemoCards={showDemoCards}
                 showLiveResults={false}
                 recommendations={searchRecommendations}
+                onRecommendationClick={handleRecommendationClick}
               />
             </motion.div>
           )}
@@ -164,6 +172,7 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
                 showDemoCards={false}
                 showLiveResults={showLiveResults}
                 recommendations={searchRecommendations}
+                onRecommendationClick={handleRecommendationClick}
               />
             </motion.div>
           )}

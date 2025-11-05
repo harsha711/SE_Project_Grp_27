@@ -42,6 +42,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setUser(null);
+    // Clear cart from localStorage when logging out
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("howl2go_cart");
+    }
     logoutUtil();
   };
 

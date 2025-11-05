@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, User, ShoppingCart, LogOut } from "lucide-react";
+import { User, ShoppingCart, LogOut } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
@@ -24,13 +24,6 @@ export default function Header() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         {/* Left Side */}
         <div className="flex items-center gap-4">
-          <button
-            className="p-2 transition-colors rounded-lg hover:bg-[color-mix(in_srgb,var(--howl-primary)_10%,transparent)]"
-            aria-label="Menu"
-          >
-            <Menu className="h-6 w-6 text-[var(--howl-neutral)]" />
-          </button>
-          
           <Link href="/">
             <Image
               src="/Howl2go_orange_logo_transparent.png"
@@ -44,6 +37,7 @@ export default function Header() {
 
         {/* Right Side */}
         <div className="flex items-center gap-4">
+          {/* About Link */}
           <Link
             href="/about"
             className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
@@ -51,71 +45,69 @@ export default function Header() {
             About
           </Link>
 
-          {/* Cart Link with Badge */}
-          <Link
-            href="/cart"
-            className="relative p-2 transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
-          >
-            <ShoppingCart className="h-5 w-5" />
-            {summary.totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[var(--orange)] text-[var(--text)] text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                {summary.totalItems}
-              </span>
-            )}
-          </Link>
-
           {isAuthenticated ? (
-            <div className="relative">
-              {/* User Menu Button */}
-              <button
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--orange)] transition-colors"
+            <>
+              {/* Dashboard Link - when logged in */}
+              <Link
+                href="/dashboard"
+                className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
               >
-                <User className="h-4 w-4 text-[var(--orange)]" />
-                <span className="text-sm font-medium text-[var(--text)] hidden sm:inline">
-                  {user?.name}
-                </span>
-              </button>
+                Dashboard
+              </Link>
 
-              {/* Dropdown Menu */}
-              {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg shadow-lg py-2 z-50">
-                  <Link
-                    href="/dashboard"
-                    className="block px-4 py-2 text-sm text-[var(--text)] hover:bg-[var(--bg-hover)] transition-colors"
-                    onClick={() => setShowUserMenu(false)}
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
-                    href="/profile"
-                    className="block px-4 py-2 text-sm text-[var(--text)] hover:bg-[var(--bg-hover)] transition-colors"
-                    onClick={() => setShowUserMenu(false)}
-                  >
-                    Profile
-                  </Link>
-                  <hr className="my-2 border-[var(--border)]" />
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      logout();
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-[var(--error)] hover:bg-[var(--bg-hover)] transition-colors flex items-center gap-2"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
+              {/* Cart Link with Badge - only shown when logged in */}
+              <Link
+                href="/cart"
+                className="relative p-2 transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {summary.totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[var(--orange)] text-[var(--text)] text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {summary.totalItems}
+                  </span>
+                )}
+              </Link>
+
+              {/* User Menu */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--orange)] transition-colors"
+                >
+                  <User className="h-4 w-4 text-[var(--orange)]" />
+                  <span className="text-sm font-medium text-[var(--text)] hidden sm:inline">
+                    {user?.name}
+                  </span>
+                </button>
+
+                {/* Dropdown Menu - only Logout */}
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg shadow-lg py-2 z-50">
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        logout();
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-[var(--error)] hover:bg-[var(--bg-hover)] transition-colors flex items-center gap-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
           ) : (
             <>
+              {/* Log In Link - when logged out */}
               <Link
                 href="/login"
                 className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
               >
                 Log In
               </Link>
+
+              {/* Dashboard Button - when logged out */}
               <Link
                 href="/dashboard"
                 className="px-5 py-2 font-semibold rounded-full transition-all hover:scale-105 hover:shadow-md bg-[var(--howl-secondary)] text-[var(--howl-bg)]"

@@ -61,6 +61,7 @@ interface SearchResultsProps {
   showDemoCards: boolean;
   showLiveResults: boolean;
   recommendations: string[];
+  onRecommendationClick?: (recommendation: string) => void;
 }
 
 export default function SearchResults({
@@ -69,6 +70,7 @@ export default function SearchResults({
   showDemoCards,
   showLiveResults,
   recommendations,
+  onRecommendationClick,
 }: SearchResultsProps) {
   return (
     <>
@@ -111,11 +113,12 @@ export default function SearchResults({
             Try searching for:
           </h3>
 
-          {/* Recommendations List - Simple Text */}
+          {/* Recommendations List - Clickable */}
           <ul className="space-y-3">
             {recommendations.map((suggestion, idx) => (
               <li
                 key={`suggestion-${idx}`}
+                onClick={() => onRecommendationClick?.(suggestion)}
                 className="text-lg text-[var(--text)] bg-[var(--bg-card)] border border-[var(--border)] rounded-lg px-5 py-3 hover:border-[var(--orange)] hover:bg-[var(--bg-hover)] hover:translate-x-1 transition-all cursor-pointer opacity-0 animate-[slideInLeft_0.3s_ease-out_forwards]"
                 style={{
                   animationDelay: `${idx * 50}ms`,
