@@ -43,7 +43,7 @@ Our AI instantly understands your requirements and shows you exactly what you're
 Search using conversational queries instead of complex filters. Powered by Llama 3.1 via Groq.
 
 ### 📊 **Smart Nutritional Filtering**
-Filter by calories, protein, carbs, fat, fiber, sugar, sodium, and 10+ nutritional parameters.
+Filter by calories, protein, carbs, fat, fiber, sugar, transfat, and 10+ nutritional parameters.
 
 ### 🏪 **Multi-Restaurant Discovery**
 Browse 1,148+ items from McDonald's, Burger King, Wendy's, KFC, Taco Bell, and Subway.
@@ -216,7 +216,7 @@ SE_Project_Grp_27/
 ## 👥 Team
 
 **SE_Project_Grp_27**
-- Lead Developer: Harsha
+- Lead Developers: [Harsha](https://github.com/harsha711)[Pratham](https://github.com/pratham2879)[Samarth](https://github.com/Samarth061)[Jai](https://github.com/JaiRumz)
 - Course: Software Engineering
 - Institution: NC State University
 
@@ -243,7 +243,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 📞 Support
 
-- 📧 Email: support@howl2go.com
+- 📧 Email: support_howl2go@gmail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/harsha711/SE_Project_Grp_27/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/harsha711/SE_Project_Grp_27/discussions)
 

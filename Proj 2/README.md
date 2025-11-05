@@ -1,5 +1,9 @@
 # Howl2Go
 
+<div align="center">
+
+<img src="Howl2Go_frontend/public/Howl2go_orange_logo_transparent.png" alt="Howl2Go Logo" width="200"/>
+
 **AI-Powered Food Discovery Platform**
 
 [![Version](https://img.shields.io/badge/version-1.0.0-orange.svg)](https://github.com/harsha711/SE_Project_Grp_27)
@@ -9,6 +13,8 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > *Crave it. Find it. Instantly.*
+
+</div>
 
 ---
 

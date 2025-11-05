@@ -46,7 +46,7 @@ export default function CartPage() {
     {
       id: "3",
       restaurant: "Starbucks",
-      item: "Greek Yogurt Parfait",
+      item: "Greek Yogurt Parfait Meusli",
       calories: 150,
       protein: 20,
       price: 4.95,
