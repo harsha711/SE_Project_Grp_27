@@ -6,7 +6,9 @@ interface AnimatedHeadlineProps {
   isSearchFocused: boolean;
 }
 
-export default function AnimatedHeadline({ isSearchFocused }: AnimatedHeadlineProps) {
+export default function AnimatedHeadline({
+  isSearchFocused,
+}: AnimatedHeadlineProps) {
   const headlineContainerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -22,7 +24,7 @@ export default function AnimatedHeadline({ isSearchFocused }: AnimatedHeadlinePr
       filter: "blur(4px)",
       transition: {
         duration: 0.5,
-        ease: [0.4, 0, 0.2, 1], // Smooth easing curve
+        cubicBezier: [0.4, 0, 0.2, 1], // Smooth easing curve
       },
     },
   };
@@ -34,7 +36,7 @@ export default function AnimatedHeadline({ isSearchFocused }: AnimatedHeadlinePr
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+        cubicBezier: [0.22, 1, 0.36, 1] as [number, number, number, number],
       },
     },
   };
