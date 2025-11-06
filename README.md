@@ -7,6 +7,7 @@
 **AI-Powered Food Discovery Platform**
 
 *Crave it. Find it. Instantly.*
+[![Backend Deployment Status](https://img.shields.io/badge/Backend-Live-brightgreen.svg?style=flat&logo=render)](https://howl2go-backend-service.onrender.com/api/health)
 
 <!-- Build & Quality Badges -->
 [![Coverage Status](https://coveralls.io/repos/github/harsha711/SE_Project_Grp_27/badge.svg?branch=main)](https://coveralls.io/github/harsha711/SE_Project_Grp_27?branch=main)
@@ -40,7 +41,7 @@
 [![GitHub Issues](https://img.shields.io/github/issues/harsha711/SE_Project_Grp_27)](https://github.com/harsha711/SE_Project_Grp_27/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/harsha711/SE_Project_Grp_27)](https://github.com/harsha711/SE_Project_Grp_27/pulls)
 
-[Documentation](Proj%202/docs/) • [Getting Started](Proj%202/docs/GETTING_STARTED.md) • [API Docs](Proj%202/docs/API_DOCUMENTATION.md) • [Features](Proj%202/docs/FEATURES.md)
+[Documentation](Proj_2/docs/) • [Getting Started](Proj_2/docs/GETTING_STARTED.md) • [API Docs](Proj_2/docs/API_DOCUMENTATION.md) • [Features](Proj_2/docs/FEATURES.md)
 
 </div>
 
@@ -128,7 +129,7 @@ npm run dev
 ### 4. Open Application
 Navigate to **http://localhost:3000** and start searching!
 
-📖 **[Full Setup Guide →](Proj%202/docs/DEVELOPER_SETUP.md)**
+📖 **[Full Setup Guide →](Proj_2/docs/DEVELOPER_SETUP.md)**
 
 ## 🎯 How It Works
 
@@ -151,7 +152,7 @@ graph LR
 
 | Home Page | Search Results |
 |-----------|----------------|
-| <img src="Proj%202/docs/screenshots/home.png" width="400" alt="Home Page"/> | <img src="Proj%202/docs/screenshots/results.png" width="400" alt="Search Results"/> |
+| <img src="Proj_2/docs/screenshots/home.png" width="400" alt="Home Page"/> | <img src="Proj_2/docs/screenshots/results.png" width="400" alt="Search Results"/> |
 
 *Coming Soon: Demo Pic showcasing search functionality*
 
@@ -180,11 +181,10 @@ graph LR
 
 | Document | Description |
 |----------|-------------|
-| [Getting Started](Proj%202/docs/GETTING_STARTED.md) | User guide with search examples |
-| [User Manual](Proj%202/docs/USER_MANUAL.md) | Complete end-user documentation |
-| [Developer Setup](Proj%202/docs/DEVELOPER_SETUP.md) | Development environment setup |
-| [API Documentation](Proj%202/docs/API_DOCUMENTATION.md) | REST API reference |
-| [Features](Proj%202/docs/FEATURES.md) | Complete feature catalog |
+| [Getting Started](Proj_2/docs/GETTING_STARTED.md) | Complete user guide with search examples |
+| [Developer Setup](Proj_2/docs/DEVELOPER_SETUP.md) | Development environment setup |
+| [API Documentation](Proj_2/docs/API_DOCUMENTATION.md) | REST API reference |
+| [Features](Proj_2/docs/FEATURES.md) | Complete feature catalog |
 
 ## 🧪 Testing
 
@@ -208,13 +208,13 @@ npm test
 
 ```
 SE_Project_Grp_27/
-├── Proj 2/
+├── Proj_2/
 │   ├── Howl2Go_backend/      # Express.js API server
 │   ├── Howl2Go_frontend/     # Next.js React app
 │   ├── Howl2Go_LLM/          # LLM testing scripts
 │   ├── docs/                 # Project documentation
 |
-├── Proj 1/                   # Project planning docs
+├── Proj_1/                   # Project planning docs
 └── README.md                 # This file
 ```
 
@@ -238,7 +238,7 @@ SE_Project_Grp_27/
 - Group Orders Optimization
 - Smart Reordering Suggestions
 
-**[Full Roadmap →](Proj%202/docs/FEATURES.md)**
+**[Full Roadmap →](Proj_2/docs/FEATURES.md)**
 
 ## 👥 Team
 

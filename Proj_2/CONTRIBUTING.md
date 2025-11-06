@@ -6,7 +6,7 @@ Thank you for your interest in making Howl2Go a smarter food delivery platform. 
 
 ## Code of Conduct
 
-Contributors are expected to maintain a respectful, inclusive, and constructive environment. Please read our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before contributing.
+Contributors are expected to maintain a respectful, inclusive, and constructive environment. Please read our [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) before contributing.
 
 **In brief:**
 - Be respectful and welcoming
@@ -36,7 +36,7 @@ Environment: Node 18, Chrome 120, Windows 11
 ```
 
 ### Feature Requests
-Check our [ROADMAP.md](docs/ROADMAP.md) first. Open an issue with rationale and user impact.
+Open an issue with rationale and user impact.
 
 **Include:**
 - Problem it solves
@@ -48,7 +48,7 @@ Check our [ROADMAP.md](docs/ROADMAP.md) first. Open an issue with rationale and 
 Help clarify or expand docs, fix errors, and update examples.
 
 **Areas to improve:**
-- User guides ([docs/USER_MANUAL.md](docs/USER_MANUAL.md))
+- User guides ([docs/GETTING_STARTED.md](docs/GETTING_STARTED.md))
 - API documentation ([docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md))
 - Setup guides ([docs/DEVELOPER_SETUP.md](docs/DEVELOPER_SETUP.md))
 - Code comments
@@ -373,7 +373,7 @@ Update relevant guides/docs with all non-trivial changes.
 - Fixing significant bugs
 
 **What to update:**
-- **User docs:** [docs/USER_MANUAL.md](docs/USER_MANUAL.md), [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
+- **User docs:** [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md), [docs/FEATURES.md](docs/FEATURES.md)
 - **Developer docs:** [docs/DEVELOPER_SETUP.md](docs/DEVELOPER_SETUP.md), [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)
 - **Code comments:** JSDoc for functions, inline comments for complex logic
 
@@ -425,9 +425,8 @@ https://github.com/harsha711/SE_Project_Grp_27/issues
 ### Recognition
 
 **All contributors are recognized:**
-- Listed in [CONTRIBUTORS.md](CONTRIBUTORS.md)
-- Mentioned in [CHANGELOG.md](CHANGELOG.md) and release notes
 - GitHub contribution history
+- Mentioned in release notes
 
 **High-impact contributors:**
 - May be invited as maintainers
@@ -512,10 +511,10 @@ npm run build               # Verify build works
 Thank you for helping build Howl2Go. Contribute, learn, and collaborate with us! For questions, open a [GitHub Discussion](https://github.com/harsha711/SE_Project_Grp_27/discussions) or tag maintainers in [Issues](https://github.com/harsha711/SE_Project_Grp_27/issues).
 
 **Quick Links:**
-- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Code of Conduct](../CODE_OF_CONDUCT.md)
 - [Developer Setup](docs/DEVELOPER_SETUP.md)
 - [API Documentation](docs/API_DOCUMENTATION.md)
-- [Roadmap](docs/ROADMAP.md)
+- [Features](docs/FEATURES.md)
 - [GitHub Repository](https://github.com/harsha711/SE_Project_Grp_27)
 
 **Happy Contributing!** 🚀

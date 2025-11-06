@@ -158,7 +158,7 @@ The LLM can extract and filter by these nutritional criteria:
 
 ### 1. Install Dependencies
 ```bash
-cd "Proj 2/Howl2Go_backend"
+cd "Proj_2/Howl2Go_backend"
 npm install groq-sdk
 ```
 
