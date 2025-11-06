@@ -1,293 +1,269 @@
 # Getting Started with Howl2Go
 
-Welcome to Howl2Go! This guide will help you get started with using the application to discover your perfect meal.
-
----
-
-## Table of Contents
-
-1. [What is Howl2Go?](#what-is-howl2go)
-2. [How It Works](#how-it-works)
-3. [Your First Search](#your-first-search)
-4. [Understanding Results](#understanding-results)
-5. [Advanced Search Tips](#advanced-search-tips)
-6. [Next Steps](#next-steps)
+Welcome to Howl2Go - the smart food discovery platform that uses AI to help you find exactly what you're craving!
 
 ---
 
 ## What is Howl2Go?
 
-Howl2Go is an intelligent food discovery platform that helps you find exactly what you're craving without scrolling through endless menus.
+Howl2Go eliminates traditional menu browsing by using **AI-powered natural language search** to help you find food items that match your nutritional preferences. Simply describe what you want, and let AI do the work.
 
-### Key Benefits
+**Key Features:**
+- Natural language search (e.g., "high protein low carb under 500 calories")
+- Search across 1,148+ items from 6 major fast-food chains
+- Smart nutritional filtering
+- User authentication and shopping cart
+- Session-based cart for guest users
 
-- **No More Menu Browsing** - Just describe what you want
-- **Smart Filtering** - Automatically filters by nutrition, calories, and dietary needs
-- **Multi-Restaurant Search** - Find options across McDonald's, Burger King, Wendy's, KFC, and Taco Bell
-- **Instant Results** - Get relevant matches in seconds
-
----
-
-## How It Works
-
-### The Traditional Way (Other Apps)
-1. Open app
-2. Browse restaurant list
-3. Select a restaurant
-4. Scroll through entire menu
-5. Read each item description
-6. Filter manually for dietary needs
-7. Make a decision (maybe?)
-
-### The Howl2Go Way
-1. Open Howl2Go
-2. Type what you're craving
-3. See instant matches from all restaurants
-4. Pick your favorite
-5. Done!
+**Supported Restaurants:**
+- McDonald's
+- Burger King
+- Wendy's
+- KFC
+- Taco Bell
+- Pizza Hut
 
 ---
 
-## Your First Search
+## Quick Start
 
-### Step 1: Access the Application
+### Prerequisites
 
-Open your web browser and navigate to:
-```
-http://localhost:3000
-```
-(For production: https://howl2go.app)
+- Node.js 18+ installed
+- MongoDB (local or Atlas account)
+- Groq API key (free tier available at [groq.com](https://groq.com))
 
-### Step 2: Understand the Interface
+### Installation
 
-You'll see:
-- **Header** - Navigation with Login and Dashboard buttons
-- **Hero Section** - Animated headline and search bar
-- **Search Bar** - Where the magic happens
-- **Frequently Bought** - Popular items (demo)
-
-### Step 3: Try a Simple Search
-
-Click on the search bar and type a simple query:
-
-```
-burger
+**1. Clone the Repository**
+```bash
+cd "SE_Project_Grp_27/Proj_2"
 ```
 
-Press **Enter** or click the search icon.
+**2. Setup Backend**
+```bash
+cd Howl2Go_backend
+npm install
 
-### Step 4: View Your Results
+# Create .env file
+cp .env.example .env
+# Edit .env with your credentials:
+# - MONGODB_URI
+# - GROQ_API_KEY
+# - JWT_SECRET
+# - JWT_REFRESH_SECRET
+# - SESSION_SECRET
 
-You'll be redirected to the search results page showing:
-- Food items matching "burger"
-- Restaurant logos (McDonald's, Burger King, Wendy's)
-- Calorie information
-- Pricing (coming soon)
-- "Add to Cart" buttons
+# Import food data
+npm run import:fastfood
+
+# Start backend server
+npm run dev
+```
+
+Backend runs on `http://localhost:4000`
+
+**3. Setup Frontend**
+```bash
+cd ../Howl2Go_frontend
+npm install
+
+# Start frontend
+npm run dev
+```
+
+Frontend runs on `http://localhost:3000`
 
 ---
 
-## Understanding Results
+## Using Howl2Go
 
-### Food Item Card Components
+### 1. Search for Food
 
-Each result card shows:
+**Access the App:**
+Open `http://localhost:3000` in your browser
 
-**Top Section:**
-- **Restaurant Logo** - Visual identification of where it's from
-- **Item Name** - E.g., "Big Mac", "Whopper"
-
-**Middle Section:**
-- **Calorie Badge** - Quick nutritional reference
-- **Description** - Item details (if available)
-
-**Bottom Section:**
-- **Price** - Cost information (placeholder)
-- **Add to Cart Button** - Quick action to add item
-
-### Result Ordering
-
-Results are ordered by relevance to your query based on:
-- Name matching
-- Nutritional criteria matching
-- Popularity (coming soon)
-
----
-
-## Advanced Search Tips
-
-### 1. Nutritional Queries
-
-**High Protein:**
+**Try These Example Searches:**
 ```
 high protein meal
-```
-Returns items with protein > 20g
-
-**Low Calorie:**
-```
-low calorie breakfast
-```
-Returns items with calories < 300
-
-**Range Queries:**
-```
-300-500 calories
-```
-Returns items within that calorie range
-
-### 2. Specific Nutrients
-
-You can search by:
-- **Calories:** "under 400 calories"
-- **Protein:** "high protein"
-- **Carbs:** "low carb"
-- **Fat:** "low fat"
-- **Sodium:** "low sodium"
-- **Fiber:** "high fiber"
-- **Sugar:** "low sugar"
-
-### 3. Combined Criteria
-
-**Example 1: Fitness-Focused**
-```
-high protein low carb lunch under 500 calories
+low calorie breakfast under 400 calories
+burger with at least 30g protein
+lunch between 400 and 600 calories
+low carb high fat meal
+low sodium food with high fiber
 ```
 
-**Example 2: Health-Conscious**
+**How Search Works:**
+1. Type your query in natural language
+2. Press Enter or click the search icon
+3. AI (Groq's Llama 3.1) parses your query
+4. MongoDB retrieves matching food items
+5. Results display with nutritional info
+
+### 2. Understanding Search Queries
+
+**Simple Queries:**
+- "high protein" → items with 20g+ protein
+- "low calorie" → items under 400 calories
+- "low fat" → items with minimal fat content
+
+**Specific Numbers:**
+- "at least 30g of protein"
+- "less than 500 calories"
+- "under 20g of carbs"
+
+**Ranges:**
+- "between 300 and 500 calories"
+- "20 to 30 grams of protein"
+
+**Combined Criteria:**
+- "high protein low carb under 500 calories"
+- "low fat high fiber with at least 15g protein"
+- "breakfast under 400 calories with 20g protein"
+
+**Supported Nutritional Fields:**
+- Calories, Protein, Total Fat, Carbs
+- Fiber, Sugar, Sodium, Cholesterol
+- Saturated Fat, Trans Fat, Calories from Fat
+
+### 3. User Accounts (Optional)
+
+**Register:**
 ```
-low sodium low fat dinner with high fiber
+POST /api/users/register
+{
+  "name": "Your Name",
+  "email": "you@example.com",
+  "password": "SecurePass123!"
+}
 ```
 
-**Example 3: Specific Meal Time**
+**Login:**
 ```
-breakfast under 400 calories with at least 15g protein
-```
-
-### 4. Food Type + Criteria
-
-**Example 1:**
-```
-chicken sandwich with low carbs
+POST /api/users/login
+{
+  "email": "you@example.com",
+  "password": "SecurePass123!"
+}
 ```
 
-**Example 2:**
-```
-salad with high protein
+### 4. Shopping Cart
+
+**Add Items to Cart:**
+- Click "Add" button on food items
+- Works for both guests and authenticated users
+
+**Manage Cart:**
+- View cart: `GET /api/cart`
+- Update quantity: `PATCH /api/cart/items/:foodItemId`
+- Remove item: `DELETE /api/cart/items/:foodItemId`
+- Clear cart: `DELETE /api/cart`
+
+**Guest to User Cart Merge:**
+When you log in, your guest cart automatically merges with your user cart.
+
+---
+
+## API Endpoints
+
+### Food Search
+- `POST /api/food/recommend` - Get food recommendations
+
+### User Management
+- `POST /api/users/register` - Register new user
+- `POST /api/users/login` - Login user
+- `GET /api/users/profile` - Get profile (auth required)
+- `POST /api/users/change-password` - Change password (auth required)
+- `POST /api/users/refresh-token` - Refresh access token
+
+### Cart Management
+- `GET /api/cart` - Get current cart
+- `POST /api/cart/items` - Add item to cart
+- `PATCH /api/cart/items/:foodItemId` - Update quantity
+- `DELETE /api/cart/items/:foodItemId` - Remove item
+- `DELETE /api/cart` - Clear cart
+- `POST /api/cart/merge` - Merge carts (auth required)
+
+### Health Check
+- `GET /api/health` - Server health status
+
+---
+
+## Environment Variables
+
+**Backend (.env):**
+```bash
+# Server
+PORT=4000
+NODE_ENV=development
+
+# Database
+MONGODB_URI=your-mongodb-url
+
+# Authentication
+JWT_SECRET=your-jwt-secret-key-here
+JWT_REFRESH_SECRET=your-refresh-secret-key
+JWT_EXPIRES_IN=7d
+JWT_REFRESH_EXPIRES_IN=30d
+
+# Session
+SESSION_SECRET=your-session-secret-key
+SESSION_NAME=howl2go.sid
+SESSION_MAX_AGE=86400000
+
+# AI/LLM
+GROQ_API_KEY=your-groq-api-key
+
+# Frontend (for CORS)
+FRONTEND_URL=http://localhost:3000
 ```
 
-**Example 3:**
+---
+
+## Search Tips & Best Practices
+
+### Effective Searches
+
+**DO:**
+✓ Be specific: "at least 30g protein"
+✓ Use ranges: "400-600 calories"
+✓ Combine criteria: "high protein low carb"
+✓ Use natural language: "I want a healthy breakfast"
+
+**DON'T:**
+✗ Be too restrictive: "exactly 437 calories"
+✗ Use contradictions: "high calorie low calorie"
+✗ Too many criteria: More than 4-5 requirements
+
+### Search Examples by Goal
+
+**Weight Loss:**
 ```
-burger under 600 calories
+low calorie high protein filling meal
+breakfast under 400 calories high fiber
+low fat high protein under 500 calories
 ```
 
-### 5. Dietary Restrictions
+**Muscle Building:**
+```
+high protein meal 30-40g protein
+post-workout high protein under 600 calories
+lean protein with moderate carbs
+```
 
-**Low Carb Diet:**
+**Keto Diet:**
 ```
-high protein low carb
-```
-
-**Weight Management:**
-```
-low calorie high fiber
+low carb high fat under 10g carbs
+very low carb with at least 20g fat
+keto friendly under 20g carbs
 ```
 
 **Heart Health:**
 ```
-low sodium low saturated fat
+low sodium low cholesterol
+low saturated fat under 600mg sodium
+heart healthy low fat meal
 ```
-
----
-
-## Search Examples by Use Case
-
-### For Weight Loss
-```
-low calorie high protein filling meal
-```
-
-### For Muscle Building
-```
-high protein high calorie meal
-```
-
-### For Breakfast
-```
-breakfast under 400 calories
-```
-
-### For Lunch
-```
-lunch with balanced macros around 500 calories
-```
-
-### For Dinner
-```
-dinner high protein low carb
-```
-
-### For Snacks
-```
-snack under 200 calories
-```
-
-### For Keto Diet
-```
-very low carb high fat
-```
-
-### For Vegan Options (Future Feature)
-```
-vegetarian high protein
-```
-
----
-
-## Understanding Nutritional Information
-
-### What Each Field Means
-
-- **Calories** - Total energy content
-- **Calories from Fat** - Energy from fat specifically
-- **Total Fat** - All fat types combined
-- **Saturated Fat** - Unhealthy fat type
-- **Trans Fat** - Most unhealthy fat type
-- **Cholesterol** - Affects heart health
-- **Sodium** - Salt content (affects blood pressure)
-- **Carbs** - Total carbohydrates
-- **Fiber** - Digestive health
-- **Sugars** - Simple carbohydrates
-- **Protein** - Muscle building nutrient
-- **Weight Watchers Points** - WW diet system points
-
-### Typical Daily Values (2000 calorie diet)
-
-- **Total Fat:** < 65g
-- **Saturated Fat:** < 20g
-- **Cholesterol:** < 300mg
-- **Sodium:** < 2300mg
-- **Carbs:** 300g
-- **Fiber:** 25-30g
-- **Protein:** 50-175g
-
----
-
-## Tips for Best Results
-
-### ✅ Do's
-
-- **Be specific** - "high protein low carb" is better than just "healthy"
-- **Use ranges** - "400-600 calories" gives you more options
-- **Combine criteria** - Mix food type with nutritional needs
-- **Use natural language** - The AI understands conversational queries
-
-### ❌ Don'ts
-
-- **Don't be too vague** - "food" or "something good" won't help
-- **Don't use contradictions** - "low calorie high calorie" won't work
-- **Don't expect exact matches** - "exactly 487 calories" is too specific
-- **Don't use special characters** - Stick to letters and numbers
 
 ---
 
@@ -295,119 +271,172 @@ vegetarian high protein
 
 ### No Results Found
 
-**Possible Causes:**
-1. Query is too specific
-2. No items match your criteria
-3. Typo in search term
+**Problem:** Search returns no items
 
 **Solutions:**
-- Broaden your search
-- Try different terms
-- Check spelling
+- Broaden your criteria (remove one requirement)
+- Use ranges instead of exact numbers
+- Try simpler terms first, then refine
+- Check for typos in nutritional terms
 
-### Too Many Results
+### Backend Connection Error
 
-**Solutions:**
-- Add more criteria to narrow down
-- Use specific calorie ranges
-- Add meal type (breakfast, lunch, dinner)
-
-### Unexpected Results
-
-**Possible Causes:**
-- AI interpreted query differently
-- Multiple interpretations possible
+**Problem:** "Unable to connect to server"
 
 **Solutions:**
-- Rephrase your query more clearly
-- Use explicit numbers: "under 500 calories" instead of "low calorie"
+1. **Check backend is running:**
+   ```bash
+   cd Howl2Go_backend
+   npm run dev
+   ```
+   Should see: "Server running on port 4000"
 
-### Slow Loading
+2. **Verify MongoDB connection:**
+   - Check MONGODB_URI in .env
+   - Ensure MongoDB is running
+   - For Atlas: Whitelist your IP
 
-**Possible Causes:**
-- Backend server not running
-- Network issues
-- API rate limit reached
+3. **Check Groq API key:**
+   ```bash
+   # Test API key
+   curl https://api.groq.com/openai/v1/models \
+     -H "Authorization: Bearer $GROQ_API_KEY"
+   ```
+
+### Slow Search Response
+
+**Problem:** Searches take >5 seconds
+
+**Causes:**
+- Groq API rate limiting (30 requests/min on free tier)
+- Slow internet connection
+- Complex query
 
 **Solutions:**
-- Check backend server status
-- Wait a few seconds and retry
-- Check internet connection
+- Wait 60 seconds between searches
+- Simplify your query
+- Check internet speed
+- Upgrade Groq plan for higher limits
+
+### Import Food Data Failed
+
+**Problem:** `npm run import:fastfood` errors
+
+**Solutions:**
+1. **Check CSV file exists:**
+   ```bash
+   ls data/fastfood.csv
+   ```
+
+2. **Verify MongoDB connection**
+3. **Clear existing data and retry:**
+   ```bash
+   mongo howl2go --eval "db.fastfooditems.deleteMany({})"
+   npm run import:fastfood
+   ```
+
+---
+
+## Running Tests
+
+**Backend Tests:**
+```bash
+cd Howl2Go_backend
+npm test
+```
+
+**Test Coverage:**
+- User authentication
+- Cart management
+- Food search/recommendations
+- LLM query parsing
+- Database connections
 
 ---
 
 ## Next Steps
 
-### Explore More Features
+### Explore Features
 
-1. **Create an Account** (Coming Soon)
-   - Save favorite searches
-   - Track order history
-   - Manage dietary preferences
+1. **Search & Discover**
+   - Try different query patterns
+   - Test nutritional filtering
+   - Explore result sorting
 
-2. **Add to Cart** (Coming Soon)
-   - Build your order
-   - Apply discounts
-   - Add tip
+2. **Create Account**
+   - Register with email/password
+   - Set dietary preferences
+   - Track favorites
 
-3. **Place Order** (Coming Soon)
-   - Choose delivery or pickup
-   - Track order status
-   - Rate your meal
+3. **Use Shopping Cart**
+   - Add items to cart
+   - Update quantities
+   - View nutritional totals
 
-4. **Customize Profile** (Coming Soon)
-   - Set dietary restrictions
-   - Save addresses
-   - Payment methods
+### Coming Soon
+
+- Order History
+- Payment processing (Stripe/PayPal integration)
+- AI Meal Suggestions based on Order History
+- Ingredient based filtering/recommendations
+- Rate limiting
+- Query caching
 
 ### Learn More
 
-- **[User Manual](USER_MANUAL.md)** - Complete feature guide
-- **[FAQ](FAQ.md)** - Common questions
-- **[Video Tutorials](https://youtube.com/howl2go)** - Visual guides
+- **API Documentation:** [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+- **Features Guide:** [FEATURES.md](FEATURES.md)
+- **Developer Setup:** [DEVELOPER_SETUP.md](DEVELOPER_SETUP.md)
+- **Testing Guide:** [TESTING_GUIDE.md](TESTING_GUIDE.md)
+- **Database Schema:** [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)
 
 ---
 
-## Need Help?
+## Support & Community
 
-### Support Resources
+**Report Issues:**
+- GitHub Issues: [github.com/harsha711/SE_Project_Grp_27/issues](https://github.com/harsha711/SE_Project_Grp_27/issues)
 
-- **Email:** support@howl2go.com
-- **GitHub Issues:** [Report a bug](https://github.com/harsha711/SE_Project_Grp_27/issues)
-- **FAQ:** [Common questions](FAQ.md)
+**Get Help:**
+- Check existing issues
+- Review documentation
+- Ask in GitHub Discussions
 
-### Community
-
-- **Discussions:** [GitHub Discussions](https://github.com/harsha711/SE_Project_Grp_27/discussions)
-- **Feature Requests:** [Submit an idea](https://github.com/harsha711/SE_Project_Grp_27/issues/new)
+**Contribute:**
+- Fork the repository
+- Make improvements
+- Submit pull requests
 
 ---
 
-## Quick Reference Card
+## Quick Reference
+
+### Common Commands
+
+```bash
+# Backend
+cd Howl2Go_backend
+npm run dev              # Start development server
+npm test                 # Run tests
+npm run import:fastfood  # Import food data
+
+# Frontend
+cd Howl2Go_frontend
+npm run dev    # Start with Turbopack
+npm run build  # Production build
+npm start      # Start production server
+```
 
 ### Most Common Queries
 
-| What You Want | What to Search |
-|---------------|----------------|
+| Goal | Search Query |
+|------|--------------|
 | Healthy breakfast | `breakfast under 400 calories high protein` |
-| Keto-friendly | `low carb high fat` |
-| Weight loss meal | `low calorie high protein filling` |
-| Post-workout | `high protein moderate carbs` |
+| Keto-friendly | `low carb high fat under 20g carbs` |
+| Weight loss | `low calorie filling meal under 500 calories` |
+| Post-workout | `high protein moderate carbs 30-40g protein` |
 | Quick snack | `snack under 200 calories` |
-| Balanced meal | `500-700 calories balanced macros` |
-| Light dinner | `dinner under 500 calories` |
-| Muscle building | `high protein high calorie` |
 
----
-
-## Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `/` | Focus search bar |
-| `Enter` | Submit search |
-| `Esc` | Clear search |
-| `Ctrl/Cmd + K` | Quick search (coming soon) |
 
 ---
 
@@ -417,4 +446,4 @@ vegetarian high protein
 
 ---
 
-[← Back to README](../README.md) | [User Manual →](USER_MANUAL.md)
+[← Back to Main README](../README.md) | [View All Features →](FEATURES.md)
