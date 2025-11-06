@@ -4,11 +4,11 @@ on:
     push:
         branches: [main]
         paths:
-            - "Proj 2/Howl2Go_backend/**"
+            - "Proj_2/Howl2Go_backend/**"
             - ".github/workflows/**"
     pull_request:
         paths:
-            - "Proj 2/Howl2Go_backend/**"
+            - "Proj_2/Howl2Go_backend/**"
             - ".github/workflows/**"
 
 concurrency:
@@ -32,11 +32,11 @@ jobs:
                   node-version: 18
                   cache: npm
                   cache-dependency-path: |
-                      Proj 2/Howl2Go_backend/package-lock.json
+                      Proj_2/Howl2Go_backend/package-lock.json
 
             - name: Install backend dependencies
               run: npm ci
-              working-directory: "Proj 2/Howl2Go_backend"
+              working-directory: "Proj_2/Howl2Go_backend"
 
             # Create .env for tests: combine defaults + secrets
             - name: Create .env from example + GitHub Secrets
@@ -78,14 +78,14 @@ jobs:
 
                   echo ".env created with $(grep -c '=' .env) entries"
                   echo "Using test database (not production)"
-              working-directory: "Proj 2/Howl2Go_backend"
+              working-directory: "Proj_2/Howl2Go_backend"
 
             # Run backend tests (they will connect to Atlas)
             - name: Run backend tests (with coverage)
               env:
                   CI: "true"
               run: npm test -- --coverage
-              working-directory: "Proj 2/Howl2Go_backend"
+              working-directory: "Proj_2/Howl2Go_backend"
               continue-on-error: true
 
             - name: Upload coverage artifact
@@ -93,7 +93,7 @@ jobs:
               if: always()
               with:
                   name: backend-coverage
-                  path: Proj 2/Howl2Go_backend/coverage/**
+                  path: Proj_2/Howl2Go_backend/coverage/**
                   if-no-files-found: warn
 
             # after the "Run backend tests (with coverage)" step
@@ -102,4 +102,4 @@ jobs:
               if: always()
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
-                  file: Proj\ 2/Howl2Go_backend/coverage/lcov.info
+                  file: Proj_2/Howl2Go_backend/coverage/lcov.info
