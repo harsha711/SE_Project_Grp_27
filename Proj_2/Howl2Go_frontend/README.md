@@ -211,10 +211,10 @@ npm test
 
 ## Documentation
 
--   [User Manual](../docs/USER_MANUAL.md) - End-user guide
--   [Getting Started](../docs/GETTING_STARTED.md) - Quick start guide
+-   [Getting Started](../docs/GETTING_STARTED.md) - Complete user guide
 -   [Features](../docs/FEATURES.md) - Complete feature list
 -   [Design System](DESIGN_SYSTEM.md) - UI/UX guidelines
+-   [API Documentation](../docs/API_DOCUMENTATION.md) - API reference
 
 ## Contributing
 
@@ -285,7 +285,7 @@ docker run --env-file .env.docker -p 3000:3000 howl2go-frontend:latest
 
 ## 3. Build the Image
 
-From `Proj 2/Howl2Go_frontend/`:
+From `Proj_2/Howl2Go_frontend/`:
 
 ```bash
 docker build -t howl2go-frontend:latest .

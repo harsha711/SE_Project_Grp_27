@@ -446,4 +446,4 @@ npm start      # Start production server
 
 ---
 
-[← Back to Main README](../README.md) | [View All Features →](FEATURES.md)
+[← Back to Main README](../../README.md) | [View All Features →](FEATURES.md)

@@ -184,7 +184,7 @@ describe('POST /api/food/search', () => {
 ### Frontend Tests
 
 ```bash
-cd "Proj 2/Howl2Go_frontend"
+cd "Proj_2/Howl2Go_frontend"
 
 # Run all tests
 npm test
@@ -205,7 +205,7 @@ npm test -- -u
 ### Backend Tests (Planned)
 
 ```bash
-cd "Proj 2/Howl2Go_backend"
+cd "Proj_2/Howl2Go_backend"
 
 # Run all tests
 npm test

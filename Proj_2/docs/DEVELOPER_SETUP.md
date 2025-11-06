@@ -89,8 +89,8 @@ git clone https://github.com/harsha711/SE_Project_Grp_27.git
 # Navigate to the project directory
 cd SE_Project_Grp_27
 
-# Navigate to Proj 2 (main project folder)
-cd "Proj 2"
+# Navigate to Proj_2 (main project folder)
+cd "Proj_2"
 ```
 
 ### Understand the Branch Structure
@@ -108,7 +108,7 @@ git branch -a
 ### Current Project Structure
 
 ```
-Proj 2/
+Proj_2/
 ├── Howl2Go_backend/          # Express.js API Server
 │   ├── src/
 │   │   ├── app.js            # Express app configuration
@@ -512,7 +512,7 @@ import('groq-sdk').then(Groq => {
 ### Step 1: Navigate to Backend Directory
 
 ```bash
-# From Proj 2 directory
+# From Proj_2 directory
 cd Howl2Go_backend
 ```
 
@@ -625,7 +625,7 @@ curl -X POST http://localhost:4000/api/food/parse \
 ### Step 1: Navigate to Frontend Directory
 
 ```bash
-# From Proj 2 directory
+# From Proj_2 directory
 cd Howl2Go_frontend
 ```
 
@@ -704,12 +704,12 @@ npm run dev
 
 ```bash
 # Terminal 1 - Backend
-cd "Proj 2/Howl2Go_backend"
+cd "Proj_2/Howl2Go_backend"
 npm run dev
 # Running on http://localhost:4000
 
 # Terminal 2 - Frontend
-cd "Proj 2/Howl2Go_frontend"
+cd "Proj_2/Howl2Go_frontend"
 npm run dev
 # Running on http://localhost:3000
 ```
@@ -741,7 +741,7 @@ The project includes a fast food nutrition database with 1,148+ items from major
 ### Step 1: Verify CSV File Exists
 
 ```bash
-# From Proj 2 directory
+# From Proj_2 directory
 ls -lh data/fast-food/FastFoodNutritionMenuV3.csv
 
 # If file doesn't exist, contact project maintainer
@@ -1088,7 +1088,7 @@ Create `.vscode/launch.json`:
       "request": "launch",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "cwd": "${workspaceFolder}/Proj 2/Howl2Go_backend",
+      "cwd": "${workspaceFolder}/Proj_2/Howl2Go_backend",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "skipFiles": ["<node_internals>/**"]
@@ -1099,7 +1099,7 @@ Create `.vscode/launch.json`:
       "request": "launch",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "cwd": "${workspaceFolder}/Proj 2/Howl2Go_frontend",
+      "cwd": "${workspaceFolder}/Proj_2/Howl2Go_frontend",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },
@@ -1109,7 +1109,7 @@ Create `.vscode/launch.json`:
       "request": "launch",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["test"],
-      "cwd": "${workspaceFolder}/Proj 2/Howl2Go_backend",
+      "cwd": "${workspaceFolder}/Proj_2/Howl2Go_backend",
       "console": "integratedTerminal"
     }
   ]
@@ -1989,7 +1989,7 @@ ANALYZE=true npm run build
 
 **Project Resources:**
 - GitHub Issues: https://github.com/harsha711/SE_Project_Grp_27/issues
-- API Documentation: [LLM_API_DOCUMENTATION.md](../Howl2Go_backend/LLM_API_DOCUMENTATION.md)
+- API Documentation: [LLM_API_DOCUMENTATION.md](../Howl2Go_backend/documentation/LLM_API_DOCUMENTATION.md)
 - Getting Started Guide: [GETTING_STARTED.md](GETTING_STARTED.md)
 
 **External Resources:**
@@ -2052,7 +2052,7 @@ Use this checklist to verify your development environment is set up correctly:
 
 For next steps, see:
 - [Development Workflow](#11-development-workflow)
-- [API Documentation](../Howl2Go_backend/LLM_API_DOCUMENTATION.md)
+- [API Documentation](../Howl2Go_backend/documentation/LLM_API_DOCUMENTATION.md)
 - [Design System](../Howl2Go_frontend/DESIGN_SYSTEM.md)
 
 Happy coding!
