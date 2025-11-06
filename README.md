@@ -8,16 +8,37 @@
 
 *Crave it. Find it. Instantly.*
 
+<!-- Build & Quality Badges -->
+[![Coverage Status](https://coveralls.io/repos/github/harsha711/SE_Project_Grp_27/badge.svg?branch=main)](https://coveralls.io/github/harsha711/SE_Project_Grp_27?branch=main)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/harsha711/SE_Project_Grp_27)
+[![Tests](https://img.shields.io/badge/tests-404%20passing-success)](https://github.com/harsha711/SE_Project_Grp_27)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+<!-- Technology Badges -->
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://reactjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js)](https://nodejs.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb)](https://www.mongodb.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
-[![Groq AI](https://img.shields.io/badge/Groq%20AI-Accelerated-FF4A3D?logo=groq&logoColor=white)](https://groq.com)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Coverage Status](https://coveralls.io/repos/github/harsha711/SE_Project_Grp_27/badge.svg?branch=main)](https://coveralls.io/github/harsha711/SE_Project_Grp_27?branch=main)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-5-000000?logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb)](https://www.mongodb.com/)
 
+<!-- Frontend Stack -->
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)](https://tailwindcss.com/)
+[![Framer Motion](https://img.shields.io/badge/Framer-Motion-BC4DD4?logo=framer)](https://www.framer.com/motion/)
+[![Jest](https://img.shields.io/badge/Jest-29-C21325?logo=jest)](https://jestjs.io/)
+[![Testing Library](https://img.shields.io/badge/Testing_Library-React-E33332?logo=testinglibrary)](https://testing-library.com/)
+
+<!-- Code Quality & Tools -->
+[![ESLint](https://img.shields.io/badge/ESLint-Enabled-4B32C3?logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-Enabled-F7B93E?logo=prettier)](https://prettier.io/)
+[![Husky](https://img.shields.io/badge/Husky-Git_Hooks-42B883)](https://typicode.github.io/husky/)
+[![Code Style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com/)
+
+<!-- Project Stats -->
+[![GitHub Stars](https://img.shields.io/github/stars/harsha711/SE_Project_Grp_27?style=social)](https://github.com/harsha711/SE_Project_Grp_27)
+[![GitHub Forks](https://img.shields.io/github/forks/harsha711/SE_Project_Grp_27?style=social)](https://github.com/harsha711/SE_Project_Grp_27/fork)
+[![GitHub Issues](https://img.shields.io/github/issues/harsha711/SE_Project_Grp_27)](https://github.com/harsha711/SE_Project_Grp_27/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/harsha711/SE_Project_Grp_27)](https://github.com/harsha711/SE_Project_Grp_27/pulls)
 
 [Documentation](Proj%202/docs/) • [Getting Started](Proj%202/docs/GETTING_STARTED.md) • [API Docs](Proj%202/docs/API_DOCUMENTATION.md) • [Features](Proj%202/docs/FEATURES.md)
 
@@ -50,7 +71,7 @@ Search using conversational queries instead of complex filters. Powered by Llama
 Filter by calories, protein, carbs, fat, fiber, sugar, transfat, and 10+ nutritional parameters.
 
 ### 🏪 **Multi-Restaurant Discovery**
-Browse 1,148+ items from McDonald's, Burger King, Wendy's, KFC, Taco Bell, and Subway.
+Browse 1,148+ items from McDonald's, Burger King, Wendy's, KFC, Taco Bell.
 
 </td>
 <td width="50%">
@@ -62,7 +83,7 @@ Get results in under 2 seconds with optimized MongoDB queries and AI processing.
 Modern dark theme with smooth animations and responsive design that works on all devices.
 
 ### 🔒 **Developer-Friendly**
-Complete REST API, TypeScript support, comprehensive docs, and pre-commit hooks.
+Complete REST API, TypeScript support, comprehensive docs, and pre-commit and post-commit hooks.
 
 </td>
 </tr>
@@ -132,7 +153,7 @@ graph LR
 |-----------|----------------|
 | <img src="Proj%202/docs/screenshots/home.png" width="400" alt="Home Page"/> | <img src="Proj%202/docs/screenshots/results.png" width="400" alt="Search Results"/> |
 
-*Coming Soon: Demo GIF showcasing search functionality*
+*Coming Soon: Demo Pic showcasing search functionality*
 
 ## 🛠️ Tech Stack
 
@@ -178,7 +199,7 @@ npm test
 ```
 
 **Test Coverage:**
-- 56+ comprehensive test cases for cart functionality
+- 200+ comprehensive test cases for Frontend and Backend Functionalities respectively
 - Unit tests for API endpoints
 - Integration tests for LLM service
 - Frontend component tests
@@ -192,14 +213,14 @@ SE_Project_Grp_27/
 │   ├── Howl2Go_frontend/     # Next.js React app
 │   ├── Howl2Go_LLM/          # LLM testing scripts
 │   ├── docs/                 # Project documentation
-│   └── data/                 # Nutrition datasets
+|
 ├── Proj 1/                   # Project planning docs
 └── README.md                 # This file
 ```
 
 ## 🌟 Feature Highlights
 
-### Current (v1.0)
+### Current Milestones
 - ✅ Natural language food search
 - ✅ Multi-restaurant discovery (1,148+ items)
 - ✅ Nutritional filtering (10+ parameters)
@@ -207,22 +228,29 @@ SE_Project_Grp_27/
 - ✅ Shopping cart with place order
 - ✅ Beautiful dark theme UI
 - ✅ Responsive design
+- ✅ User authentication
 
-### Coming Soon (v1.1)
-- 🚧 User authentication
-- 🚧 Order history
-- 🚧 Saved favorites
-- 🚧 Payment integration
-- 🚧 Real-time order tracking
+### Future Milestones
+- Ingredient-Based Recommendations
+- Order History Insights
+- Price-Based Recommendations
+- Fine-Tuned LLM Integration
+- Group Orders Optimization
+- Smart Reordering Suggestions
 
 **[Full Roadmap →](Proj%202/docs/FEATURES.md)**
 
 ## 👥 Team
 
 **SE_Project_Grp_27**
-- Lead Developers: [Harsha](https://github.com/harsha711)[Pratham](https://github.com/pratham2879)[Samarth](https://github.com/Samarth061)[Jai](https://github.com/JaiRumz)
-- Course: Software Engineering
-- Institution: NC State University
+- Lead Developers:  
+[Harsha](https://github.com/harsha711)  <br>
+[Pratham](https://github.com/pratham2879)  <br>
+[Samarth](https://github.com/Samarth061)  <br>
+[Jai](https://github.com/JaiRumz)  <br>
+
+- Course: Software Engineering  
+- Institution: NC State University (Fall 2025)
 
 ## 📄 License
 

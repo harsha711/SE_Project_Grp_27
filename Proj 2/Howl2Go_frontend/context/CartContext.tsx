@@ -67,13 +67,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         };
         return updatedItems;
       } else {
-        // Add new item
+        // Add new item - use price from API if available, otherwise calculate
+        const itemPrice = foodItem.price ?? calculatePrice(foodItem.calories);
         const newItem: CartItem = {
           id: `cart-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           foodItem,
           quantity,
           addedAt: new Date(),
-          price: calculatePrice(foodItem.calories), // Simple price calculation based on calories
+          price: itemPrice,
         };
         return [...currentItems, newItem];
       }
