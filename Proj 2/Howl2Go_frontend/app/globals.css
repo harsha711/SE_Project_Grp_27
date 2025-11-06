@@ -133,6 +133,8 @@
 
   /* Legacy amber support (now maps to cream) */
   --amber: var(--cream);
+  --header-height: 4rem;
+  --footer-height: 3rem;
 }
 
 @theme inline {
