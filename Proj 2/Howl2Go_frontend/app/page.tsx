@@ -6,14 +6,12 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className=" bg-[var(--howl-bg)] ">
+    <div className="flex flex-col min-h-screen bg-[var(--howl-bg)]">
       <Header />
 
-      <div className="pt-15 min-h-screen">
+      <main className="flex-1 flex items-center justify-center">
         <HeroSection />
-      </div>
-
-      {/* <FrequentlyBoughtSection isSearchFocused={isSearchFocused} /> */}
+      </main>
 
       <Footer />
     </div>
