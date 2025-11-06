@@ -8,6 +8,8 @@
 
 *Crave it. Find it. Instantly.*
 
+[![Render Status](https://render.com/badges/status.svg)](https://howl2go-backend-service.onrender.com/api/health)
+
 <!-- Build & Quality Badges -->
 [![Coverage Status](https://coveralls.io/repos/github/harsha711/SE_Project_Grp_27/badge.svg?branch=main)](https://coveralls.io/github/harsha711/SE_Project_Grp_27?branch=main)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/harsha711/SE_Project_Grp_27)
