@@ -102,4 +102,4 @@ jobs:
               if: always()
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
-                  file: Proj\ 2/Howl2Go_backend/coverage/lcov.info
+                  file: Proj_2/Howl2Go_backend/coverage/lcov.info
