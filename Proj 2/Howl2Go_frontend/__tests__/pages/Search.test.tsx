@@ -132,7 +132,7 @@ describe('Search Page', () => {
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
-          'http://localhost:4000/api/food/recommend',
+          '/api/food/recommend',
           expect.objectContaining({
             method: 'POST',
             body: JSON.stringify({ query: 'pizza' }),
@@ -176,7 +176,7 @@ describe('Search Page', () => {
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
-          'http://localhost:4000/api/food/recommend',
+          '/api/food/recommend',
           expect.objectContaining({
             method: 'POST',
             body: JSON.stringify({ query: 'chicken' }),
