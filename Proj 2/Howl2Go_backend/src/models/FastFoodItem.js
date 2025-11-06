@@ -61,6 +61,10 @@ const fastFoodItemSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    price: {
+      type: Number,
+      default: null,
+    },
   },
   {
     timestamps: true,
