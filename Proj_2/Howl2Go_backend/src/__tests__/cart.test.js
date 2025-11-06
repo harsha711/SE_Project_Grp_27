@@ -809,4 +809,323 @@ describe("Cart API Tests", () => {
             assert.strictEqual(response.body.message, "Cart updated");
         });
     });
+
+    describe("Additional Coverage for Untested Code Paths", () => {
+        test("should calculate price for food items with zero calories", async () => {
+            // Create a food item with 0 calories
+            const zeroCalItem = await FastFoodItem.create({
+                company: "Test Restaurant",
+                item: "Zero Cal Item",
+                calories: 0,
+                totalFat: 0,
+                protein: 0,
+                carbs: 0,
+            });
+
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: zeroCalItem._id.toString(),
+                quantity: 1,
+            });
+
+            assert.strictEqual(response.status, 200);
+            // Price should default to $2.00 for 0 calories
+            expect(response.body.data.cart.items[0].price).toBe(2.0);
+
+            // Cleanup
+            await FastFoodItem.deleteOne({ _id: zeroCalItem._id });
+        });
+
+        test("should calculate price for food items with null calories", async () => {
+            // Create a food item without calories field
+            const nullCalItem = await FastFoodItem.create({
+                company: "Test Restaurant",
+                item: "Null Cal Item",
+                totalFat: 5,
+                protein: 10,
+                carbs: 15,
+            });
+
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: nullCalItem._id.toString(),
+                quantity: 1,
+            });
+
+            assert.strictEqual(response.status, 200);
+            // Price should default to $2.00 for null/undefined calories
+            expect(response.body.data.cart.items[0].price).toBe(2.0);
+
+            // Cleanup
+            await FastFoodItem.deleteOne({ _id: nullCalItem._id });
+        });
+
+        test("should calculate price with maximum cap for high-calorie items", async () => {
+            // Create a food item with extremely high calories
+            const highCalItem = await FastFoodItem.create({
+                company: "Test Restaurant",
+                item: "High Calorie Item",
+                calories: 2000,
+                totalFat: 80,
+                protein: 50,
+                carbs: 250,
+            });
+
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: highCalItem._id.toString(),
+                quantity: 1,
+            });
+
+            assert.strictEqual(response.status, 200);
+            // Price should be capped at $15.00 (2000 * 0.01 = 20, but max is 15)
+            expect(response.body.data.cart.items[0].price).toBe(15.0);
+
+            // Cleanup
+            await FastFoodItem.deleteOne({ _id: highCalItem._id });
+        });
+
+        test("should calculate price with minimum floor for very low-calorie items", async () => {
+            // Create a food item with very low calories
+            const lowCalItem = await FastFoodItem.create({
+                company: "Test Restaurant",
+                item: "Low Calorie Item",
+                calories: 50,
+                totalFat: 1,
+                protein: 2,
+                carbs: 10,
+            });
+
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: lowCalItem._id.toString(),
+                quantity: 1,
+            });
+
+            assert.strictEqual(response.status, 200);
+            // Price should be minimum $2.00 (50 * 0.01 = 0.5, but min is 2.0)
+            expect(response.body.data.cart.items[0].price).toBe(2.0);
+
+            // Cleanup
+            await FastFoodItem.deleteOne({ _id: lowCalItem._id });
+        });
+
+        test("should handle mergeCart with empty session cart and no existing user cart", async () => {
+            // Import User model to create an authenticated user
+            const User = (await import("../models/User.js")).default;
+            const { generateAccessToken } = await import("../utils/jwt.util.js");
+
+            // Create a test user
+            const user = await User.create({
+                name: "Merge Test User",
+                email: "mergetest@example.com",
+                password: "Password123!",
+            });
+
+            const token = generateAccessToken(user._id, user.email, user.role);
+
+            // Call mergeCart with no items in session cart
+            const response = await agent
+                .post("/api/cart/merge")
+                .set("Authorization", `Bearer ${token}`);
+
+            assert.strictEqual(response.status, 200);
+            assert.strictEqual(response.body.success, true);
+            expect(response.body.data.cart).toBeDefined();
+
+            // Cleanup
+            await User.deleteOne({ _id: user._id });
+            await Cart.deleteMany({ userId: user._id });
+        });
+
+        test("should merge session cart into existing user cart", async () => {
+            const User = (await import("../models/User.js")).default;
+            const { generateAccessToken } = await import("../utils/jwt.util.js");
+
+            // Create a test user
+            const user = await User.create({
+                name: "Merge Cart User",
+                email: "mergecart@example.com",
+                password: "Password123!",
+            });
+
+            // Create an existing user cart with an item
+            const existingUserCart = await Cart.create({
+                sessionId: "different-session-id",
+                userId: user._id,
+                items: [{
+                    foodItem: testFoodItem._id,
+                    restaurant: testFoodItem.company,
+                    item: testFoodItem.item,
+                    calories: testFoodItem.calories,
+                    totalFat: testFoodItem.totalFat,
+                    protein: testFoodItem.protein,
+                    carbohydrates: testFoodItem.carbs,
+                    price: 5.0,
+                    quantity: 1
+                }]
+            });
+
+            // Add item to session cart
+            await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 2,
+            });
+
+            const token = generateAccessToken(user._id, user.email, user.role);
+
+            // Merge carts
+            const response = await agent
+                .post("/api/cart/merge")
+                .set("Authorization", `Bearer ${token}`);
+
+            assert.strictEqual(response.status, 200);
+            assert.strictEqual(response.body.success, true);
+            // Should have merged items
+            expect(response.body.data.cart.items.length).toBeGreaterThan(0);
+
+            // Cleanup
+            await User.deleteOne({ _id: user._id });
+            await Cart.deleteMany({ userId: user._id });
+        });
+
+        test("should associate guest cart with user when user logs in via getOrCreateCart", async () => {
+            const User = (await import("../models/User.js")).default;
+            const { generateAccessToken } = await import("../utils/jwt.util.js");
+
+            // First add item as guest
+            const guestResponse = await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 1,
+            });
+
+            assert.strictEqual(guestResponse.status, 200);
+            const cartId = guestResponse.body.data.cart.id;
+
+            // Create a user
+            const user = await User.create({
+                name: "Associate Cart User",
+                email: "associate@example.com",
+                password: "Password123!",
+            });
+
+            const token = generateAccessToken(user._id, user.email, user.role);
+
+            // Now access cart as authenticated user with same session
+            const authResponse = await agent
+                .get("/api/cart")
+                .set("Authorization", `Bearer ${token}`);
+
+            assert.strictEqual(authResponse.status, 200);
+            // Cart should now be associated with user
+            expect(authResponse.body.data.cart.userId).toBe(user._id.toString());
+
+            // Cleanup
+            await User.deleteOne({ _id: user._id });
+            await Cart.deleteOne({ _id: cartId });
+        });
+
+        test("should handle mergeCart when only session cart has items", async () => {
+            const User = (await import("../models/User.js")).default;
+            const { generateAccessToken } = await import("../utils/jwt.util.js");
+
+            // Add item to session cart
+            await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 3,
+            });
+
+            // Create a user without existing cart
+            const user = await User.create({
+                name: "Session Only User",
+                email: "sessiononly@example.com",
+                password: "Password123!",
+            });
+
+            const token = generateAccessToken(user._id, user.email, user.role);
+
+            // Merge cart - should just associate session cart with user
+            const response = await agent
+                .post("/api/cart/merge")
+                .set("Authorization", `Bearer ${token}`);
+
+            assert.strictEqual(response.status, 200);
+            assert.strictEqual(response.body.success, true);
+            expect(response.body.data.cart.items.length).toBe(1);
+            expect(response.body.data.cart.items[0].quantity).toBe(3);
+
+            // Cleanup
+            await User.deleteOne({ _id: user._id });
+            await Cart.deleteMany({ userId: user._id });
+        });
+
+        test("should handle adding item with negative calories gracefully", async () => {
+            // Create item with negative calories (edge case)
+            const negCalItem = await FastFoodItem.create({
+                company: "Test Restaurant",
+                item: "Negative Cal Item",
+                calories: -100,
+                totalFat: 5,
+                protein: 10,
+                carbs: 15,
+            });
+
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: negCalItem._id.toString(),
+                quantity: 1,
+            });
+
+            assert.strictEqual(response.status, 200);
+            // Should default to minimum price
+            expect(response.body.data.cart.items[0].price).toBe(2.0);
+
+            // Cleanup
+            await FastFoodItem.deleteOne({ _id: negCalItem._id });
+        });
+
+        test("should populate foodItem reference when getting cart", async () => {
+            // Add item to cart
+            await agent.post("/api/cart/items").send({
+                foodItemId: testFoodItem._id.toString(),
+                quantity: 1,
+            });
+
+            // Get cart
+            const response = await agent.get("/api/cart");
+
+            assert.strictEqual(response.status, 200);
+            expect(response.body.data.cart.items[0]).toHaveProperty("foodItem");
+            // Should have populated food item data
+            if (response.body.data.cart.items[0].foodItem) {
+                expect(response.body.data.cart.items[0].foodItem).toHaveProperty("company");
+                expect(response.body.data.cart.items[0].foodItem).toHaveProperty("item");
+            }
+        });
+
+        test("should handle cart operations with all nutritional data fields", async () => {
+            const fullNutritionItem = await FastFoodItem.create({
+                company: "Test Restaurant",
+                item: "Full Nutrition Item",
+                calories: 450,
+                totalFat: 22,
+                protein: 28,
+                carbs: 35,
+                fiber: 5,
+                sugar: 8,
+                sodium: 650,
+                cholesterol: 45,
+            });
+
+            const response = await agent.post("/api/cart/items").send({
+                foodItemId: fullNutritionItem._id.toString(),
+                quantity: 1,
+            });
+
+            assert.strictEqual(response.status, 200);
+            const cartItem = response.body.data.cart.items[0];
+            expect(cartItem.calories).toBe(450);
+            expect(cartItem.totalFat).toBe(22);
+            expect(cartItem.protein).toBe(28);
+            expect(cartItem.carbohydrates).toBe(35);
+
+            // Cleanup
+            await FastFoodItem.deleteOne({ _id: fullNutritionItem._id });
+        });
+    });
 });
