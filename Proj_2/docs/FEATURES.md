@@ -339,7 +339,7 @@ FRONTEND_URL=http://localhost:3000
 
 ---
 
-## What's NOT Implemented
+## Planned Features
 
 The following features are planned for the future:
 
