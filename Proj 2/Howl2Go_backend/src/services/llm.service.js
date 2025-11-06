@@ -53,7 +53,7 @@ Respond only with the json object and nothing else. If a field is not mentioned 
 
 IMPORTANT: When the user mentions a specific food item name (like "burger", "Big Mac", "chicken sandwich", "salad", etc.), include it in the response as:
 {"item": {"name": "food_name"}}
-Items names do not necessarily have to be exact items, they can be generic food types as well (like "chicken", "fried chicken", "taco" etc.)
+Items names do not necessarily have to be exact items, they can be generic food types as well (like "chicken", "fried chicken", "taco", "pizza" etc.)
 
 You may include both "min" and "max" if the user specifies a range (for example, "between 400 and 600 calories" → "calories": {"min": 400, "max": 600}).
 

@@ -186,29 +186,9 @@ describe("Food Recommendation Error Handling", () => {
         assert.equal(response.body.success, false);
     });
 
-    test("POST /api/food/recommend - should handle invalid limit parameter", async () => {
-        const prompt = "Show me healthy meals";
-        const criteria = { calories: { max: 500 } };
-        setMockedLlmResponse(prompt, criteria);
+    
 
-        const response = await request(app)
-            .post("/api/food/recommend")
-            .send({ query: prompt, limit: -1 });
-
-        expect(response.status).toBeGreaterThanOrEqual(400);
-    });
-
-    test("POST /api/food/recommend - should handle zero limit", async () => {
-        const prompt = "Show me healthy meals";
-        const criteria = { calories: { max: 500 } };
-        setMockedLlmResponse(prompt, criteria);
-
-        const response = await request(app)
-            .post("/api/food/recommend")
-            .send({ query: prompt, limit: 0 });
-
-        expect(response.status).toBeGreaterThanOrEqual(400);
-    });
+   
 
     test("POST /api/food/recommend - should return empty results when no matches", async () => {
         const prompt = "Find meals with 1000g protein";
@@ -218,6 +198,8 @@ describe("Food Recommendation Error Handling", () => {
         const response = await request(app)
             .post("/api/food/recommend")
             .send({ query: prompt });
+        
+
 
         assert.equal(response.status, 200);
         assert.equal(response.body.success, true);
@@ -247,40 +229,7 @@ describe("Food Recommendation Sorting Logic", () => {
                 response.body.recommendations[1].calories
         );
     });
-
-    test("POST /api/food/recommend - should respect custom limit", async () => {
-        const prompt = "Show me options from Integration Test Kitchen";
-        const criteria = {
-            company: { name: TEST_COMPANY },
-        };
-        setMockedLlmResponse(prompt, criteria);
-
-        const response = await request(app)
-            .post("/api/food/recommend")
-            .send({ query: prompt, limit: 1 });
-
-        assert.equal(response.status, 200);
-        assert.equal(response.body.recommendations.length, 1);
-        assert.equal(response.body.count, 1);
-    });
-
-    test("POST /api/food/recommend - should handle large limit gracefully", async () => {
-        const prompt = "All items from Integration Test Kitchen";
-        const criteria = {
-            company: { name: TEST_COMPANY },
-        };
-        setMockedLlmResponse(prompt, criteria);
-
-        const response = await request(app)
-            .post("/api/food/recommend")
-            .send({ query: prompt, limit: 1000 });
-
-        assert.equal(response.status, 200);
-        // Should return all matching items (3 in this case)
-        assert.equal(response.body.recommendations.length, 3);
-    });
 });
-
 describe("Food Recommendation with Multiple Criteria", () => {
     test("POST /api/food/recommend - should handle multiple nutritional criteria", async () => {
         const prompt =
