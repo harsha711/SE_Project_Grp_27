@@ -240,4 +240,106 @@ test("POST /api/users/refresh-token - should fail with invalid token", async () 
     assert.equal(response.body.success, false);
 });
 
+test("POST /api/users/refresh-token - should fail without refresh token", async () => {
+    const response = await request(app)
+        .post("/api/users/refresh-token")
+        .send({});
+
+    assert.equal(response.status, 400);
+    assert.equal(response.body.success, false);
+});
+
+test("POST /api/users/change-password - should fail with missing fields", async () => {
+    const response = await request(app)
+        .post("/api/users/change-password")
+        .set("Authorization", `Bearer ${authToken}`)
+        .send({
+            currentPassword: "NewPassword456!",
+        });
+
+    assert.equal(response.status, 400);
+    assert.equal(response.body.success, false);
+});
+
+test("POST /api/users/change-password - should fail with weak new password", async () => {
+    const response = await request(app)
+        .post("/api/users/change-password")
+        .set("Authorization", `Bearer ${authToken}`)
+        .send({
+            currentPassword: "NewPassword456!",
+            newPassword: "weak",
+        });
+
+    assert.equal(response.status, 400);
+    assert.equal(response.body.success, false);
+});
+
+test("GET /api/users/profile - should fail for non-existent user", async () => {
+    const fakeUserId = new mongoose.Types.ObjectId();
+    const fakeToken = generateAccessToken(fakeUserId, "fake@example.com", "user");
+
+    const response = await request(app)
+        .get("/api/users/profile")
+        .set("Authorization", `Bearer ${fakeToken}`);
+
+    assert.equal(response.status, 404);
+    assert.equal(response.body.success, false);
+});
+
+test("POST /api/users/register - should handle email case insensitivity", async () => {
+    const firstResponse = await request(app).post("/api/users/register").send({
+        name: "Case Test User",
+        email: "casetest@example.com",
+        password: "Password123!",
+    });
+
+    assert.equal(firstResponse.status, 201);
+
+    const secondResponse = await request(app).post("/api/users/register").send({
+        name: "Another Case Test",
+        email: "CASETEST@EXAMPLE.COM",
+        password: "Password123!",
+    });
+
+    assert.equal(secondResponse.status, 409);
+});
+
+test("POST /api/users/login - should handle email case insensitivity", async () => {
+    const response = await request(app).post("/api/users/login").send({
+        email: "TEST@EXAMPLE.COM",
+        password: "NewPassword456!",
+    });
+
+    assert.equal(response.status, 200);
+    assert.equal(response.body.success, true);
+});
+
+test("POST /api/users/change-password - should fail for non-existent user", async () => {
+    const fakeUserId = new mongoose.Types.ObjectId();
+    const fakeToken = generateAccessToken(fakeUserId, "fake@example.com", "user");
+
+    const response = await request(app)
+        .post("/api/users/change-password")
+        .set("Authorization", `Bearer ${fakeToken}`)
+        .send({
+            currentPassword: "OldPassword123!",
+            newPassword: "NewPassword456!",
+        });
+
+    assert.equal(response.status, 404);
+    assert.equal(response.body.success, false);
+});
+
+test("POST /api/users/refresh-token - should fail for non-existent user", async () => {
+    const fakeUserId = new mongoose.Types.ObjectId();
+    const fakeToken = generateAccessToken(fakeUserId, "fake@example.com", "user");
+
+    const response = await request(app)
+        .post("/api/users/refresh-token")
+        .send({ refreshToken: fakeToken });
+
+    assert.equal(response.status, 401);
+    assert.equal(response.body.success, false);
+});
+
 // Account Deactivation
