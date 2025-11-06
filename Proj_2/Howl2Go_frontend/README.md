@@ -285,7 +285,7 @@ docker run --env-file .env.docker -p 3000:3000 howl2go-frontend:latest
 
 ## 3. Build the Image
 
-From `Proj 2/Howl2Go_frontend/`:
+From `Proj_2/Howl2Go_frontend/`:
 
 ```bash
 docker build -t howl2go-frontend:latest .

@@ -257,7 +257,7 @@ curl -X POST http://localhost:4000/api/food/recommend \
 ## Project Structure
 
 ```
-Proj 2/
+Proj_2/
 ├── Howl2Go_backend/          # Backend API (Node.js + Express)
 │   ├── src/
 │   │   ├── controllers/      # Request handlers

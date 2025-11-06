@@ -31,7 +31,7 @@ The API defaults to `http://localhost:4000`. A health-check endpoint is availabl
 
 # Howl2Go Backend Docker Guide
 
-This guide explains how to build and run the Howl2Go Express API (`Proj 2/Howl2Go_backend`) with the provided production `Dockerfile`. The container installs only runtime dependencies, drops root privileges, and serves the API on port `4000`.
+This guide explains how to build and run the Howl2Go Express API (`Proj_2/Howl2Go_backend`) with the provided production `Dockerfile`. The container installs only runtime dependencies, drops root privileges, and serves the API on port `4000`.
 
 ---
 
@@ -82,7 +82,7 @@ FRONTEND_URL=http://localhost:3000
 
 ## 3. Build the Image
 
-From `Proj 2/Howl2Go_backend/`:
+From `Proj_2/Howl2Go_backend/`:
 
 ```bash
 docker build -t howl2go-backend:latest .
