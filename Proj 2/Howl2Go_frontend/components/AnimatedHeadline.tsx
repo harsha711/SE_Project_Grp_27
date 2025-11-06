@@ -19,9 +19,9 @@ export default function AnimatedHeadline({
       },
     },
     focused: {
-      opacity: 0,
-      scale: 0.98,
-      filter: "blur(4px)",
+      opacity: 1,
+      scale: 1,
+      filter: "blur(0px)",
       transition: {
         duration: 0.5,
         cubicBezier: [0.4, 0, 0.2, 1], // Smooth easing curve

@@ -15,16 +15,14 @@ export default function Header() {
     <header
       className="absolute top-0 left-0 right-0 z-50 border-b backdrop-blur-sm"
       style={{
-        borderColor:
-          "color-mix(in srgb, var(--howl-neutral) 10%, transparent)",
-        backgroundColor:
-          "color-mix(in srgb, var(--howl-bg) 95%, transparent)",
+        borderColor: "color-mix(in srgb, var(--howl-neutral) 10%, transparent)",
+        backgroundColor: "color-mix(in srgb, var(--howl-bg) 95%, transparent)",
       }}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
-        {/* Left Side */}
-        <div className="flex items-center gap-4">
-          <Link href="/">
+        {/* Left Side: Logo + Branding */}
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2">
             <Image
               src="/Howl2go_orange_logo_transparent.png"
               alt="Howl2Go Logo"
@@ -32,6 +30,9 @@ export default function Header() {
               height={20}
               priority
             />
+            <span className="text-4xl font-bold tracking-tight text-[var(--howl-secondary)]">
+              Howl<span className="text-[var(--orange)]">2</span>Go
+            </span>
           </Link>
         </div>
 

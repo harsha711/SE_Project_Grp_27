@@ -55,7 +55,7 @@ export default function DashboardHero({
         {/* Personalized Greeting */}
         <PersonalizedGreeting
           userName={userName}
-          isSearchFocused={isSearchFocused}
+          // isSearchFocused={isSearchFocused}
         />
 
         {/* Search Bar - Same as homepage */}
@@ -73,7 +73,9 @@ export default function DashboardHero({
         {/* Daily Progress Ring - Centered below search */}
         <div
           className={`flex justify-center mt-8 transition-all duration-500 ${
-            isSearchFocused ? "opacity-0 blur-sm scale-95" : "opacity-100 blur-0 scale-100"
+            isSearchFocused
+              ? "opacity-0 blur-sm scale-95"
+              : "opacity-100 blur-0 scale-100"
           }`}
         >
           <DailyProgressRing

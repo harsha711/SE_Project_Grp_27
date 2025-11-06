@@ -85,6 +85,13 @@ export const addItemToCart = async (req, res) => {
 
     const cart = await getOrCreateCart(sessionId, userId);
 
+    // Calculate price based on calories if not provided
+    const calculatePrice = (calories) => {
+      if (!calories || calories <= 0) return 2.0;
+      const basePrice = calories * 0.01;
+      return Math.min(Math.max(basePrice, 2.0), 15.0);
+    };
+
     // Add item with all necessary data
     await cart.addItem({
       foodItem: foodItem._id,
@@ -94,7 +101,7 @@ export const addItemToCart = async (req, res) => {
       totalFat: foodItem.totalFat || 0,
       protein: foodItem.protein || 0,
       carbohydrates: foodItem.carbs || 0,
-      price: 0, // Price can be added later if needed
+      price: foodItem.price || calculatePrice(foodItem.calories),
       quantity: parseInt(quantity, 10)
     });
 

@@ -10,7 +10,7 @@ interface PersonalizedGreetingProps {
 
 export default function PersonalizedGreeting({
   userName,
-  isSearchFocused = false,
+  isSearchFocused,
 }: PersonalizedGreetingProps) {
   const [greeting, setGreeting] = useState("Hello");
 
@@ -49,9 +49,9 @@ export default function PersonalizedGreeting({
       },
     },
     focused: {
-      opacity: 0,
-      scale: 0.98,
-      filter: "blur(4px)",
+      opacity: 1,
+      scale: 1,
+      filter: "blur(0px)",
       transition: {
         duration: 0.5,
         ease: [0.4, 0, 0.2, 1] as [number, number, number, number],
@@ -80,9 +80,11 @@ export default function PersonalizedGreeting({
       {/* Main greeting */}
       <motion.h1
         className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-[var(--howl-neutral)]"
-        initial="hidden"
-        animate={isSearchFocused ? "focused" : "visible"}
-        variants={containerVariants}
+        initial={{ opacity: 0 }}
+        animate={
+          isSearchFocused ? { opacity: 0, y: -10 } : { opacity: 0.7, y: 0 }
+        }
+        transition={{ duration: 0.5, delay: isSearchFocused ? 0 : 0.8 }}
       >
         {greetingWords.map((word, index) => (
           <motion.span
@@ -99,9 +101,7 @@ export default function PersonalizedGreeting({
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={
-          isSearchFocused
-            ? { opacity: 0, y: -10 }
-            : { opacity: 0.7, y: 0 }
+          isSearchFocused ? { opacity: 0, y: -10 } : { opacity: 0.7, y: 0 }
         }
         transition={{ duration: 0.5, delay: isSearchFocused ? 0 : 0.8 }}
         className="text-lg sm:text-xl text-[var(--text-subtle)] mt-4"
@@ -112,11 +112,7 @@ export default function PersonalizedGreeting({
       {/* Date indicator */}
       <motion.p
         initial={{ opacity: 0 }}
-        animate={
-          isSearchFocused
-            ? { opacity: 0 }
-            : { opacity: 0.5 }
-        }
+        animate={isSearchFocused ? { opacity: 0 } : { opacity: 0.5 }}
         transition={{ duration: 0.5, delay: isSearchFocused ? 0 : 1 }}
         className="text-sm text-[var(--text-muted)] mt-2"
       >

@@ -5,7 +5,10 @@ import Header from "@/components/Header";
 import DashboardHero from "@/components/DashboardHero";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
-import { mockDashboardData, calculateDailyProgress } from "@/lib/mockDashboardData";
+import {
+  mockDashboardData,
+  calculateDailyProgress,
+} from "@/lib/mockDashboardData";
 import type { MealLog, DailyProgress } from "@/types/user";
 
 export default function Dashboard() {
@@ -45,7 +48,9 @@ export default function Dashboard() {
   if (!user) {
     return (
       <div className="min-h-screen bg-[var(--howl-bg)] flex items-center justify-center">
-        <div className="text-[var(--text)] text-xl">Please log in to view dashboard</div>
+        <div className="text-[var(--text)] text-xl">
+          Please log in to view dashboard
+        </div>
       </div>
     );
   }
@@ -54,7 +59,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-[var(--howl-bg)]">
       <Header />
 
-      <div className="pt-15">
+      <div className="pt-15 min-h-screen">
         <DashboardHero
           userName={user.name}
           dailyProgress={dailyProgress}

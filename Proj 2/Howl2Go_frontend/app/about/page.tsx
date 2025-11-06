@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, TrendingUp, ShoppingCart, Shield, Zap, Heart } from "lucide-react";
+import {
+  Search,
+  TrendingUp,
+  ShoppingCart,
+  Shield,
+  Zap,
+  Heart,
+} from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -61,7 +68,7 @@ export default function AboutPage() {
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[var(--howl-neutral)] mb-6">
               About{" "}
               <span className="text-[var(--orange)] relative">
-                Wolf2Go
+                Howl2Go
                 <svg
                   className="absolute -bottom-2 left-0 w-full"
                   height="8"
@@ -85,7 +92,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* What is Wolf2Go */}
+      {/* What is Howl2Go */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <motion.div
@@ -96,28 +103,31 @@ export default function AboutPage() {
             className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-8 sm:p-12"
           >
             <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text)] mb-6">
-              What is Wolf2Go?
+              What is Howl2Go?
             </h2>
             <div className="space-y-4 text-lg text-[var(--text-subtle)] leading-relaxed">
               <p>
-                Wolf2Go is a revolutionary food delivery platform that puts
+                Howl2Go is a revolutionary food delivery platform that puts
                 nutrition information first. We believe you shouldn&apos;t have
                 to scroll through endless menus to find what you&apos;re looking
                 for.
               </p>
               <p>
-                Instead, we let you <strong className="text-[var(--cream)]">search for exactly what you
-                want</strong> - whether it&apos;s a burger, a salad, or
-                something specific like &quot;low-carb breakfast&quot; - and instantly
-                show you matching items across all restaurants with complete
-                nutritional information.
+                Instead, we let you{" "}
+                <strong className="text-[var(--cream)]">
+                  search for exactly what you want
+                </strong>{" "}
+                - whether it&apos;s a burger, a salad, or something specific
+                like &quot;low-carb breakfast&quot; - and instantly show you
+                matching items across all restaurants with complete nutritional
+                information.
               </p>
               <p>
                 Built with modern web technologies like{" "}
                 <span className="text-[var(--orange)]">Next.js</span>,{" "}
                 <span className="text-[var(--orange)]">React</span>, and{" "}
                 <span className="text-[var(--orange)]">TypeScript</span>,
-                Wolf2Go delivers a premium, lightning-fast experience with a
+                Howl2Go delivers a premium, lightning-fast experience with a
                 beautiful dark-mode interface designed for food lovers and
                 health-conscious eaters alike.
               </p>
@@ -182,20 +192,25 @@ export default function AboutPage() {
               Built with Modern Technology
             </h2>
             <p className="text-lg text-[var(--text-subtle)] mb-8">
-              Wolf2Go is powered by cutting-edge web technologies to deliver a
+              Howl2Go is powered by cutting-edge web technologies to deliver a
               fast, reliable, and beautiful experience.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              {["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion", "Node.js"].map(
-                (tech) => (
-                  <span
-                    key={tech}
-                    className="px-6 py-3 bg-[var(--bg-hover)] border border-[var(--border)] rounded-full text-[var(--cream)] font-medium hover:border-[var(--orange)] transition-colors"
-                  >
-                    {tech}
-                  </span>
-                )
-              )}
+              {[
+                "Next.js",
+                "React",
+                "TypeScript",
+                "Tailwind CSS",
+                "Framer Motion",
+                "Node.js",
+              ].map((tech) => (
+                <span
+                  key={tech}
+                  className="px-6 py-3 bg-[var(--bg-hover)] border border-[var(--border)] rounded-full text-[var(--cream)] font-medium hover:border-[var(--orange)] transition-colors"
+                >
+                  {tech}
+                </span>
+              ))}
             </div>
           </motion.div>
         </div>

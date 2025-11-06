@@ -438,11 +438,8 @@ function SmartMenuSearchContent() {
                   }}
                 >
                   <ItemCard
-                    restaurant={item.restaurant}
-                    item={item.item}
-                    calories={item.calories}
+                    {...item}
                     disableAnimation={true}
-                    price={item.price}
                     variant={isDashboardSource ? "dashboard" : "default"}
                   />
                 </div>
