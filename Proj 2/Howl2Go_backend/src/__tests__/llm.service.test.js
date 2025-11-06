@@ -384,3 +384,203 @@ test("LLM Service - parseQuery returns empty object for math question", async ()
     assert.strictEqual(result.success, true);
     assert.deepEqual(result.criteria, {});
 }, 10000);
+
+// Initialize method tests
+test("LLM Service - initialize should set initialized flag to true", () => {
+    llmService.initialized = false;
+    llmService.initialize();
+
+    assert.strictEqual(llmService.initialized, true);
+    assert.ok(llmService.client !== null);
+});
+
+test("LLM Service - initialize should skip if already initialized", () => {
+    llmService.initialized = true;
+    const existingClient = llmService.client;
+
+    llmService.initialize();
+
+    assert.strictEqual(llmService.client, existingClient);
+    assert.strictEqual(llmService.initialized, true);
+});
+
+test("LLM Service - initialize should create Groq client", () => {
+    llmService.initialized = false;
+    llmService.initialize();
+
+    assert.ok(llmService.client);
+    assert.strictEqual(typeof llmService.client, "object");
+});
+
+// buildMongoQuery edge cases
+test("LLM Service - buildMongoQuery handles caloriesFromFat field", () => {
+    const criteria = {
+        caloriesFromFat: { max: 200 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        caloriesFromFat: { $lte: 200 },
+    });
+});
+
+test("LLM Service - buildMongoQuery handles caloriesFromFat with min", () => {
+    const criteria = {
+        caloriesFromFat: { min: 100 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        caloriesFromFat: { $gte: 100 },
+    });
+});
+
+test("LLM Service - buildMongoQuery ignores item without name property", () => {
+    const criteria = {
+        item: { price: 5 },
+        calories: { max: 500 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        calories: { $lte: 500 },
+    });
+});
+
+test("LLM Service - buildMongoQuery ignores company without name property", () => {
+    const criteria = {
+        company: { id: 123 },
+        protein: { min: 20 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        protein: { $gte: 20 },
+    });
+});
+
+test("LLM Service - buildMongoQuery handles empty constraint object", () => {
+    const criteria = {
+        protein: {},
+        calories: { max: 500 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        calories: { $lte: 500 },
+    });
+});
+
+test("LLM Service - buildMongoQuery handles constraint with only unrecognized properties", () => {
+    const criteria = {
+        protein: { unknown: 50 },
+        calories: { min: 100 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        calories: { $gte: 100 },
+    });
+});
+
+test("LLM Service - buildMongoQuery handles all nutritional fields", () => {
+    const criteria = {
+        calories: { min: 200, max: 600 },
+        protein: { min: 15 },
+        totalFat: { max: 25 },
+        carbs: { min: 30 },
+        fiber: { min: 5 },
+        sugars: { max: 20 },
+        sodium: { max: 1500 },
+        cholesterol: { max: 150 },
+        saturatedFat: { max: 8 },
+        transFat: { max: 1 },
+        caloriesFromFat: { max: 180 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        calories: { $gte: 200, $lte: 600 },
+        protein: { $gte: 15 },
+        totalFat: { $lte: 25 },
+        carbs: { $gte: 30 },
+        fiber: { $gte: 5 },
+        sugars: { $lte: 20 },
+        sodium: { $lte: 1500 },
+        cholesterol: { $lte: 150 },
+        saturatedFat: { $lte: 8 },
+        transFat: { $lte: 1 },
+        caloriesFromFat: { $lte: 180 },
+    });
+});
+
+test("LLM Service - parseQuery should throw error for undefined input", async () => {
+    await assert.rejects(
+        async () => {
+            await llmService.parseQuery(undefined);
+        },
+        {
+            message: "User prompt must be a non-empty string",
+        }
+    );
+});
+
+test("LLM Service - parseQuery should throw error for boolean input", async () => {
+    await assert.rejects(
+        async () => {
+            await llmService.parseQuery(true);
+        },
+        {
+            message: "User prompt must be a non-empty string",
+        }
+    );
+});
+
+test("LLM Service - parseQuery should throw error for array input", async () => {
+    await assert.rejects(
+        async () => {
+            await llmService.parseQuery(["test"]);
+        },
+        {
+            message: "User prompt must be a non-empty string",
+        }
+    );
+});
+
+test("LLM Service - parseQuery should throw error for object input", async () => {
+    await assert.rejects(
+        async () => {
+            await llmService.parseQuery({ query: "test" });
+        },
+        {
+            message: "User prompt must be a non-empty string",
+        }
+    );
+});
+
+// Integration test with multiple constraints
+test("LLM Service - parseQuery handles multiple constraints from natural language", async () => {
+    const userPrompt = "low fat, high protein, under 500 calories";
+
+    const result = await llmService.parseQuery(userPrompt);
+
+    assert.strictEqual(result.success, true);
+    expect(result.criteria).toBeDefined();
+
+    // Verify it contains nutritional criteria (exact values may vary based on LLM interpretation)
+    // But should have some combination of fat (max), protein (min), and calories (max)
+    const hasCalories = result.criteria.calories !== undefined;
+    const hasProtein = result.criteria.protein !== undefined;
+    const hasFat = result.criteria.totalFat !== undefined || result.criteria.saturatedFat !== undefined;
+
+    // At least two of the three constraints should be present
+    const constraintCount = [hasCalories, hasProtein, hasFat].filter(Boolean).length;
+    expect(constraintCount).toBeGreaterThanOrEqual(2);
+}, 10000);
