@@ -18,6 +18,7 @@ interface ItemCardProps extends Partial<FoodItem> {
   variant?: "default" | "compact" | "dashboard";
   onAdd?: (item: FoodItem) => void;
   onShowDescription?: (item: FoodItem) => void;
+  price?: number;
 }
 
 // Get restaurant logo with flexible matching to handle API name variations
@@ -40,6 +41,7 @@ const getRestaurantLogo = (restaurant: string): string => {
 
 export default function ItemCard({
   restaurant,
+  price,
   item,
   calories,
   index = 0,
@@ -70,7 +72,10 @@ export default function ItemCard({
     // Check authentication for all variants except custom onAdd
     if (!isAuthenticated) {
       // Redirect to login with return URL
-      const currentPath = typeof window !== "undefined" ? window.location.pathname + window.location.search : "";
+      const currentPath =
+        typeof window !== "undefined"
+          ? window.location.pathname + window.location.search
+          : "";
       router.push(`/login?returnUrl=${encodeURIComponent(currentPath)}`);
       return;
     }
@@ -124,7 +129,7 @@ export default function ItemCard({
             className="object-contain"
           />
         </div>
-        <span className="text-xl font-bold text-[var(--cream)]">$--.--</span>
+        <span className="text-xl font-bold text-[var(--cream)]">${price}</span>
       </div>
 
       {/* Item Name */}

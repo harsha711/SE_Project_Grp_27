@@ -117,7 +117,7 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
   };
 
   return (
-    <section className="relative flex items-center justify-center px-4 sm:px-8 py-16 pb-8 bg-[var(--howl-bg)]">
+    <section className="relative flex items-center justify-center px-4 sm:px-8 pt-8 pb-4 bg-[var(--howl-bg)] w-full">
       <div className="w-full max-w-4xl mx-auto">
         {/* Headline */}
         <AnimatedHeadline isSearchFocused={isSearchFocused} />
@@ -134,49 +134,52 @@ export default function HeroSection({ onSearchFocusChange }: HeroSectionProps) {
           onSearchBlur={handleSearchBlur}
         />
 
-        {/* Demo Mode Cards */}
-        <AnimatePresence>
-          {showDemoCards && isDemoMode && (
-            <motion.div
-              key="demoCards"
-              initial={{ opacity: 0, scale: 0.95, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.97, y: 8 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-            >
-              <SearchResults
-                isDemoMode={isDemoMode}
-                isSearchFocused={isSearchFocused}
-                showDemoCards={showDemoCards}
-                showLiveResults={false}
-                recommendations={searchRecommendations}
-                onRecommendationClick={handleRecommendationClick}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Fixed container for animations - prevents layout shift */}
+        <div className="min-h-[240px] mt-8">
+          {/* Demo Mode Cards */}
+          <AnimatePresence mode="wait">
+            {showDemoCards && isDemoMode && (
+              <motion.div
+                key="demoCards"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              >
+                <SearchResults
+                  isDemoMode={isDemoMode}
+                  isSearchFocused={isSearchFocused}
+                  showDemoCards={showDemoCards}
+                  showLiveResults={false}
+                  recommendations={searchRecommendations}
+                  onRecommendationClick={handleRecommendationClick}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        {/* Live Search Results */}
-        <AnimatePresence>
-          {showLiveResults && !isDemoMode && (
-            <motion.div
-              key="liveResults"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 12 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-            >
-              <SearchResults
-                isDemoMode={isDemoMode}
-                isSearchFocused={isSearchFocused}
-                showDemoCards={false}
-                showLiveResults={showLiveResults}
-                recommendations={searchRecommendations}
-                onRecommendationClick={handleRecommendationClick}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+          {/* Live Search Results */}
+          <AnimatePresence mode="wait">
+            {showLiveResults && !isDemoMode && (
+              <motion.div
+                key="liveResults"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <SearchResults
+                  isDemoMode={isDemoMode}
+                  isSearchFocused={isSearchFocused}
+                  showDemoCards={false}
+                  showLiveResults={showLiveResults}
+                  recommendations={searchRecommendations}
+                  onRecommendationClick={handleRecommendationClick}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );

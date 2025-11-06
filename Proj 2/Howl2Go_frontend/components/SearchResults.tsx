@@ -76,17 +76,14 @@ export default function SearchResults({
     <>
       {/* ========== DEMO MODE: Animated Dish Preview Cards ========== */}
       {isDemoMode && showDemoCards && (
-        <div
-          key="demo-cards"
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6"
-        >
+        <div key="demo-cards" className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {demoDishes.map((dish, idx) => (
             <div
               key={`${dish.restaurant}-${dish.item}-${idx}`}
               className={`transition-all duration-500 ease-out ${
                 isSearchFocused
-                  ? 'opacity-0 blur-sm translate-y-4'
-                  : 'opacity-100 blur-0 translate-y-0'
+                  ? "opacity-0 blur-sm translate-y-4"
+                  : "opacity-100 blur-0 translate-y-0"
               }`}
               style={{
                 transitionDelay: isSearchFocused

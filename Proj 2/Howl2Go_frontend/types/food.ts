@@ -18,6 +18,7 @@ export interface FoodItem {
   sugars?: number | null;
   protein?: number | null;
   weightWatchersPoints?: number | null;
+  price?: number;
 }
 
 

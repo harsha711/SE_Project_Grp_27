@@ -26,6 +26,7 @@ interface ApiRecommendation {
   sugars?: number | null;
   protein?: number | null;
   weightWatchersPoints?: number | null;
+  price?: number;
 }
 
 interface ApiResponse {
@@ -58,16 +59,13 @@ function SmartMenuSearchContent() {
         setFoodItems([]);
 
         try {
-          const response = await fetch(
-            "/api/food/recommend",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ query: initialQuery }),
-            }
-          );
+          const response = await fetch("/api/food/recommend", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ query: initialQuery }),
+          });
 
           if (!response.ok) {
             if (response.status === 400) {
@@ -106,7 +104,11 @@ function SmartMenuSearchContent() {
     let items: FoodItem[] = [];
 
     // Format 1: API returns recommendations array (ACTUAL FORMAT)
-    if (!Array.isArray(data) && 'recommendations' in data && Array.isArray(data.recommendations)) {
+    if (
+      !Array.isArray(data) &&
+      "recommendations" in data &&
+      Array.isArray(data.recommendations)
+    ) {
       items = data.recommendations.map((item) => ({
         restaurant: item.company || "Unknown", // Map company -> restaurant
         item: item.item || "Unknown Item",
@@ -122,6 +124,7 @@ function SmartMenuSearchContent() {
         sugars: item.sugars || null,
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
+        price: item.price,
       }));
     } else if (Array.isArray(data)) {
       // Format 2: Array of items
@@ -140,8 +143,13 @@ function SmartMenuSearchContent() {
         sugars: item.sugars || null,
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
+        price: item.price,
       }));
-    } else if (!Array.isArray(data) && 'results' in data && Array.isArray(data.results)) {
+    } else if (
+      !Array.isArray(data) &&
+      "results" in data &&
+      Array.isArray(data.results)
+    ) {
       // Format 3: Wrapped in results
       items = data.results.map((item) => ({
         restaurant: item.company || item.restaurant || "Unknown",
@@ -158,11 +166,16 @@ function SmartMenuSearchContent() {
         sugars: item.sugars || null,
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
+        price: item.price,
       }));
-    } else if (!Array.isArray(data) && 'restaurant' in data && 'item' in data) {
+    } else if (!Array.isArray(data) && "restaurant" in data && "item" in data) {
       // Format 4: Single item
       items = [data as FoodItem];
-    } else if (typeof data === "object" && data !== null && !Array.isArray(data)) {
+    } else if (
+      typeof data === "object" &&
+      data !== null &&
+      !Array.isArray(data)
+    ) {
       // Format 5: Object with restaurant names as keys
       const extractValue = (val: unknown): number | null => {
         if (typeof val === "number") return val;
@@ -190,6 +203,7 @@ function SmartMenuSearchContent() {
             sugars: extractValue(itemData.sugars),
             protein: extractValue(itemData.protein),
             weightWatchersPoints: extractValue(itemData.weightWatchersPoints),
+            price: itemData.price,
           };
         }
       );
@@ -317,7 +331,10 @@ function SmartMenuSearchContent() {
           transition={{ duration: 0.4 }}
         >
           <div className="w-full max-w-3xl mx-auto">
-            <form onSubmit={handleSearch} className="outline-none focus:outline-none">
+            <form
+              onSubmit={handleSearch}
+              className="outline-none focus:outline-none"
+            >
               <motion.div
                 className="w-full px-6 py-4 rounded-2xl border-2 flex items-center bg-[var(--bg-card)] focus-within:outline-none"
                 style={{
@@ -425,6 +442,7 @@ function SmartMenuSearchContent() {
                     item={item.item}
                     calories={item.calories}
                     disableAnimation={true}
+                    price={item.price}
                     variant={isDashboardSource ? "dashboard" : "default"}
                   />
                 </div>
