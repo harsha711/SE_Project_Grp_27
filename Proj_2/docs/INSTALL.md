@@ -42,7 +42,7 @@ Before installing HOWL2GO, ensure you have the following installed on your syste
 
 ```bash
 git clone https://github.com/harsha711/SE_Project_Grp_27.git
-cd SE_Project_Grp_27/Proj\ 2
+cd SE_Project_Grp_27/Proj_2
 ```
 
 ---
@@ -371,7 +371,6 @@ After successful installation:
 1. **Explore the API**: Check out the API documentation in the backend `routes/` directory
 2. **Customize**: Modify the frontend UI in the `components/` directory
 3. **Add Features**: Extend functionality by adding new controllers, services, or components
-4. **Deploy**: Consider deploying to platforms like Vercel (frontend) and Railway/Render (backend)
 
 ---
 
@@ -387,4 +386,4 @@ If you encounter issues not covered in this guide:
 
 ## License
 
-This project is developed as part of CSC510 Software Engineering at NCSU.
+This project is developed as part of CSC510 Software Engineering at NCSU (MIT License)

@@ -1989,7 +1989,7 @@ ANALYZE=true npm run build
 
 **Project Resources:**
 - GitHub Issues: https://github.com/harsha711/SE_Project_Grp_27/issues
-- API Documentation: [LLM_API_DOCUMENTATION.md](../Howl2Go_backend/LLM_API_DOCUMENTATION.md)
+- API Documentation: [LLM_API_DOCUMENTATION.md](../Howl2Go_backend/documentation/LLM_API_DOCUMENTATION.md)
 - Getting Started Guide: [GETTING_STARTED.md](GETTING_STARTED.md)
 
 **External Resources:**
@@ -2052,7 +2052,7 @@ Use this checklist to verify your development environment is set up correctly:
 
 For next steps, see:
 - [Development Workflow](#11-development-workflow)
-- [API Documentation](../Howl2Go_backend/LLM_API_DOCUMENTATION.md)
+- [API Documentation](../Howl2Go_backend/documentation/LLM_API_DOCUMENTATION.md)
 - [Design System](../Howl2Go_frontend/DESIGN_SYSTEM.md)
 
 Happy coding!

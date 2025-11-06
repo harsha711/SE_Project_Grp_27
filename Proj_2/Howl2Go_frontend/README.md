@@ -211,10 +211,10 @@ npm test
 
 ## Documentation
 
--   [User Manual](../docs/USER_MANUAL.md) - End-user guide
--   [Getting Started](../docs/GETTING_STARTED.md) - Quick start guide
+-   [Getting Started](../docs/GETTING_STARTED.md) - Complete user guide
 -   [Features](../docs/FEATURES.md) - Complete feature list
 -   [Design System](DESIGN_SYSTEM.md) - UI/UX guidelines
+-   [API Documentation](../docs/API_DOCUMENTATION.md) - API reference
 
 ## Contributing
 

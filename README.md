@@ -181,8 +181,7 @@ graph LR
 
 | Document | Description |
 |----------|-------------|
-| [Getting Started](Proj%202/docs/GETTING_STARTED.md) | User guide with search examples |
-| [User Manual](Proj%202/docs/USER_MANUAL.md) | Complete end-user documentation |
+| [Getting Started](Proj%202/docs/GETTING_STARTED.md) | Complete user guide with search examples |
 | [Developer Setup](Proj%202/docs/DEVELOPER_SETUP.md) | Development environment setup |
 | [API Documentation](Proj%202/docs/API_DOCUMENTATION.md) | REST API reference |
 | [Features](Proj%202/docs/FEATURES.md) | Complete feature catalog |
