@@ -154,6 +154,7 @@ graph LR
 |-----------|----------------|
 | <img src="Proj_2/docs/screenshots/home.png" width="400" alt="Home Page"/> | <img src="Proj_2/docs/screenshots/results.png" width="400" alt="Search Results"/> |
 
+- [Demo Video] (https://drive.google.com/file/d/11WIJWCY-f77X1_lWEwS6hN4Qa1cWxp8U/view?usp=sharing) 
 *Coming Soon: Demo Pic showcasing search functionality*
 
 ## 🛠️ Tech Stack
@@ -275,7 +276,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 📞 Support
 
-- 📧 Email: support_howl2go@gmail.com
+- 📧 Email: supp0rt.howl2go@gmail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/harsha711/SE_Project_Grp_27/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/harsha711/SE_Project_Grp_27/discussions)
 

@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/harsha711/SE_Project_Grp_27/badge.svg?branch=main)](https://coveralls.io/github/harsha711/SE_Project_Grp_27?branch=main)
 [![Tests](https://img.shields.io/badge/tests-404%20passing-success)](https://github.com/harsha711/SE_Project_Grp_27)
 
-**Comprehensive testing documentation for the Howl2Go project**
+**Testing documentation for the Howl2Go**
 
 ---
 
