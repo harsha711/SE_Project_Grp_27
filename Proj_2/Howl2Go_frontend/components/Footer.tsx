@@ -56,7 +56,7 @@ export default function Footer() {
           {/* Links */}
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com/harsha711/SE_Project_Grp_27/tree/main/Proj%202"
+              href="https://github.com/harsha711/SE_Project_Grp_27/tree/main"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-[var(--text-subtle)] hover:text-[var(--orange)] transition-colors"
@@ -71,10 +71,10 @@ export default function Footer() {
               <span className="text-xs">GitHub</span>
             </a>
             <a
-              href="mailto:support_howl2go@gmail.com"
+              href="mailto:supp0rt.howl2go@gmail.com"
               className="text-[var(--text-subtle)] hover:text-[var(--orange)] transition-colors text-xs"
             >
-              support_howl2go@gmail.com
+              supp0rt.howl2go@gmail.com
             </a>
           </div>
         </div>
