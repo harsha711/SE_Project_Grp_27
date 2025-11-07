@@ -7,9 +7,15 @@
 **AI-Powered Food Discovery Platform**
 
 *Crave it. Find it. Instantly.*
-[![Backend Deployment Status](https://img.shields.io/badge/Backend-Live-brightgreen.svg?style=flat&logo=render)](https://howl2go-backend-service.onrender.com/api/health)
+
+
+
+[![Watch the demo](https://img.youtube.com/vi/VIDEO_ID_HERE/0.jpg)](https://drive.google.com/file/d/11WIJWCY-f77X1_lWEwS6hN4Qa1cWxp8U/view?usp=sharing)
+
 
 <!-- Build & Quality Badges -->
+[![Backend Deployment Status](https://img.shields.io/badge/Backend-Live-brightgreen.svg?style=flat&logo=render)](https://howl2go-backend-service.onrender.com/api/health)
+[![DOI](https://zenodo.org/badge/1045839121.svg)](https://doi.org/10.5281/zenodo.17547804)
 [![Coverage Status](https://coveralls.io/repos/github/harsha711/SE_Project_Grp_27/badge.svg?branch=main)](https://coveralls.io/github/harsha711/SE_Project_Grp_27?branch=main)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/harsha711/SE_Project_Grp_27)
 [![Tests](https://img.shields.io/badge/tests-404%20passing-success)](https://github.com/harsha711/SE_Project_Grp_27)
