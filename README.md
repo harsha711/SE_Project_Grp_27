@@ -10,7 +10,7 @@
 
 
 
-[![Watch the demo](https://img.youtube.com/vi/VIDEO_ID_HERE/0.jpg)](https://drive.google.com/file/d/11WIJWCY-f77X1_lWEwS6hN4Qa1cWxp8U/view?usp=sharing)
+[![Watch the demo](https://img.youtube.com/vi/VIDEO_ID_HERE/0.jpg)](https://drive.google.com/file/d/1GpH5jJUv2xHC_xYNScsTxllGcykTA2Hj/view?usp=drive_link)
 
 
 <!-- Build & Quality Badges -->
@@ -159,9 +159,6 @@ graph LR
 | Home Page | Search Results |
 |-----------|----------------|
 | <img src="Proj_2/docs/screenshots/home.png" width="400" alt="Home Page"/> | <img src="Proj_2/docs/screenshots/results.png" width="400" alt="Search Results"/> |
-
-- [Demo Video] (https://drive.google.com/file/d/11WIJWCY-f77X1_lWEwS6hN4Qa1cWxp8U/view?usp=sharing) 
-*Coming Soon: Demo Pic showcasing search functionality*
 
 ## 🛠️ Tech Stack
 
