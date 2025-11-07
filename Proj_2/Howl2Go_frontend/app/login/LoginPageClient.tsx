@@ -23,9 +23,6 @@ export default function LoginPage() {
   useEffect(() => {
     if (isAuthenticated) {
       router.push(returnUrl);
-      console.log(searchParams.get("returnUrl"));
-      console.log(returnUrl);
-      console.log(isAuthenticated);
     }
   }, [isAuthenticated, router, returnUrl]);
 
