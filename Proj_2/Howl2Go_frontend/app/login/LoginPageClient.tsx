@@ -15,7 +15,9 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const { login, isAuthenticated } = useAuth();
 
-  const returnUrl = "/dashboard";
+  const returnUrl = decodeURIComponent(
+    searchParams.get("returnUrl") || "/dashboard"
+  );
 
   // Redirect if already logged in
   useEffect(() => {
@@ -38,7 +40,6 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        credentials: "include",
       });
 
       const data = await response.json();
