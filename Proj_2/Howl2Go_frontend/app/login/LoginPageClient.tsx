@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchUserProfile } from "@/lib/api/user";
 
@@ -12,19 +12,14 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { login, isAuthenticated } = useAuth();
-
-  const returnUrl = decodeURIComponent(
-    searchParams.get("returnUrl") || "/dashboard"
-  );
 
   // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated) {
-      router.push(returnUrl);
+      router.push("/dashboard");
     }
-  }, [isAuthenticated, router, returnUrl]);
+  }, [isAuthenticated, router]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -53,8 +48,8 @@ export default function LoginPage() {
       // Update auth context
       login(userProfile);
 
-      // Redirect to return URL or dashboard
-      router.push(returnUrl);
+      // Redirect to dashboard
+      router.push("/dashboard");
     } catch (err) {
       console.error(err);
       setError("Something went wrong");
