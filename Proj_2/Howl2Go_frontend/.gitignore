@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+.github/workflows/coverage-finish.yml
 
 # next.js
 /.next/
