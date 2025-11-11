@@ -32,6 +32,7 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include",
       });
 
       const data = await response.json();
@@ -48,11 +49,14 @@ export default function LoginPage() {
       // Update auth context
       login(userProfile);
 
-      // Redirect to dashboard
-      router.push("/dashboard");
+      // Force a small delay to ensure state updates propagate
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Redirect to dashboard using replace to prevent back button issues
+      router.replace("/dashboard");
     } catch (err) {
       console.error(err);
-      setError("Something went wrong");
+      setError("Something went wrong. Please try again.");
       setIsLoading(false);
     }
   }
