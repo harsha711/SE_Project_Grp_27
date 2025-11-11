@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# documentation (internal use only)
+TESTING_DOCUMENTATION.md
+ARCHITECTURE.md
