@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchUserProfile } from "@/lib/api/user";
 
@@ -12,14 +12,18 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, isAuthenticated } = useAuth();
+
+  // Get return URL from query params
+  const returnUrl = searchParams.get("returnUrl") || "/dashboard";
 
   // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated) {
-      router.replace("/dashboard");
+      router.replace(returnUrl);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, returnUrl]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -44,18 +48,21 @@ export default function LoginPage() {
       }
 
       // Fetch user profile after successful login
-      const userProfile = await fetchUserProfile();
+      try {
+        const userProfile = await fetchUserProfile();
 
-      // Update auth context
-      login(userProfile);
+        // Update auth context
+        login(userProfile);
+      } catch (profileError) {
+        console.error("Failed to fetch user profile:", profileError);
+        // Continue with redirect even if profile fetch fails
+        // The AuthProvider will refetch the profile on mount
+      }
 
-      // Force a small delay to ensure state updates propagate
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Redirect to dashboard using replace to prevent back button issues
-      router.replace("/dashboard");
+      // Use window.location.href for more reliable redirect in production
+      window.location.href = returnUrl;
     } catch (err) {
-      console.error(err);
+      console.error("Login error:", err);
       setError("Something went wrong. Please try again.");
       setIsLoading(false);
     }

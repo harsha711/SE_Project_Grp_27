@@ -19,8 +19,20 @@ export async function POST(req: Request) {
 
   // Store tokens in httpOnly cookies
   const cookieStore = await cookies();
-  cookieStore.set("accessToken", accessToken, { httpOnly: true, secure: true, path: "/" });
-  cookieStore.set("refreshToken", refreshToken, { httpOnly: true, secure: true, path: "/" });
+  cookieStore.set("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7 // 7 days
+  });
+  cookieStore.set("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30 // 30 days
+  });
 
   return Response.json({ success: true });
 }
