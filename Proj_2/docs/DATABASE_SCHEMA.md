@@ -390,7 +390,7 @@ To add a new field to the schema:
 
 1. Update the schema in `src/models/FastFoodItem.js`
 2. Existing documents will have `null` values for the new field
-3. Re-import data if needed: `npm run import-data`
+3. Re-import data if needed: `npm run import:fastfood`
 
 ### Modifying Existing Fields
 

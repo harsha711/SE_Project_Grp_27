@@ -131,7 +131,7 @@ DOORDASH_SIGNING_SECRET=your_signing_secret
 Import the fast food nutrition data into MongoDB:
 
 ```bash
-npm run import-data
+npm run import:fastfood
 ```
 
 This will populate your database with fast food nutrition information from major chains (McDonald's, Burger King, Wendy's, KFC, Taco Bell, Pizza Hut).
@@ -340,7 +340,7 @@ npm test
 npm run test:coverage
 
 # Import sample data
-npm run import-data
+npm run import:fastfood
 
 # Start production server
 npm start
