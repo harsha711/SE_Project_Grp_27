@@ -1,10 +1,10 @@
 import express from "express";
 import {
-    register,
-    login,
-    getProfile,
-    changePassword,
-    refreshAccessToken,
+  register,
+  login,
+  getProfile,
+  changePassword,
+  refreshAccessToken,
 } from "../controllers/user.controller.js";
 import { authenticate } from "../middleware/auth.middleware.js";
 

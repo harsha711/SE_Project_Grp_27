@@ -1,14 +1,38 @@
+/**
+ * Cart page (client): displays current cart items, allows quantity updates/removals,
+ * and places orders by posting the cart payload to the backend via the frontend
+ * proxy (`/api/proxy?path=/api/orders`). The proxy forwards the httpOnly accessToken
+ * as an Authorization header so backend auth middleware can attach `req.user`.
+ *
+ * On successful order creation the server-side cart is cleared and the client
+ * cart is cleared locally before redirecting the user.
+ *
+ * @author Ahmed Hassan
+ */
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, CheckCircle } from "lucide-react";
+import {
+  Trash2,
+  Plus,
+  Minus,
+  ShoppingBag,
+  ArrowLeft,
+  CheckCircle,
+} from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
 export default function CartPage() {
   const router = useRouter();
-  const { items: cartItems, removeFromCart, updateQuantity, clearCart, summary } = useCart();
+  const {
+    items: cartItems,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    summary,
+  } = useCart();
 
   // Order state
   const [isProcessing, setIsProcessing] = useState(false);
@@ -35,32 +59,62 @@ export default function CartPage() {
   const { totalItems, subtotal, tax, deliveryFee, total } = summary;
 
   // Place Order handler
-  const handlePlaceOrder = () => {
-    setIsProcessing(true);
+  const handlePlaceOrder = async () => {
+    try {
+      setIsProcessing(true);
 
-    // Save order summary before clearing cart
-    setOrderSummary({
-      total: total,
-      totalItems: totalItems,
-    });
+      // Save order summary before sending
+      setOrderSummary({
+        total: total,
+        totalItems: totalItems,
+      });
 
-    // Simulate order processing
-    setTimeout(() => {
-      console.log("Order placed successfully!");
-      console.log("Cart Items:", cartItems);
-      console.log("Total:", total.toFixed(2));
+      const payload = {
+        items: cartItems.map((ci) => {
+          const fi = (ci.foodItem as any) || {};
+          return {
+            foodItem: fi._id || fi.id || ci.foodItem,
+            restaurant: fi.restaurant || (ci as any).restaurant || "",
+            item: fi.item || (ci as any).item || "",
+            calories: fi.calories || (ci as any).calories || 0,
+            price: (ci as any).price || 0,
+            quantity: (ci as any).quantity || 1,
+          };
+        }),
+      };
 
-      // Clear the cart
+      const resp = await fetch(
+        `/api/proxy?path=${encodeURIComponent("/api/orders")}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const data = await resp.json();
+      if (!resp.ok) {
+        console.error("Order creation failed:", data);
+        setIsProcessing(false);
+        return;
+      }
+
+      console.log("Order placed successfully!", data);
+
       clearCart();
 
       setIsProcessing(false);
       setOrderPlaced(true);
 
-      // Redirect to home after 3 seconds
       setTimeout(() => {
         router.push("/");
       }, 3000);
-    }, 2000);
+    } catch (error) {
+      console.error("Failed to place order:", error);
+      setIsProcessing(false);
+    }
   };
 
   // Success Animation State
@@ -97,10 +151,6 @@ export default function CartPage() {
             Order Placed!
           </h1>
 
-          <p className="text-lg mb-6" style={{ color: "var(--text-subtle)" }}>
-            Your delicious food is on the way!
-          </p>
-
           <div
             className="p-6 rounded-xl mb-6"
             style={{
@@ -111,14 +161,12 @@ export default function CartPage() {
             <p className="text-sm mb-2" style={{ color: "var(--text-muted)" }}>
               Order Total
             </p>
-            <p
-              className="text-3xl font-bold"
-              style={{ color: "var(--cream)" }}
-            >
+            <p className="text-3xl font-bold" style={{ color: "var(--cream)" }}>
               ${orderSummary.total.toFixed(2)}
             </p>
             <p className="text-sm mt-2" style={{ color: "var(--text-subtle)" }}>
-              {orderSummary.totalItems} {orderSummary.totalItems === 1 ? "item" : "items"}
+              {orderSummary.totalItems}{" "}
+              {orderSummary.totalItems === 1 ? "item" : "items"}
             </p>
           </div>
 
@@ -129,15 +177,24 @@ export default function CartPage() {
             <div className="flex gap-1">
               <span
                 className="w-2 h-2 rounded-full animate-pulse"
-                style={{ backgroundColor: "var(--orange)", animationDelay: "0s" }}
+                style={{
+                  backgroundColor: "var(--orange)",
+                  animationDelay: "0s",
+                }}
               />
               <span
                 className="w-2 h-2 rounded-full animate-pulse"
-                style={{ backgroundColor: "var(--orange)", animationDelay: "0.2s" }}
+                style={{
+                  backgroundColor: "var(--orange)",
+                  animationDelay: "0.2s",
+                }}
               />
               <span
                 className="w-2 h-2 rounded-full animate-pulse"
-                style={{ backgroundColor: "var(--orange)", animationDelay: "0.4s" }}
+                style={{
+                  backgroundColor: "var(--orange)",
+                  animationDelay: "0.4s",
+                }}
               />
             </div>
             <span>Redirecting to home...</span>
@@ -534,10 +591,7 @@ export default function CartPage() {
 
                 {/* Additional Info */}
                 <div className="mt-4 text-center">
-                  <p
-                    className="text-sm"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                  <p className="text-sm" style={{ color: "var(--text-muted)" }}>
                     Free delivery on orders over $30
                   </p>
                 </div>

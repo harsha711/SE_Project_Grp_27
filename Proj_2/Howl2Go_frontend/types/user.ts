@@ -21,6 +21,8 @@ export interface UserProfile {
   email: string;
   dailyGoal: number;
   avatar?: string;
+  // Role of the user within the system: 'user' | 'staff' | 'admin'
+  role?: string;
 }
 
 export interface DashboardData {
