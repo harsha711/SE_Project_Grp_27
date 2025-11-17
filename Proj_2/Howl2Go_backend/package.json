@@ -9,6 +9,7 @@
         "start": "node src/server.js",
         "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --coverage",
         "coverage": "cat ./coverage/lcov.info | coveralls",
+        "seed:admin": "node src/scripts/seedAdmin.js",
         "import:fastfood": "node src/scripts/importFastFoodData.js",
         "prepare": "husky"
     },

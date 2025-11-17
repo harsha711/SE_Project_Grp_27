@@ -138,6 +138,15 @@ This will populate your database with fast food nutrition information from major
 
 ---
 
+### 2.5 Seed Admin Account
+
+Seed the admin account into the MongoDB:
+
+```bash
+npm run seed:admin
+```
+---
+
 ## Step 3: Frontend Installation
 
 ### 3.1 Navigate to Frontend Directory
@@ -160,14 +169,14 @@ This will install all required frontend dependencies including:
 - TypeScript
 - Axios (HTTP client)
 
-### 3.3 Configure Frontend Environment (Optional)
+### 3.3 Configure Frontend Environment
 
-If your backend runs on a different port or host, create a `.env.local` file:
+Create a `.env.local` file in the `Howl2Go_frontend` directory:
 
 ```bash
-NEXT_PUBLIC_API_URL=http://localhost:4000
+# Copy the example environment file
+cp .env.local.example .env.local
 ```
-
 ---
 
 ## Step 4: Running the Application

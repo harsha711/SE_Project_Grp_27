@@ -652,11 +652,13 @@ added 300+ packages, and audited 301 packages in 30s
 found 0 vulnerabilities
 ```
 
-### Step 3: Configure Environment (Optional)
+### Step 3: Configure Frontend Environment
+
+Create a `.env.local` file in the `Howl2Go_frontend` directory:
 
 ```bash
-# Create .env.local if needed
-echo "NEXT_PUBLIC_API_URL=http://localhost:4000/api" > .env.local
+# Copy the example environment file
+cp .env.local.example .env.local
 ```
 
 ### Step 4: Start Development Server
@@ -861,6 +863,14 @@ db.fastfooditems.insertOne({
 })
 ```
 
+### Seed Admin Account
+
+Seed the admin account into the MongoDB:
+
+```bash
+npm run seed:admin
+```
+
 ---
 
 ## 9. Testing Setup
@@ -949,44 +959,6 @@ describe('API Tests', () => {
     assert.ok(response.body.results.length > 0);
   });
 });
-```
-
-### Test Coverage (Future Enhancement)
-
-To add test coverage:
-
-```bash
-# Install coverage tool (not yet in project)
-npm install --save-dev c8
-
-# Add to package.json scripts:
-{
-  "scripts": {
-    "test:coverage": "c8 npm test"
-  }
-}
-
-# Run with coverage
-npm run test:coverage
-```
-
-### Frontend Testing (To Be Implemented)
-
-Currently, frontend tests are not implemented. Here's how to add them:
-
-```bash
-cd Howl2Go_frontend
-
-# Install testing libraries
-npm install --save-dev @testing-library/react @testing-library/jest-dom jest jest-environment-jsdom
-
-# Add test script to package.json
-{
-  "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch"
-  }
-}
 ```
 
 ---
@@ -2026,6 +1998,7 @@ Use this checklist to verify your development environment is set up correctly:
 
 ### Frontend Setup
 - [ ] Frontend dependencies installed (`npm install`)
+- [ ] `.env.local` file created with all variables
 - [ ] Frontend server starts successfully (`npm run dev`)
 - [ ] Can access home page at http://localhost:3000
 - [ ] Search functionality works (makes API calls to backend)

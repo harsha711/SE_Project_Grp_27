@@ -129,6 +129,10 @@ npm run dev
 ```bash
 cd ../Howl2Go_frontend
 npm install
+
+# Create .env file
+echo "BACKEND_URL=http://localhost:4000" > .env
+
 npm run dev
 ```
 

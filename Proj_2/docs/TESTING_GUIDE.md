@@ -10,8 +10,7 @@
 ## Quick Stats
 
 ```
-Total Tests: 404+
-├── Frontend: 200+ tests (17 suites)
+Total Tests: 200+
 ├── Backend: 200+ tests (12 suites)
 └── Coverage: 80%+
 ```
@@ -29,24 +28,6 @@ Total Tests: 404+
 ---
 
 ## Running Tests
-
-### Frontend Tests
-
-```bash
-cd "Proj_2/Howl2Go_frontend"
-
-# Run all tests
-npm test
-
-# Run with coverage
-npm test -- --coverage
-
-# Watch mode (auto-rerun on changes)
-npm test -- --watch
-
-# Run specific file
-npm test Cart.test.tsx
-```
 
 ### Backend Tests
 
@@ -75,14 +56,6 @@ npm test -- --watch
 ---
 
 ## Test Coverage
-
-### Frontend (200+ Tests)
-
-| Category | Tests | Files |
-|----------|-------|-------|
-| **Pages** | **150+** | Cart (56), Search (30), Signup (45), Dashboard (35), About (40), Home (15), Login (12) |
-| **Components** | **40+** | Header, Footer, SearchBar, ItemCard, DishCard, HeroSection, etc. |
-| **Integration** | **10+** | SearchToCart flow |
 
 ### Backend (200+ Tests)
 
@@ -274,12 +247,6 @@ Object.defineProperty(window, 'location', {
 
 ## Testing Stack
 
-### Frontend
-- **Jest 29** - Test runner
-- **React Testing Library 14** - Component testing
-- **@testing-library/user-event 14** - User interactions
-- **@testing-library/jest-dom 6** - DOM matchers
-
 ### Backend
 - **Jest 29** - Test runner
 - **Supertest 6** - HTTP testing
@@ -295,7 +262,6 @@ Object.defineProperty(window, 'location', {
 Tests run automatically on push/PR via `.github/workflows/test.yml`:
 
 ```yaml
-- Frontend tests with coverage upload to Coveralls
 - Backend tests with MongoDB Memory Server
 - Automatic badge updates
 ```
@@ -305,7 +271,6 @@ Tests run automatically on push/PR via `.github/workflows/test.yml`:
 Husky runs tests before each commit:
 
 ```bash
-cd "Proj_2/Howl2Go_frontend" && npm test
 cd "Proj_2/Howl2Go_backend" && npm test
 ```
 
