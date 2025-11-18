@@ -51,6 +51,42 @@ export default function Footer() {
             >
               Jai
             </a>
+            <span>•</span>
+            <a
+              href="https://github.com/AhmedOHassan"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[var(--orange)] transition-colors"
+            >
+              Ahmed
+            </a>
+            <span>•</span>
+            <a
+              href="https://github.com/nolanwitt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[var(--orange)] transition-colors"
+            >
+              Nolan
+            </a>
+            <span>•</span>
+            <a
+              href="https://github.com/ShounakDeshmukh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[var(--orange)] transition-colors"
+            >
+              Shounak
+            </a>
+            <span>•</span>
+            <a
+              href="https://github.com/jcmigaly"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[var(--orange)] transition-colors"
+            >
+              Jc
+            </a>
           </div>
 
           {/* Links */}
