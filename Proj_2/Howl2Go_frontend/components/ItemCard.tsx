@@ -19,6 +19,8 @@ interface ItemCardProps extends Partial<FoodItem> {
   onAdd?: (item: FoodItem) => void;
   onShowDescription?: (item: FoodItem) => void;
   price?: number;
+  computedMetric?: number;
+  metricLabel?: string;
 }
 
 // Get restaurant logo with flexible matching to handle API name variations
@@ -162,6 +164,13 @@ export default function ItemCard({
             {calories} cal
           </span>
         </div>
+        {typeof (restProps as any).computedMetric === "number" && (
+          <div className="inline-flex items-center ml-3 gap-2 bg-[var(--bg-hover)] px-3 py-1.5 rounded-full text-xs">
+            <span className="font-medium text-[var(--text)]">
+              {(restProps as any).metricLabel || ""}: {(restProps as any).computedMetric}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Description Section (Collapsible) */}
