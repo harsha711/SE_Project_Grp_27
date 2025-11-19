@@ -184,6 +184,17 @@ Now, here is the user prompt: ${userPrompt}
     }
 
     /**
+     * Convert price to calorie range (since price is calculated from calories)
+     * Formula: price = calories * 0.01, min $2.00, max $15.00
+     * @param {number} price - Price constraint
+     * @returns {number} - Equivalent calorie value
+     */
+    priceToCalories(price) {
+        // Reverse the formula: calories = price / 0.01
+        return price / 0.01;
+    }
+
+    /**
      * Convert LLM criteria to MongoDB query
      * @param {Object} criteria - Parsed criteria from LLM
      * @returns {Object} - MongoDB query object
@@ -191,7 +202,48 @@ Now, here is the user prompt: ${userPrompt}
     buildMongoQuery(criteria) {
         const query = {};
 
-        // Map of criteria fields to database fields
+        // Handle price separately since it's calculated from calories
+        if (criteria.price) {
+            const priceConstraint = criteria.price;
+            const calorieConstraint = {};
+
+            if (priceConstraint.min !== undefined) {
+                // Min price → Min calories
+                // But account for the $2 minimum price (200 calories)
+                const minCalories = Math.max(this.priceToCalories(priceConstraint.min), 200);
+                calorieConstraint.$gte = minCalories;
+            }
+            
+            if (priceConstraint.max !== undefined) {
+                // Max price → Max calories
+                // But account for the $15 maximum price (1500 calories)
+                const maxCalories = Math.min(this.priceToCalories(priceConstraint.max), 1500);
+                calorieConstraint.$lte = maxCalories;
+            }
+
+            // Merge with existing calorie constraints if any
+            if (criteria.calories) {
+                const existingCalories = criteria.calories;
+                if (existingCalories.min !== undefined) {
+                    calorieConstraint.$gte = Math.max(
+                        calorieConstraint.$gte || 0,
+                        existingCalories.min
+                    );
+                }
+                if (existingCalories.max !== undefined) {
+                    calorieConstraint.$lte = Math.min(
+                        calorieConstraint.$lte || Infinity,
+                        existingCalories.max
+                    );
+                }
+            }
+
+            if (Object.keys(calorieConstraint).length > 0) {
+                query.calories = calorieConstraint;
+            }
+        }
+
+        // Map of criteria fields to database fields (excluding price and calories)
         const fieldMapping = {
             company: "company",
             item: "item",
@@ -206,7 +258,6 @@ Now, here is the user prompt: ${userPrompt}
             saturatedFat: "saturatedFat",
             transFat: "transFat",
             caloriesFromFat: "caloriesFromFat",
-            price: "price",
         };
 
         for (const [criteriaField, dbField] of Object.entries(fieldMapping)) {
@@ -223,6 +274,12 @@ Now, here is the user prompt: ${userPrompt}
                     }
                     continue;
                 }
+                
+                // Skip calories if already handled by price conversion
+                if (criteriaField === "calories" && criteria.price) {
+                    continue;
+                }
+                
                 const constraint = criteria[criteriaField];
 
                 if (
