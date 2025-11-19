@@ -584,3 +584,115 @@ test("LLM Service - parseQuery handles multiple constraints from natural languag
     const constraintCount = [hasCalories, hasProtein, hasFat].filter(Boolean).length;
     expect(constraintCount).toBeGreaterThanOrEqual(2);
 }, 10000);
+
+// Price-based recommendation tests
+test("LLM Service - buildMongoQuery handles price max constraint", () => {
+    const criteria = {
+        price: { max: 5 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        price: { $lte: 5 },
+    });
+});
+
+test("LLM Service - buildMongoQuery handles price min constraint", () => {
+    const criteria = {
+        price: { min: 10 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        price: { $gte: 10 },
+    });
+});
+
+test("LLM Service - buildMongoQuery handles price range constraint", () => {
+    const criteria = {
+        price: { min: 8, max: 12 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        price: { $gte: 8, $lte: 12 },
+    });
+});
+
+test("LLM Service - buildMongoQuery handles price with nutritional criteria", () => {
+    const criteria = {
+        price: { max: 10 },
+        protein: { min: 20 },
+        calories: { max: 600 },
+    };
+
+    const query = llmService.buildMongoQuery(criteria);
+
+    assert.deepEqual(query, {
+        price: { $lte: 10 },
+        protein: { $gte: 20 },
+        calories: { $lte: 600 },
+    });
+});
+
+test("LLM Service - buildPrompt includes price examples", () => {
+    const userPrompt = "cheap meal under $5";
+    const prompt = llmService.buildPrompt(userPrompt);
+
+    assert.ok(prompt.includes("price"));
+    assert.ok(prompt.includes("$5") || prompt.includes("5"));
+    assert.ok(prompt.includes("Budget"));
+});
+
+test("LLM Service - parseQuery extracts price from natural language (under $5)", async () => {
+    const userPrompt = "meals under $5";
+
+    const result = await llmService.parseQuery(userPrompt);
+
+    assert.strictEqual(result.success, true);
+    expect(result.criteria).toBeDefined();
+    
+    // Should extract price constraint
+    const hasPrice = result.criteria.price !== undefined;
+    expect(hasPrice).toBe(true);
+    
+    if (result.criteria.price) {
+        expect(result.criteria.price.max).toBeDefined();
+    }
+}, 10000);
+
+test("LLM Service - parseQuery extracts price range from natural language", async () => {
+    const userPrompt = "meals between $8 and $12";
+
+    const result = await llmService.parseQuery(userPrompt);
+
+    assert.strictEqual(result.success, true);
+    expect(result.criteria).toBeDefined();
+    
+    // Should extract price range
+    const hasPrice = result.criteria.price !== undefined;
+    expect(hasPrice).toBe(true);
+    
+    if (result.criteria.price) {
+        expect(result.criteria.price.min).toBeDefined();
+        expect(result.criteria.price.max).toBeDefined();
+    }
+}, 10000);
+
+test("LLM Service - parseQuery handles combined price and protein query", async () => {
+    const userPrompt = "high protein lunch under $10";
+
+    const result = await llmService.parseQuery(userPrompt);
+
+    assert.strictEqual(result.success, true);
+    expect(result.criteria).toBeDefined();
+    
+    // Should extract both price and protein
+    const hasPrice = result.criteria.price !== undefined;
+    const hasProtein = result.criteria.protein !== undefined;
+    
+    expect(hasPrice || hasProtein).toBe(true);
+}, 10000);

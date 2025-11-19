@@ -473,6 +473,43 @@ function SmartMenuSearchContent() {
           </div>
         </motion.div>
 
+        {/* Price Filter Chips */}
+        {!hasSearched && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            className="mb-6"
+          >
+            <h3 className="text-sm font-medium text-[var(--text-subtle)] mb-3">
+              Quick Price Filters
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { label: "Under $5", query: "meals under $5" },
+                { label: "$5-$10", query: "meals between $5 and $10" },
+                { label: "$10-$15", query: "meals between $10 and $15" },
+                { label: "Budget-Friendly", query: "cheap healthy meal" },
+                { label: "Premium", query: "premium meal" },
+              ].map((filter) => (
+                <button
+                  key={filter.label}
+                  onClick={() => {
+                    setSearchQuery(filter.query);
+                    // Auto-submit the search
+                    handleSearch(
+                      new Event("submit") as unknown as React.FormEvent
+                    );
+                  }}
+                  className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 bg-[var(--bg-card)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--orange)] hover:text-[var(--text)] hover:border-[var(--orange)]"
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
         {/* Results Section */}
         {/* Controls: advanced filtering / metrics */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-6">

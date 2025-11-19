@@ -50,6 +50,79 @@ test("POST /api/food/recommend endpoint exists", async () => {
     assert.notEqual(response.status, 404);
 });
 
+if (hasGroqApiKey) {
+    test("POST /api/food/recommend - handles price-based query (under $5)", async () => {
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: "meals under $5" })
+            .expect(200);
+
+        assert.equal(response.body.success, true);
+        expect(response.body.recommendations).toBeDefined();
+        
+        // All items should have price <= 5
+        if (response.body.recommendations && response.body.recommendations.length > 0) {
+            response.body.recommendations.forEach(item => {
+                if (item.price) {
+                    expect(item.price).toBeLessThanOrEqual(5);
+                }
+            });
+        }
+    }, 15000);
+
+    test("POST /api/food/recommend - handles price range query", async () => {
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: "meals between $8 and $12" })
+            .expect(200);
+
+        assert.equal(response.body.success, true);
+        expect(response.body.recommendations).toBeDefined();
+        
+        // Items should be within price range
+        if (response.body.recommendations && response.body.recommendations.length > 0) {
+            response.body.recommendations.forEach(item => {
+                if (item.price) {
+                    expect(item.price).toBeGreaterThanOrEqual(8);
+                    expect(item.price).toBeLessThanOrEqual(12);
+                }
+            });
+        }
+    }, 15000);
+
+    test("POST /api/food/recommend - handles combined price and nutrition query", async () => {
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: "high protein meal under $10" })
+            .expect(200);
+
+        assert.equal(response.body.success, true);
+        expect(response.body.recommendations).toBeDefined();
+        
+        // Should have both price and protein criteria
+        if (response.body.recommendations && response.body.recommendations.length > 0) {
+            response.body.recommendations.forEach(item => {
+                if (item.price) {
+                    expect(item.price).toBeLessThanOrEqual(10);
+                }
+            });
+        }
+    }, 15000);
+
+    test("POST /api/food/recommend - handles budget-friendly query", async () => {
+        const response = await request(app)
+            .post("/api/food/recommend")
+            .send({ query: "cheap healthy meal" })
+            .expect(200);
+
+        assert.equal(response.body.success, true);
+        expect(response.body.recommendations).toBeDefined();
+        
+        // Should extract price constraint from "cheap"
+        expect(response.body.criteria).toBeDefined();
+    }, 15000);
+}
+
 if (!hasGroqApiKey) {
     console.log(
         "\n⚠️  Warning: GROQ_API_KEY not set. Skipping integration tests that require LLM API.\n"

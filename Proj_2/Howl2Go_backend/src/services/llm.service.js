@@ -40,13 +40,14 @@ class LLMService {
      * @returns {string} - Formatted prompt for the LLM
      */
     buildPrompt(userPrompt) {
-        return `Your goal is to extract nutritional and taste-based information from user prompts in the form of a structured json object.
-For example, the user might ask 'I want to eat something that has at least 30g of protein, less than 500 calories, and is pretty spicy.'
+        return `Your goal is to extract nutritional, taste-based, and price information from user prompts in the form of a structured json object.
+For example, the user might ask 'I want to eat something that has at least 30g of protein, less than 500 calories, is pretty spicy, and costs under $8.'
 The response should be a json object with the following fields:
 {
 "spice_level": {"min": 3},
 "calories": {"max": 500},
 "protein": {"min": 30},
+"price": {"max": 8},
 "item": {"name": "burger"}
 }
 Respond only with the json object and nothing else. If a field is not mentioned in the prompt, it should be omitted from the response.
@@ -65,6 +66,8 @@ fats/protein/carbs/fiber/sugars → grams (g)
 
 sodium/cholesterol → milligrams (mg)
 
+price → USD ($) - extract numeric value only (e.g., "$5" or "5 dollars" → 5)
+
 Here are some examples:
 User prompt: "I want a meal with at least 20g of fiber and low sugar."
 Response: {"fiber": {"min": 20}, "sugars": {"max": 10}}
@@ -74,6 +77,18 @@ Response: {"sugars": {"max": 15}, "calories": {"max": 300}}
 
 User prompt: "Between 400 and 600 calories, high protein, no sugar."
 Response: {"calories": {"min": 400, "max": 600}, "protein": {"min": 20}, "sugars": {"max": 0}}
+
+User prompt: "Cheap meal under $5"
+Response: {"price": {"max": 5}}
+
+User prompt: "Show me meals between $8 and $12"
+Response: {"price": {"min": 8, "max": 12}}
+
+User prompt: "High protein lunch under $10"
+Response: {"protein": {"min": 20}, "price": {"max": 10}}
+
+User prompt: "Budget-friendly healthy meal"
+Response: {"price": {"max": 7}, "calories": {"max": 600}}
 
 User prompt: "Show me Big Mac nutritional information"
 Response: {"item": {"name": "Big Mac"}}
@@ -191,6 +206,7 @@ Now, here is the user prompt: ${userPrompt}
             saturatedFat: "saturatedFat",
             transFat: "transFat",
             caloriesFromFat: "caloriesFromFat",
+            price: "price",
         };
 
         for (const [criteriaField, dbField] of Object.entries(fieldMapping)) {
