@@ -404,7 +404,7 @@ function SmartMenuSearchContent() {
             </Link>
           </div>
           <Link
-            href="/dashboard"
+            href="/"
             className="px-4 py-2 font-semibold rounded-full transition-all hover:scale-105 bg-[var(--orange)] text-[var(--text)] text-sm"
           >
             Dashboard
