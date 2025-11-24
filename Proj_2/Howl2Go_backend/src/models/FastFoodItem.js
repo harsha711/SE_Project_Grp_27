@@ -68,7 +68,11 @@ const fastFoodItemSchema = new mongoose.Schema(
         iron: {
             type: Number,
             default: null,
-        }
+        },
+        potassium: {
+            type: Number,
+            default: null,
+        },
     },
     {
         timestamps: true,
