@@ -537,64 +537,64 @@ Burger King,BK® Café Mocha Frappe- 20 fl oz,510,110,13,8,0,50,350,87,1,71,12,5
 Burger King,BK® Café Caramel Frappe- 12 fl oz,300,80,8,5,0,35,210,50,0,41,7,339,0.4,250,21,170,0.03,0,0.5
 Burger King,BK® Café Caramel Frappe- 16 fl oz,400,90,10,7,0,40,280,68,0,56,9,454,0.5,330,28,230,0.04,0,0.7
 Burger King,BK® Café Caramel Frappe- 20 fl oz,500,110,12,8,0,50,350,86,0,71,11,568,0.7,420,36,290,0.05,0,0.9
-Wendy’s,Baconator,950,,62,24,3,205,1630,40,2,8,59,923
-Wendy’s,Dave’s Double,810,,51,20,3,175,1280,41,3,8,49,789
-Wendy’s,Dave’s Single,570,,34,13,1.5,100,1110,40,3,9,30,562
-Wendy’s,Dave’s Triple,1090,,72,30,4,260,1650,43,3,9,71,1058
-Wendy’s,Double Stack,390,,21,9,1.5,90,740,26,1,6,25,380
-Wendy’s,Jr. Bacon Cheeseburger,380,,22,8,1,65,680,25,1,5,19,374
-Wendy’s,Jr. Cheeseburger,280,,13,6,1,50,660,26,1,6,16,276
-Wendy’s,Jr. Cheeseburger Deluxe,340,,19,7,1,55,660,27,2,7,16,338
-Wendy’s,Son of Baconator,630,,39,15,1.5,125,1280,37,2,7,34,618
-Wendy’s,3 Piece Chicken Tenders,330,,16,2.5,0,75,1010,22,0,0,24,309
-Wendy’s,4 Piece Chicken Nuggets,170,,11,2,0,35,340,10,0,0,9,163
-Wendy’s,4 Piece Chicken Tenders,430,,21,3.5,0,100,1350,29,0,1,32,403
-Wendy’s,6 Picece Chicken Nuggets,250,,16,3.5,0,50,510,14,1,0,13,241
-Wendy’s,6 Piece Chicken Tenders,650,,32,5,0,150,2020,43,0,1,48,608
-Wendy’s,10 Piece Chicken Nuggets,420,,27,5,0,80,850,24,1,0,22,403
-Wendy’s,Crispy Chicken BLT,420,,23,6,0,50,950,35,2,5,20,411
-Wendy’s,Crispy Chicken Sandwich,330,,16,3,0,30,600,33,2,4,14,323
-Wendy’s,Grilled Asiago Ranch Club,530,,23,7,0,120,1220,36,3,6,43,500
-Wendy’s,Grilled Chicken Sandwich,370,,10,2,0,90,830,38,3,8,34,346
-Wendy’s,Grilled Chicken Wrap,270,,10,3.5,0,55,640,24,2,3,20,257
-Wendy’s,Homestyle Asiago Ranch Chicken Club,660,,34,9,0,100,1650,52,3,7,38,638
-Wendy’s,Homestyle Chicken Sandwich,510,,22,4,0,70,1150,51,3,6,28,492
-Wendy’s,S’Awesome Sauce,120,,12,2,0,0,170,4,1,3,1,124
-Wendy’s,Spicy Asiago Ranch Club,670,,32,9,0,100,1530,55,4,6,38,647
-Wendy’s,Spicy Chicken Sandwich,510,,20,3.5,0,65,1030,54,4,6,29,491
-Wendy’s,Spicy Chicken Wrap,370,,20,5,0,50,850,30,2,2,18,359
-Wendy’s,"Apple Pecan Chicken Salad, Full Size",560,,24,7,0,115,1020,52,7,40,38,569
-Wendy’s,"Apple Pecan Chicken Salad, Half Size",340,,17,4,0,55,550,29,4,22,20,346
-Wendy’s,"Berry Burst Chicken Salad, Full Size",460,,17,4.5,0,105,1090,41,7,29,41,453
-Wendy’s,"Berry Burst Chicken Salad, Half Size",290,,13,2.5,0,50,570,23,5,15,23,285
-Wendy’s,Caesar Side Salad,240,,15,4,0,30,500,19,3,4,8,240
-Wendy’s,Garden Side Salad,250,,18,4,0,20,460,18,2,4,7,251
-Wendy’s,"Southwest Avocado Chicken Salad, Full Size",600,,41,11,0,135,1220,18,7,7,42,576
-Wendy’s,"Southwest Avocado Chicken Salad, Half Size",300,,20,6,0,70,620,10,4,4,21,289
-Wendy’s,"Spicy Caesar Chicken Salad, Full Size",720,,42,12,1,150,1680,44,8,6,42,696
-Wendy’s,"Spicy Caesar Chicken Salad, Half Size",410,,23,6,0.5,75,930,30,5,4,23,397
-Wendy’s,"Taco Salad, Full Size",660,,32,13,1,85,1820,63,10,18,32,659
-Wendy’s,"Taco Salad, Half Size",470,,23,8,0.5,45,1320,49,7,12,19,471
-Wendy’s,Apple Bites,35,,0,0,0,0,0,9,2,7,0,42
-Wendy’s,Baconator Fries,490,,28,9,0,35,550,45,4,2,14,487
-Wendy’s,Bacon Cheese Baked Potato,440,,14,6,0,35,550,64,7,4,17,433
-Wendy’s,Cheese Baked Potato,430,,13,7,0,30,560,65,7,5,14,428
-Wendy’s,Chili & Cheese Baked Potato,460,,11,5,0,35,710,71,8,7,19,453
-Wendy’s,"Chili, Large",250,,7,3,0.5,50,1170,23,5,9,23,239
-Wendy’s,"Chili, Small",170,,5,2,0,35,780,16,4,6,15,163
-Wendy’s,Chili Cheese Fries,500,,25,8,0.5,35,710,53,6,4,16,496
-Wendy’s,"Natural-Cut Fries, Junior",230,,10,2,0,0,15,30,3,0,3,229
-Wendy’s,"Natural-Cut Fries, Large",530,,24,4.5,0,0,520,70,6,0,7,528
-Wendy’s,"Natural-Cut Fries, Medium",420,,19,3.5,0,0,420,56,5,0,6,418
-Wendy’s,"Natural-Cut Fries, Small",320,,15,2.5,0,0,320,43,4,0,5,318
-Wendy’s,Plain Baked Potato,270,,0,0,0,0,25,61,7,3,7,266
-Wendy’s,Sour Cream and Chive Baked Potato,310,,2.5,2.5,0,10,35,63,7,4,8,309
-Wendy’s,Summer Berry Burst Fruit Cup,20,,0,0,0,0,0,5,1,3,0,23
-Wendy’s,1% Chocolate Milk,150,,2.5,1.5,0,10,170,26,0,23,7,168
-Wendy’s,1% White Milk,90,,2,1.5,0,10,105,10,0,10,7,95
-Wendy’s,"All-Natural Lemonade, Large",380,,0,0,0,0,0,100,0,93,0,473
-Wendy’s,"All-Natural Lemonade, Medium",330,,0,0,0,0,0,86,0,81,0,411
-Wendy’s,"All-Natural Lemonade, Small",190,,0,0,0,0,0,50,0,47,0,237
+Wendy's,Baconator,950,,62,24,3,205,1630,40,2,8,59,923,9.5,980,72,480,0.16,6,2.9
+Wendy's,Dave's Double,810,,51,20,3,175,1280,41,3,8,49,789,7.8,820,62,420,0.14,8,2.4
+Wendy's,Dave's Single,570,,34,13,1.5,100,1110,40,3,9,30,562,4.5,520,40,260,0.08,6,1.5
+Wendy's,Dave's Triple,1090,,72,30,4,260,1650,43,3,9,71,1058,11.4,1120,84,580,0.19,10,3.5
+Wendy's,Double Stack,390,,21,9,1.5,90,740,26,1,6,25,380,4,420,36,240,0.07,3,1.2
+Wendy's,Jr. Bacon Cheeseburger,380,,22,8,1,65,680,25,1,5,19,374,2.8,320,28,180,0.05,2,0.9
+Wendy's,Jr. Cheeseburger,280,,13,6,1,50,660,26,1,6,16,276,2.4,260,24,160,0.04,2,0.7
+Wendy's,Jr. Cheeseburger Deluxe,340,,19,7,1,55,660,27,2,7,16,338,2.6,300,26,170,0.04,4,0.8
+Wendy's,Son of Baconator,630,,39,15,1.5,125,1280,37,2,7,34,618,5.4,660,48,340,0.1,5,1.8
+Wendy's,3 Piece Chicken Tenders,330,,16,2.5,0,75,1010,22,0,0,24,309,1.8,380,28,25,0.03,0,0.5
+Wendy's,4 Piece Chicken Nuggets,170,,11,2,0,35,340,10,0,0,9,163,0.8,180,15,15,0.01,0,0.2
+Wendy's,4 Piece Chicken Tenders,430,,21,3.5,0,100,1350,29,0,1,32,403,2.4,510,38,35,0.04,0,0.7
+Wendy's,6 Picece Chicken Nuggets,250,,16,3.5,0,50,510,14,1,0,13,241,1.2,270,22,22,0.02,0,0.3
+Wendy's,6 Piece Chicken Tenders,650,,32,5,0,150,2020,43,0,1,48,608,3.6,760,56,52,0.06,0,1
+Wendy's,10 Piece Chicken Nuggets,420,,27,5,0,80,850,24,1,0,22,403,2,450,38,38,0.03,0,0.5
+Wendy's,Crispy Chicken BLT,420,,23,6,0,50,950,35,2,5,20,411,2.4,440,32,140,0.04,6,0.7
+Wendy's,Crispy Chicken Sandwich,330,,16,3,0,30,600,33,2,4,14,323,1.8,340,26,100,0.02,4,0.5
+Wendy's,Grilled Asiago Ranch Club,530,,23,7,0,120,1220,36,3,6,43,500,3.2,660,44,240,0.08,8,1.2
+Wendy's,Grilled Chicken Sandwich,370,,10,2,0,90,830,38,3,8,34,346,2.4,580,38,120,0.06,10,0.9
+Wendy's,Grilled Chicken Wrap,270,,10,3.5,0,55,640,24,2,3,20,257,1.6,380,28,100,0.04,6,0.6
+Wendy's,Homestyle Asiago Ranch Chicken Club,660,,34,9,0,100,1650,52,3,7,38,638,3.6,680,46,260,0.08,9,1.3
+Wendy's,Homestyle Chicken Sandwich,510,,22,4,0,70,1150,51,3,6,28,492,2.8,540,38,140,0.05,7,0.8
+Wendy's,S'Awesome Sauce,120,,12,2,0,0,170,4,1,3,1,124,0.1,25,3,8,0.01,1,0
+Wendy's,Spicy Asiago Ranch Club,670,,32,9,0,100,1530,55,4,6,38,647,3.8,700,48,260,0.08,10,1.3
+Wendy's,Spicy Chicken Sandwich,510,,20,3.5,0,65,1030,54,4,6,29,491,3,560,40,140,0.05,8,0.8
+Wendy's,Spicy Chicken Wrap,370,,20,5,0,50,850,30,2,2,18,359,2,400,30,120,0.04,5,0.7
+Wendy's,"Apple Pecan Chicken Salad, Full Size",560,,24,7,0,115,1020,52,7,40,38,569,2.8,720,52,180,0.14,22,1
+Wendy's,"Apple Pecan Chicken Salad, Half Size",340,,17,4,0,55,550,29,4,22,20,346,1.6,420,30,100,0.08,12,0.6
+Wendy's,"Berry Burst Chicken Salad, Full Size",460,,17,4.5,0,105,1090,41,7,29,41,453,2.4,680,48,160,0.12,28,0.9
+Wendy's,"Berry Burst Chicken Salad, Half Size",290,,13,2.5,0,50,570,23,5,15,23,285,1.4,380,28,90,0.07,16,0.5
+Wendy's,Caesar Side Salad,240,,15,4,0,30,500,19,3,4,8,240,1.2,280,22,120,0.06,8,0.4
+Wendy's,Garden Side Salad,250,,18,4,0,20,460,18,2,4,7,251,1,300,24,80,0.04,15,0.3
+Wendy's,"Southwest Avocado Chicken Salad, Full Size",600,,41,11,0,135,1220,18,7,7,42,576,3.2,820,62,180,0.14,18,1.2
+Wendy's,"Southwest Avocado Chicken Salad, Half Size",300,,20,6,0,70,620,10,4,4,21,289,1.8,460,34,100,0.08,10,0.7
+Wendy's,"Spicy Caesar Chicken Salad, Full Size",720,,42,12,1,150,1680,44,8,6,42,696,3.8,760,52,260,0.12,12,1.4
+Wendy's,"Spicy Caesar Chicken Salad, Half Size",410,,23,6,0.5,75,930,30,5,4,23,397,2.2,420,30,140,0.07,7,0.8
+Wendy's,"Taco Salad, Full Size",660,,32,13,1,85,1820,63,10,18,32,659,4.2,780,58,280,0.1,16,1.2
+Wendy's,"Taco Salad, Half Size",470,,23,8,0.5,45,1320,49,7,12,19,471,2.8,520,38,180,0.06,10,0.8
+Wendy's,Apple Bites,35,,0,0,0,0,0,9,2,7,0,42,0.1,110,6,6,0.01,5,0
+Wendy's,Baconator Fries,490,,28,9,0,35,550,45,4,2,14,487,1.2,580,42,180,0.05,5,0.8
+Wendy's,Bacon Cheese Baked Potato,440,,14,6,0,35,550,64,7,4,17,433,2.2,920,62,200,0.06,18,0.7
+Wendy's,Cheese Baked Potato,430,,13,7,0,30,560,65,7,5,14,428,1.8,880,58,220,0.05,16,0.6
+Wendy's,Chili & Cheese Baked Potato,460,,11,5,0,35,710,71,8,7,19,453,2.8,1020,68,240,0.06,20,0.8
+Wendy's,"Chili, Large",250,,7,3,0.5,50,1170,23,5,9,23,239,3.2,680,48,120,0.06,8,0.5
+Wendy's,"Chili, Small",170,,5,2,0,35,780,16,4,6,15,163,2.2,460,32,80,0.04,5,0.3
+Wendy's,Chili Cheese Fries,500,,25,8,0.5,35,710,53,6,4,16,496,2.4,680,52,180,0.05,6,0.7
+Wendy's,"Natural-Cut Fries, Junior",230,,10,2,0,0,15,30,3,0,3,229,0.4,320,22,12,0,4,0
+Wendy's,"Natural-Cut Fries, Large",530,,24,4.5,0,0,520,70,6,0,7,528,1,780,54,30,0,9,0
+Wendy's,"Natural-Cut Fries, Medium",420,,19,3.5,0,0,420,56,5,0,6,418,0.8,620,43,24,0,7,0
+Wendy's,"Natural-Cut Fries, Small",320,,15,2.5,0,0,320,43,4,0,5,318,0.6,470,33,18,0,5,0
+Wendy's,Plain Baked Potato,270,,0,0,0,0,25,61,7,3,7,266,1.4,840,58,40,0,24,0
+Wendy's,Sour Cream and Chive Baked Potato,310,,2.5,2.5,0,10,35,63,7,4,8,309,1.6,880,60,60,0.02,25,0.1
+Wendy's,Summer Berry Burst Fruit Cup,20,,0,0,0,0,0,5,1,3,0,23,0.2,90,8,8,0.01,18,0
+Wendy's,1% Chocolate Milk,150,,2.5,1.5,0,10,170,26,0,23,7,168,0.3,480,32,320,0.02,0,2.6
+Wendy's,1% White Milk,90,,2,1.5,0,10,105,10,0,10,7,95,0,380,28,300,0.02,0,2.5
+Wendy's,"All-Natural Lemonade, Large",380,,0,0,0,0,0,100,0,93,0,473,0,25,4,8,0,24,0
+Wendy's,"All-Natural Lemonade, Medium",330,,0,0,0,0,0,86,0,81,0,411,0,22,3,7,0,21,0
+Wendy's,"All-Natural Lemonade, Small",190,,0,0,0,0,0,50,0,47,0,237,0,13,2,4,0,12,0
 Wendy’s,"Apple Kiwi Fruit Tea, Large",330,,0,0,0,0,60,83,0,80,0,410
 Wendy’s,"Apple Kiwi Fruit Tea, Medium",300,,0,0,0,0,50,76,0,73,0,373
 Wendy’s,"Apple Kiwi Fruit Tea, Small",170,,0,0,0,0,30,44,0,42,0,212
@@ -604,8 +604,8 @@ Wendy’s,"Barq’s Root Beer, Small",220,,0,0,0,0,90,61,0,61,0,281
 Wendy’s,"Brewed Unsweetened Iced Tea, Large",5,,0,0,0,0,25,2,0,0,0,5
 Wendy’s,"Brewed Unsweetened Iced Tea, Medium",0,,0,0,0,0,15,1,0,0,0,0
 Wendy’s,"Brewed Unsweetened Iced Tea, Small",0,,0,0,0,0,10,1,0,0,0,0
-Wendy’s,"Caramel Iced Coffee, Medium",240,,8,5,0,25,45,40,0,36,3,278
-Wendy’s,"Caramel Iced Coffee, Small",160,,6,3.5,0,20,30,26,0,24,2,186
+Wendy's,"Caramel Iced Coffee, Medium",240,,8,5,0,25,45,40,0,36,3,278,0,190,15,110,0.03,0,0.3
+Wendy's,"Caramel Iced Coffee, Small",160,,6,3.5,0,20,30,26,0,24,2,186,0,130,10,75,0.02,0,0.2
 Wendy’s,"Coca-Cola, Large",400,,0,0,0,0,90,109,0,109,0,509
 Wendy’s,"Coca-Cola, Medium",320,,0,0,0,0,70,87,0,87,0,407
 Wendy’s,"Coca-Cola, Small",200,,0,0,0,0,45,54,0,54,0,254
@@ -634,13 +634,13 @@ Wendy’s,"Limeade, Small",230,,0,0,0,0,30,59,0,56,0,286
 Wendy’s,"Minute Maid Light Lemonade, Large",15,,0,0,0,0,10,2,0,0,0,15
 Wendy’s,"Minute Maid Light Lemonade, Medium",10,,0,0,0,0,10,1,0,0,0,10
 Wendy’s,"Minute Maid Light Lemonade, Small",5,,0,0,0,0,5,1,0,0,0,5
-Wendy’s,"Mocha Iced Coffee, Medium",210,,8,5,0,25,40,32,0,28,3,240
-Wendy’s,"Mocha Iced Coffee, Small",170,,6,3.5,0,20,30,28,0,25,2,197
+Wendy's,"Mocha Iced Coffee, Medium",210,,8,5,0,25,40,32,0,28,3,240,0.5,200,18,100,0.03,0,0.3
+Wendy's,"Mocha Iced Coffee, Small",170,,6,3.5,0,20,30,28,0,25,2,197,0.4,140,13,70,0.02,0,0.2
 Wendy’s,"Pear Berry Fruit Tea, Large",320,,0,0,0,0,60,82,0,76,0,396
 Wendy’s,"Pear Berry Fruit Tea, Medium",300,,0,0,0,0,50,76,0,70,0,370
 Wendy’s,"Pear Berry Fruit Tea, Small",170,,0,0,0,0,30,44,0,40,0,210
-Wendy’s,"Skinny Vanilla Iced Coffee, Medium",100,,8,5,0,25,45,14,0,0,3,102
-Wendy’s,"Skinny Vanilla Iced Coffee, Small",70,,5,3.5,0,15,30,6,0,0,2,72
+Wendy's,"Skinny Vanilla Iced Coffee, Medium",100,,8,5,0,25,45,14,0,0,3,102,0,180,14,100,0.03,0,0.3
+Wendy's,"Skinny Vanilla Iced Coffee, Small",70,,5,3.5,0,15,30,6,0,0,2,72,0,120,9,70,0.02,0,0.2
 Wendy’s,"Small Sprite, Small",200,,0,0,0,0,90,53,0,53,0,253
 Wendy’s,"Sprite, Large",390,,0,0,0,0,180,105,0,105,0,495
 Wendy’s,"Sprite, Medium",310,,0,0,0,0,140,84,0,84,0,394
@@ -656,41 +656,41 @@ Wendy’s,"Strawberry Tea, Small",45,,0,0,0,0,10,11,0,10,0,55
 Wendy’s,"Sweetened Iced Tea, Large",300,,0,0,0,0,25,77,0,75,0,375
 Wendy’s,"Sweetened Iced Tea, Medium",220,,0,0,0,0,20,58,0,56,0,276
 Wendy’s,"Sweetened Iced Tea, Small",160,,0,0,0,0,10,41,0,40,0,200
-Wendy’s,"Vanilla Iced Coffee, Medium",250,,8,5,0,25,40,42,0,39,3,291
-Wendy’s,"Vanilla Iced Coffee, Small",170,,6,3.5,0,20,30,28,0,26,2,198
-Wendy’s,"Classic Chocolate Frosty, Junior",200,,5,3,0,20,90,33,0,27,6,224
-Wendy’s,"Classic Chocolate Frosty, Large",590,,15,10,0.5,60,260,99,0,81,17,664
-Wendy’s,"Classic Chocolate Frosty, Medium",470,,12,8,0.5,50,210,79,0,65,13,530
-Wendy’s,"Classic Chocolate Frosty, Small",350,,9,6,0,35,150,58,0,47,10,393
-Wendy’s,"Vanilla Frosty, Junior",190,,5,3.5,0,25,90,32,0,27,5,216
-Wendy’s,"Vanilla Frosty, Large",570,,15,10,0.5,70,260,94,0,78,15,643
-Wendy’s,"Vanilla Frosty, Medium",450,,12,8,0.5,55,210,75,0,63,12,509
-Wendy’s,"Vanilla Frosty, Small",340,,9,6,0,45,160,56,0,47,9,384
-Wendy’s,Chocolate Chunk Cookie,310,,16,8,0,20,210,40,2,24,3,339
-Wendy’s,Double Chocolate Chunk Cookie,290,,14,7,0,20,230,39,4,21,4,314
-Wendy’s,Sugar Cookie,330,,16,8,0,25,300,43,1,24,3,359
-Wendy’s,Kids 2 Piece Chicken Tenders,200,,10,1.5,0,45,620,13,0,0,15,187
-Wendy’s,Kids 4 Piece Chicken Nuggets,170,,11,2,0,35,340,10,0,0,9,163
-Wendy’s,Kids Cheeseburger,280,,13,6,0.5,50,540,25,1,5,15,276
-Wendy’s,Kids Grilled Chicken Wrap,270,,10,3.5,0,55,640,24,2,3,20,257
-Wendy’s,Kids Hamburger,240,,9,3.5,0.5,40,350,24,1,5,13,236
-Wendy’s,Artisan Egg Sandwich with Bacon,320,,17,8,0,245,750,25,1,4,18,314
-Wendy’s,Artisan Egg Sandwich with Sausage,480,,33,13,0,275,980,27,1,4,21,476
-Wendy’s,Bacon Breakfast Bowl,510,,28,9,0,245,1390,44,4,2,19,502
-Wendy’s,Biggie Breakfast Sandwich,610,,40,15,0,290,1400,37,2,7,27,605
-Wendy’s,Fresh-Baked Biscuit with Applewood Smoked Bacon,410,,24,13,0,235,970,34,1,5,15,413
-Wendy’s,Fresh Baked Biscuit with Natural Sausage,590,,41,19,0,270,1270,36,1,6,20,595
-Wendy’s,Gravy and Sausage Bowl,450,,22,6,0,220,1260,50,4,2,12,446
-Wendy’s,Honey Butter Chicken Biscuit,500,,26,12,0,50,1120,48,1,9,19,502
-Wendy’s,Sausage and Egg Burrito,360,,20,8,0,210,920,29,1,2,17,353
-Wendy’s,Sausage and Gravy Biscuit,490,,29,14,0,20,1400,49,2,6,8,502
-Wendy’s,Sausage Biscuit,480,,33,15,0,50,1010,35,1,5,12,488
-Wendy’s,Sausage Breakfast Bowl,640,,42,14,0,270,1540,46,4,3,21,636
-Wendy’s,"Seasoned Home-Style Potatoes, Large",360,,13,2.5,0,0,1080,57,6,1,5,359
-Wendy’s,"Seasoned Home-Style Potatoes, Medium",250,,9,1.5,0,0,750,39,4,1,4,249
-Wendy’s,"Seasoned Home-Style Potatoes, Small",230,,8,1.5,0,0,680,35,4,0,3,229
-Wendy’s,Two Sausage and Egg Burritos,720,,41,16,0,420,1830,59,2,5,34,707
-Wendy’s,Two Sausage Biscuits,960,,65,31,0,95,2020,70,3,10,23,978
+Wendy's,"Vanilla Iced Coffee, Medium",250,,8,5,0,25,40,42,0,39,3,291,0,200,16,110,0.03,0,0.3
+Wendy's,"Vanilla Iced Coffee, Small",170,,6,3.5,0,20,30,28,0,26,2,198,0,140,11,75,0.02,0,0.2
+Wendy's,"Classic Chocolate Frosty, Junior",200,,5,3,0,20,90,33,0,27,6,224,0.5,280,22,180,0.03,0,0.5
+Wendy's,"Classic Chocolate Frosty, Large",590,,15,10,0.5,60,260,99,0,81,17,664,1.5,840,65,540,0.08,0,1.5
+Wendy's,"Classic Chocolate Frosty, Medium",470,,12,8,0.5,50,210,79,0,65,13,530,1.2,670,52,430,0.06,0,1.2
+Wendy's,"Classic Chocolate Frosty, Small",350,,9,6,0,35,150,58,0,47,10,393,0.9,500,39,320,0.05,0,0.9
+Wendy's,"Vanilla Frosty, Junior",190,,5,3.5,0,25,90,32,0,27,5,216,0.2,270,21,170,0.03,0,0.5
+Wendy's,"Vanilla Frosty, Large",570,,15,10,0.5,70,260,94,0,78,15,643,0.6,810,63,510,0.08,0,1.4
+Wendy's,"Vanilla Frosty, Medium",450,,12,8,0.5,55,210,75,0,63,12,509,0.5,650,50,410,0.06,0,1.1
+Wendy's,"Vanilla Frosty, Small",340,,9,6,0,45,160,56,0,47,9,384,0.4,490,38,310,0.05,0,0.8
+Wendy's,Chocolate Chunk Cookie,310,,16,8,0,20,210,40,2,24,3,339,1.2,90,18,30,0.02,0,0.2
+Wendy's,Double Chocolate Chunk Cookie,290,,14,7,0,20,230,39,4,21,4,314,1.4,110,22,35,0.02,0,0.2
+Wendy's,Sugar Cookie,330,,16,8,0,25,300,43,1,24,3,359,1,80,15,25,0.02,0,0.1
+Wendy's,Kids 2 Piece Chicken Tenders,200,,10,1.5,0,45,620,13,0,0,15,187,1.2,280,20,18,0.02,0,0.3
+Wendy's,Kids 4 Piece Chicken Nuggets,170,,11,2,0,35,340,10,0,0,9,163,0.8,180,15,15,0.01,0,0.2
+Wendy's,Kids Cheeseburger,280,,13,6,0.5,50,540,25,1,5,15,276,2.4,260,24,160,0.04,2,0.7
+Wendy's,Kids Grilled Chicken Wrap,270,,10,3.5,0,55,640,24,2,3,20,257,1.6,380,28,100,0.04,6,0.6
+Wendy's,Kids Hamburger,240,,9,3.5,0.5,40,350,24,1,5,13,236,2,240,22,80,0.03,2,0.5
+Wendy's,Artisan Egg Sandwich with Bacon,320,,17,8,0,245,750,25,1,4,18,314,2,240,22,140,0.08,1,1.7
+Wendy's,Artisan Egg Sandwich with Sausage,480,,33,13,0,275,980,27,1,4,21,476,2.4,280,26,160,0.09,1,1.9
+Wendy's,Bacon Breakfast Bowl,510,,28,9,0,245,1390,44,4,2,19,502,2.8,680,52,200,0.1,12,1.8
+Wendy's,Biggie Breakfast Sandwich,610,,40,15,0,290,1400,37,2,7,27,605,3.2,380,32,220,0.12,3,2.2
+Wendy's,Fresh-Baked Biscuit with Applewood Smoked Bacon,410,,24,13,0,235,970,34,1,5,15,413,2,240,22,140,0.08,1,1.6
+Wendy's,Fresh Baked Biscuit with Natural Sausage,590,,41,19,0,270,1270,36,1,6,20,595,2.4,280,26,160,0.09,1,1.8
+Wendy's,Gravy and Sausage Bowl,450,,22,6,0,220,1260,50,4,2,12,446,2,480,40,120,0.08,6,1.4
+Wendy's,Honey Butter Chicken Biscuit,500,,26,12,0,50,1120,48,1,9,19,502,2.2,380,30,120,0.04,3,0.8
+Wendy's,Sausage and Egg Burrito,360,,20,8,0,210,920,29,1,2,17,353,2,320,28,140,0.08,3,1.5
+Wendy's,Sausage and Gravy Biscuit,490,,29,14,0,20,1400,49,2,6,8,502,1.8,240,22,120,0.03,1,1.2
+Wendy's,Sausage Biscuit,480,,33,15,0,50,1010,35,1,5,12,488,1.8,220,20,100,0.04,1,1.2
+Wendy's,Sausage Breakfast Bowl,640,,42,14,0,270,1540,46,4,3,21,636,3.2,720,56,220,0.1,14,2
+Wendy's,"Seasoned Home-Style Potatoes, Large",360,,13,2.5,0,0,1080,57,6,1,5,359,1.2,840,58,30,0,8,0
+Wendy's,"Seasoned Home-Style Potatoes, Medium",250,,9,1.5,0,0,750,39,4,1,4,249,0.8,580,40,20,0,6,0
+Wendy's,"Seasoned Home-Style Potatoes, Small",230,,8,1.5,0,0,680,35,4,0,3,229,0.7,520,36,18,0,5,0
+Wendy's,Two Sausage and Egg Burritos,720,,41,16,0,420,1830,59,2,5,34,707,4,640,56,280,0.16,6,3
+Wendy's,Two Sausage Biscuits,960,,65,31,0,95,2020,70,3,10,23,978,3.6,440,40,200,0.08,2,2.4
 KFC,Limited Time Cinnabon Dessert  Biscuits,290,,13,7,0,<5,580,40,2,17,4,310
 KFC,Limited Time ORIGINAL RECIPE CHICKEN Chicken Breast,390,,21,4,0,120,1190,11,2,0,39,355
 KFC,Limited Time ORIGINAL RECIPE CHICKEN Chicken Limited Time Drumstick,130,,8,1.5,0,55,430,4,1,0,12,119.5
