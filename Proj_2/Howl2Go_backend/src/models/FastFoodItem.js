@@ -85,6 +85,10 @@ const fastFoodItemSchema = new mongoose.Schema(
             type: Number,
             default: null,
         },
+        vitaminC: {
+            type: Number,
+            default: null,
+        },
     },
     {
         timestamps: true,
