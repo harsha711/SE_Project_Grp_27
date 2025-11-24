@@ -77,6 +77,10 @@ const fastFoodItemSchema = new mongoose.Schema(
             type: Number,
             default: null,
         },
+        calcium: {
+            type: Number,
+            default: null,
+        },
     },
     {
         timestamps: true,
