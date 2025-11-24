@@ -1,4 +1,22 @@
-Company,Item,Calories,Calories from Fat,Total Fat (g),Saturated Fat (g),Trans Fat (g),Cholesterol (mg),Sodium (mg),Carbs (g),Fiber (g),Sugars (g),Protein (g),Weight Watchers Pnts,Iron (mg),Potassium (mg),Magnesium (mg),Calcium (mg),Vitamin A (mg),Vitamin C (mg),Vitamin D (mg)
+Company,Item,Calories,"Calories from
+Fat","Total Fat
+(g)","Saturated Fat
+(g)","Trans Fat
+(g)","Cholesterol
+(mg)","Sodium 
+(mg)","Carbs
+(g)","Fiber
+(g)","Sugars
+(g)","Protein
+(g)","Weight Watchers
+Pnts","Iron
+(mg)","Potassium
+(mg)","Magnesium
+(mg)","Calcium
+(mg)","Vitamin A
+(mg)","Vitamin C
+(mg)","Vitamin D
+(mg)"
 McDonald's,Hamburger,250,80,9,3.5,0.5,25,520,31,2,6,12,247.5,2.5,220,25,120,0.02,1,0.5
 McDonald's,Cheeseburger,300,110,12,6,0.5,40,750,33,2,6,15,297,2.8,250,28,180,0.04,1.5,0.8
 McDonald's,Double Cheeseburger,440,210,23,11,1.5,80,1150,34,2,7,25,433,4.2,380,35,280,0.06,2,1.2
