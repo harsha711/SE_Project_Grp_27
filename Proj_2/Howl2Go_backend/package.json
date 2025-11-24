@@ -11,6 +11,7 @@
         "coverage": "cat ./coverage/lcov.info | coveralls",
         "seed:admin": "node src/scripts/seedAdmin.js",
         "import:fastfood": "node src/scripts/importFastFoodData.js",
+        "import:v4": "node src/scripts/importFastFoodDataV4.js",
         "prepare": "husky"
     },
     "keywords": [],
