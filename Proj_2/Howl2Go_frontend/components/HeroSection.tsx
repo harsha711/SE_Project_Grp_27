@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const searchRecommendations: string[] = [
   "Show me meals between $8 and $12",
   "meal with less than 600 calories and over 30g of protein",
-  "high protein salad",
+  "Show me meals high in iron",
 ];
 
 interface HeroSectionProps {

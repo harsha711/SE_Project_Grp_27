@@ -167,7 +167,8 @@ export default function ItemCard({
         {typeof (restProps as any).computedMetric === "number" && (
           <div className="inline-flex items-center ml-3 gap-2 bg-[var(--bg-hover)] px-3 py-1.5 rounded-full text-xs">
             <span className="font-medium text-[var(--text)]">
-              {(restProps as any).metricLabel || ""}: {(restProps as any).computedMetric}
+              {(restProps as any).metricLabel || ""}:{" "}
+              {(restProps as any).computedMetric}
             </span>
           </div>
         )}
@@ -204,6 +205,32 @@ export default function ItemCard({
             {restProps.fiber !== undefined && restProps.fiber !== null && (
               <div>Fiber: {restProps.fiber}g</div>
             )}
+            {restProps.iron !== undefined && restProps.iron !== null && (
+              <div>Iron: {restProps.iron}mg</div>
+            )}
+            {restProps.potassium !== undefined &&
+              restProps.potassium !== null && (
+                <div>Potassium: {restProps.potassium}mg</div>
+              )}
+            {restProps.magnesium !== undefined &&
+              restProps.magnesium !== null && (
+                <div>Magnesium: {restProps.magnesium}mg</div>
+              )}
+            {restProps.calcium !== undefined && restProps.calcium !== null && (
+              <div>Calcium: {restProps.calcium}mg</div>
+            )}
+            {restProps.vitaminA !== undefined &&
+              restProps.vitaminA !== null && (
+                <div>Vitamin A: {restProps.vitaminA}mg</div>
+              )}
+            {restProps.vitaminC !== undefined &&
+              restProps.vitaminC !== null && (
+                <div>Vitamin C: {restProps.vitaminC}mg</div>
+              )}
+            {restProps.vitaminD !== undefined &&
+              restProps.vitaminD !== null && (
+                <div>Vitamin D: {restProps.vitaminD}mg</div>
+              )}
           </div>
         </motion.div>
       )}

@@ -66,6 +66,8 @@ fats/protein/carbs/fiber/sugars → grams (g)
 
 sodium/cholesterol → milligrams (mg)
 
+iron/potassium/magnesium/calcium/vitaminA/vitaminC/vitaminD → milligrams (mg)
+
 price → USD ($) - extract numeric value only (e.g., "$5" or "5 dollars" → 5)
 
 Here are some examples:
@@ -99,6 +101,21 @@ Response: {"item": {"name": "burger"}, "protein": {"min": 20}}
 User prompt: "Find chicken sandwiches under 400 calories"
 Response: {"item": {"name": "chicken sandwich"}, "calories": {"max": 400}}
 
+User prompt: "Show me meals high in iron"
+Response: {"iron": {"min": 2}}
+
+User prompt: "I need more calcium, at least 200mg"
+Response: {"calcium": {"min": 200}}
+
+User prompt: "Give me foods rich in vitamin C"
+Response: {"vitaminC": {"min": 10}}
+
+User prompt: "Low sodium but high in potassium"
+Response: {"sodium": {"max": 500}, "potassium": {"min": 300}}
+
+User prompt: "High protein meal with good iron content under $10"
+Response: {"protein": {"min": 25}, "iron": {"min": 2}, "price": {"max": 10}}
+
 Sample fields that are available in the database:
 company:"McDonald's"
 item:"Big N' Tasty with Cheese"
@@ -114,6 +131,13 @@ fiber:3
 sugars:8
 protein:27
 weightWatchersPoints:502
+iron:2.5
+potassium:220
+magnesium:25
+calcium:120
+vitaminA:0.02
+vitaminC:1
+vitaminD:0.5
 
 Companies:
 McDonald's,
@@ -258,6 +282,14 @@ Now, here is the user prompt: ${userPrompt}
             saturatedFat: "saturatedFat",
             transFat: "transFat",
             caloriesFromFat: "caloriesFromFat",
+            // Micronutrient fields
+            iron: "iron",
+            potassium: "potassium",
+            magnesium: "magnesium",
+            calcium: "calcium",
+            vitaminA: "vitaminA",
+            vitaminC: "vitaminC",
+            vitaminD: "vitaminD",
         };
 
         for (const [criteriaField, dbField] of Object.entries(fieldMapping)) {
