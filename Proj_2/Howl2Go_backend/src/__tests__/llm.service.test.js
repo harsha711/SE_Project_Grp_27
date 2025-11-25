@@ -700,3 +700,394 @@ test("LLM Service - parseQuery handles combined price and protein query", async 
 
   expect(hasPrice || hasProtein).toBe(true);
 }, 10000);
+
+// ==================== MICRONUTRIENT TESTS ====================
+
+// Iron tests
+test("LLM Service - buildMongoQuery handles iron min constraint", () => {
+  const criteria = {
+    iron: { min: 2 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    iron: { $gte: 2 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles iron max constraint", () => {
+  const criteria = {
+    iron: { max: 5 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    iron: { $lte: 5 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles iron range constraint", () => {
+  const criteria = {
+    iron: { min: 1, max: 4 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    iron: { $gte: 1, $lte: 4 },
+  });
+});
+
+// Potassium tests
+test("LLM Service - buildMongoQuery handles potassium min constraint", () => {
+  const criteria = {
+    potassium: { min: 300 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    potassium: { $gte: 300 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles potassium max constraint", () => {
+  const criteria = {
+    potassium: { max: 500 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    potassium: { $lte: 500 },
+  });
+});
+
+// Magnesium tests
+test("LLM Service - buildMongoQuery handles magnesium min constraint", () => {
+  const criteria = {
+    magnesium: { min: 25 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    magnesium: { $gte: 25 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles magnesium max constraint", () => {
+  const criteria = {
+    magnesium: { max: 50 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    magnesium: { $lte: 50 },
+  });
+});
+
+// Calcium tests
+test("LLM Service - buildMongoQuery handles calcium min constraint", () => {
+  const criteria = {
+    calcium: { min: 200 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    calcium: { $gte: 200 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles calcium max constraint", () => {
+  const criteria = {
+    calcium: { max: 400 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    calcium: { $lte: 400 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles calcium range constraint", () => {
+  const criteria = {
+    calcium: { min: 100, max: 300 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    calcium: { $gte: 100, $lte: 300 },
+  });
+});
+
+// Vitamin A tests
+test("LLM Service - buildMongoQuery handles vitaminA min constraint", () => {
+  const criteria = {
+    vitaminA: { min: 0.1 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    vitaminA: { $gte: 0.1 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles vitaminA max constraint", () => {
+  const criteria = {
+    vitaminA: { max: 0.5 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    vitaminA: { $lte: 0.5 },
+  });
+});
+
+// Vitamin C tests
+test("LLM Service - buildMongoQuery handles vitaminC min constraint", () => {
+  const criteria = {
+    vitaminC: { min: 10 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    vitaminC: { $gte: 10 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles vitaminC max constraint", () => {
+  const criteria = {
+    vitaminC: { max: 50 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    vitaminC: { $lte: 50 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles vitaminC range constraint", () => {
+  const criteria = {
+    vitaminC: { min: 5, max: 30 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    vitaminC: { $gte: 5, $lte: 30 },
+  });
+});
+
+// Vitamin D tests
+test("LLM Service - buildMongoQuery handles vitaminD min constraint", () => {
+  const criteria = {
+    vitaminD: { min: 0.5 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    vitaminD: { $gte: 0.5 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles vitaminD max constraint", () => {
+  const criteria = {
+    vitaminD: { max: 2 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    vitaminD: { $lte: 2 },
+  });
+});
+
+// Combined micronutrient tests
+test("LLM Service - buildMongoQuery handles multiple micronutrient constraints", () => {
+  const criteria = {
+    iron: { min: 2 },
+    calcium: { min: 200 },
+    vitaminC: { min: 10 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    iron: { $gte: 2 },
+    calcium: { $gte: 200 },
+    vitaminC: { $gte: 10 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles all micronutrients together", () => {
+  const criteria = {
+    iron: { min: 1 },
+    potassium: { min: 200 },
+    magnesium: { min: 20 },
+    calcium: { min: 150 },
+    vitaminA: { min: 0.05 },
+    vitaminC: { min: 5 },
+    vitaminD: { min: 0.3 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    iron: { $gte: 1 },
+    potassium: { $gte: 200 },
+    magnesium: { $gte: 20 },
+    calcium: { $gte: 150 },
+    vitaminA: { $gte: 0.05 },
+    vitaminC: { $gte: 5 },
+    vitaminD: { $gte: 0.3 },
+  });
+});
+
+// Combined micronutrient and macronutrient tests
+test("LLM Service - buildMongoQuery handles micronutrients with protein and calories", () => {
+  const criteria = {
+    protein: { min: 25 },
+    calories: { max: 600 },
+    iron: { min: 2 },
+    calcium: { min: 200 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    protein: { $gte: 25 },
+    calories: { $lte: 600 },
+    iron: { $gte: 2 },
+    calcium: { $gte: 200 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles micronutrients with item name", () => {
+  const criteria = {
+    item: { name: "salad" },
+    vitaminC: { min: 15 },
+    calcium: { min: 100 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    item: { $regex: "salad", $options: "i" },
+    vitaminC: { $gte: 15 },
+    calcium: { $gte: 100 },
+  });
+});
+
+test("LLM Service - buildMongoQuery handles comprehensive query with micronutrients", () => {
+  const criteria = {
+    item: { name: "burger" },
+    calories: { max: 500 },
+    protein: { min: 20 },
+    sodium: { max: 1000 },
+    iron: { min: 2 },
+    potassium: { min: 300 },
+  };
+
+  const query = llmService.buildMongoQuery(criteria);
+
+  assert.deepEqual(query, {
+    item: { $regex: "burger", $options: "i" },
+    calories: { $lte: 500 },
+    protein: { $gte: 20 },
+    sodium: { $lte: 1000 },
+    iron: { $gte: 2 },
+    potassium: { $gte: 300 },
+  });
+});
+
+// Integration tests with LLM parsing
+test("LLM Service - parseQuery extracts iron from natural language", async () => {
+  const userPrompt = "show me meals high in iron";
+
+  const result = await llmService.parseQuery(userPrompt);
+
+  assert.strictEqual(result.success, true);
+  expect(result.criteria).toBeDefined();
+
+  const hasIron = result.criteria.iron !== undefined;
+  expect(hasIron).toBe(true);
+}, 10000);
+
+test("LLM Service - parseQuery extracts calcium from natural language", async () => {
+  const userPrompt = "I need more calcium, at least 200mg";
+
+  const result = await llmService.parseQuery(userPrompt);
+
+  assert.strictEqual(result.success, true);
+  expect(result.criteria).toBeDefined();
+
+  const hasCalcium = result.criteria.calcium !== undefined;
+  expect(hasCalcium).toBe(true);
+}, 15000);
+
+test("LLM Service - parseQuery extracts vitamin C from natural language", async () => {
+  const userPrompt = "give me foods rich in vitamin C";
+
+  const result = await llmService.parseQuery(userPrompt);
+
+  assert.strictEqual(result.success, true);
+  expect(result.criteria).toBeDefined();
+
+  const hasVitaminC = result.criteria.vitaminC !== undefined;
+  expect(hasVitaminC).toBe(true);
+}, 15000);
+
+test("LLM Service - parseQuery handles combined sodium and potassium query", async () => {
+  const userPrompt = "low sodium but high in potassium";
+
+  const result = await llmService.parseQuery(userPrompt);
+
+  assert.strictEqual(result.success, true);
+  expect(result.criteria).toBeDefined();
+
+  const hasSodium = result.criteria.sodium !== undefined;
+  const hasPotassium = result.criteria.potassium !== undefined;
+
+  expect(hasSodium || hasPotassium).toBe(true);
+}, 15000);
+
+test("LLM Service - parseQuery handles protein with iron and price", async () => {
+  const userPrompt = "high protein meal with good iron content under $10";
+
+  const result = await llmService.parseQuery(userPrompt);
+
+  assert.strictEqual(result.success, true);
+  expect(result.criteria).toBeDefined();
+
+  const hasProtein = result.criteria.protein !== undefined;
+  const hasIron = result.criteria.iron !== undefined;
+  const hasPrice = result.criteria.price !== undefined;
+
+  // At least two of the three constraints should be present
+  const constraintCount = [hasProtein, hasIron, hasPrice].filter(
+    Boolean
+  ).length;
+  expect(constraintCount).toBeGreaterThanOrEqual(2);
+}, 15000);
+
+test("LLM Service - buildPrompt includes micronutrient examples", () => {
+  const userPrompt = "high iron meals";
+  const prompt = llmService.buildPrompt(userPrompt);
+
+  assert.ok(prompt.includes("iron"));
+  assert.ok(prompt.includes("potassium"));
+  assert.ok(prompt.includes("calcium"));
+  assert.ok(prompt.includes("vitamin"));
+});
