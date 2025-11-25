@@ -252,6 +252,8 @@ SE_Project_Grp_27/
   - Fixed order saving by creating a proper order object so orders are stored and can be fulfilled by staff.
 - ✅ Order history
   - Users can track the status of their placed orders.
+- ✅ Micronutrient extension
+  - Added 7 micronutrient fields (Iron, Potassium, Magnesium, Calcium, Vitamin A, Vitamin C, Vitamin D) across 1,150+ items; enables natural-language micronutrient queries.
 
 ### Future Milestones
 - Ingredient-Based Recommendations

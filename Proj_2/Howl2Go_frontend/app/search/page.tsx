@@ -27,6 +27,13 @@ interface ApiRecommendation {
   protein?: number | null;
   weightWatchersPoints?: number | null;
   price?: number;
+  iron?: number | null;
+  potassium?: number | null;
+  magnesium?: number | null;
+  calcium?: number | null;
+  vitaminA?: number | null;
+  vitaminC?: number | null;
+  vitaminD?: number | null;
 }
 
 interface ApiResponse {
@@ -134,6 +141,13 @@ function SmartMenuSearchContent() {
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
         price: item.price,
+        iron: item.iron ?? null,
+        potassium: item.potassium ?? null,
+        magnesium: item.magnesium ?? null,
+        calcium: item.calcium ?? null,
+        vitaminA: item.vitaminA ?? null,
+        vitaminC: item.vitaminC ?? null,
+        vitaminD: item.vitaminD ?? null,
       }));
     } else if (Array.isArray(data)) {
       // Format 2: Array of items
@@ -153,6 +167,13 @@ function SmartMenuSearchContent() {
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
         price: item.price,
+        iron: item.iron ?? null,
+        potassium: item.potassium ?? null,
+        magnesium: item.magnesium ?? null,
+        calcium: item.calcium ?? null,
+        vitaminA: item.vitaminA ?? null,
+        vitaminC: item.vitaminC ?? null,
+        vitaminD: item.vitaminD ?? null,
       }));
     } else if (
       !Array.isArray(data) &&
@@ -176,6 +197,13 @@ function SmartMenuSearchContent() {
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
         price: item.price,
+        iron: item.iron ?? null,
+        potassium: item.potassium ?? null,
+        magnesium: item.magnesium ?? null,
+        calcium: item.calcium ?? null,
+        vitaminA: item.vitaminA ?? null,
+        vitaminC: item.vitaminC ?? null,
+        vitaminD: item.vitaminD ?? null,
       }));
     } else if (!Array.isArray(data) && "restaurant" in data && "item" in data) {
       // Format 4: Single item
@@ -213,6 +241,13 @@ function SmartMenuSearchContent() {
             protein: extractValue(itemData.protein),
             weightWatchersPoints: extractValue(itemData.weightWatchersPoints),
             price: itemData.price,
+            iron: extractValue(itemData.iron),
+            potassium: extractValue(itemData.potassium),
+            magnesium: extractValue(itemData.magnesium),
+            calcium: extractValue(itemData.calcium),
+            vitaminA: extractValue(itemData.vitaminA),
+            vitaminC: extractValue(itemData.vitaminC),
+            vitaminD: extractValue(itemData.vitaminD),
           };
         }
       );

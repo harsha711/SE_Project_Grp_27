@@ -19,9 +19,14 @@ export interface FoodItem {
   protein?: number | null;
   weightWatchersPoints?: number | null;
   price?: number;
+  iron?: number | null;
+  potassium?: number | null;
+  magnesium?: number | null;
+  calcium?: number | null;
+  vitaminA?: number | null;
+  vitaminC?: number | null;
+  vitaminD?: number | null;
 }
-
-
 
 export interface APIResponse {
   results?: FoodItem[];
