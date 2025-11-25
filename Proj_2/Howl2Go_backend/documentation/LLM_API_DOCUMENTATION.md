@@ -80,6 +80,7 @@ Get smart food recommendations based on preferences with intelligent sorting.
 
 The LLM can extract and filter by these nutritional criteria:
 
+### Macronutrients
 | Field | Database Field | Example Query |
 |-------|----------------|---------------|
 | Calories | `calories` | "under 500 calories" |
@@ -92,6 +93,19 @@ The LLM can extract and filter by these nutritional criteria:
 | Cholesterol | `cholesterol` | "low cholesterol" |
 | Saturated Fat | `sat_fat` | "low saturated fat" |
 | Trans Fat | `trans_fat` | "no trans fat" |
+
+### Micronutrients (NEW!)
+All micronutrient values are in milligrams (mg):
+
+| Field | Database Field | Example Query |
+|-------|----------------|---------------|
+| Iron | `iron` | "high iron meals" |
+| Potassium | `potassium` | "high potassium" |
+| Magnesium | `magnesium` | "foods with magnesium" |
+| Calcium | `calcium` | "at least 200mg calcium" |
+| Vitamin A | `vitaminA` | "rich in vitamin A" |
+| Vitamin C | `vitaminC` | "high vitamin C" |
+| Vitamin D | `vitaminD` | "foods with vitamin D" |
 
 ## Query Examples
 
@@ -122,6 +136,17 @@ The LLM can extract and filter by these nutritional criteria:
 "I want a meal with at least 25g of protein, less than 600 calories, and low sodium"
 "Give me a high protein, low carb snack under 200 calories"
 "I need something with lots of fiber and low sugar"
+```
+
+### Micronutrient Queries (NEW!)
+```
+"Show me meals high in iron"
+"I need more calcium, at least 200mg"
+"Give me foods rich in vitamin C"
+"Low sodium but high in potassium"
+"High protein meal with good iron content under $10"
+"Foods with calcium and vitamin D for bone health"
+"High vitamin C meals for immune support"
 ```
 
 ## Error Responses
