@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { createOrder } from "@/lib/api/order";
 
 export default function CartPage() {
   const router = useRouter();
@@ -48,34 +49,31 @@ export default function CartPage() {
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
 
-    // Save order summary before clearing cart
-    setOrderSummary({
-      total: total,
-      totalItems: totalItems,
-    });
+    try {
+      // Create order in MongoDB
+      const order = await createOrder();
 
-    // Simulate order processing
-    setTimeout(async () => {
-      console.log("Order placed successfully!");
-      console.log("Cart Items:", cartItems);
-      console.log("Total:", total.toFixed(2));
+      // Save order summary before clearing cart
+      setOrderSummary({
+        total: total,
+        totalItems: totalItems,
+      });
 
-      // Clear the cart
-      try {
-        await clearCart();
-      } catch (error) {
-        console.error("Failed to clear cart:", error);
-        // Continue anyway - order is placed
-      }
+      console.log("Order placed successfully!", order);
 
       setIsProcessing(false);
       setOrderPlaced(true);
 
-      // Redirect to home after 3 seconds
+      // Redirect to order history after 3 seconds
       setTimeout(() => {
-        router.push("/");
+        router.push("/orders");
       }, 3000);
-    }, 2000);
+    } catch (error) {
+      console.error("Failed to place order:", error);
+      setIsProcessing(false);
+      // You could show an error toast here
+      alert("Failed to place order. Please try again.");
+    }
   };
 
   // Success Animation State
