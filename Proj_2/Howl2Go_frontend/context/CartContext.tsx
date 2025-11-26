@@ -3,105 +3,122 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { CartItem, CartSummary } from "@/types/cart";
 import type { FoodItem } from "@/types/food";
+import {
+  fetchCart,
+  addItemToCart as addItemToCartAPI,
+  removeItemFromCart as removeItemFromCartAPI,
+  updateCartItemQuantity as updateCartItemQuantityAPI,
+  clearCart as clearCartAPI,
+} from "@/lib/api/cart";
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (foodItem: FoodItem, quantity?: number) => void;
-  removeFromCart: (itemId: string) => void;
-  updateQuantity: (itemId: string, quantity: number) => void;
-  clearCart: () => void;
+  isLoading: boolean;
+  addToCart: (foodItem: FoodItem, quantity?: number) => Promise<void>;
+  removeFromCart: (itemId: string) => Promise<void>;
+  updateQuantity: (itemId: string, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
   summary: CartSummary;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const CART_STORAGE_KEY = "howl2go_cart";
 const TAX_RATE = 0.08; // 8% tax
 const DELIVERY_FEE = 3.99;
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load cart from localStorage on mount
+  // Load cart from MongoDB on mount
   useEffect(() => {
-    try {
-      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-      if (savedCart) {
-        const parsed = JSON.parse(savedCart);
-        // Convert date strings back to Date objects
-        const itemsWithDates = parsed.map((item: CartItem) => ({
-          ...item,
-          addedAt: new Date(item.addedAt),
-        }));
-        setItems(itemsWithDates);
+    async function loadCart() {
+      try {
+        setIsLoading(true);
+        const cartItems = await fetchCart();
+        setItems(cartItems);
+      } catch (error) {
+        console.error("Failed to load cart from server:", error);
+        // On error, start with empty cart
+        setItems([]);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to load cart from localStorage:", error);
     }
+
+    loadCart();
   }, []);
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-    } catch (error) {
-      console.error("Failed to save cart to localStorage:", error);
+  const addToCart = async (foodItem: FoodItem, quantity: number = 1) => {
+    // Require _id to add to cart
+    if (!foodItem._id) {
+      console.error("Cannot add item to cart: missing _id");
+      throw new Error("Food item must have an _id to add to cart");
     }
-  }, [items]);
 
-  const addToCart = (foodItem: FoodItem, quantity: number = 1) => {
-    setItems((currentItems) => {
-      // Check if item already exists in cart
-      const existingItemIndex = currentItems.findIndex(
-        (item) =>
-          item.foodItem.restaurant === foodItem.restaurant &&
-          item.foodItem.item === foodItem.item
-      );
+    try {
+      const updatedItems = await addItemToCartAPI(foodItem._id, quantity);
+      setItems(updatedItems);
+    } catch (error) {
+      console.error("Failed to add item to cart:", error);
+      throw error;
+    }
+  };
 
-      if (existingItemIndex >= 0) {
-        // Update quantity of existing item
-        const updatedItems = [...currentItems];
-        updatedItems[existingItemIndex] = {
-          ...updatedItems[existingItemIndex],
-          quantity: updatedItems[existingItemIndex].quantity + quantity,
-        };
-        return updatedItems;
-      } else {
-        // Add new item - use price from API if available, otherwise calculate
-        const itemPrice = foodItem.price ?? calculatePrice(foodItem.calories);
-        const newItem: CartItem = {
-          id: `cart-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          foodItem,
-          quantity,
-          addedAt: new Date(),
-          price: itemPrice,
-        };
-        return [...currentItems, newItem];
+  const removeFromCart = async (itemId: string) => {
+    try {
+      // Find the cart item to get the foodItemId
+      const cartItem = items.find((item) => item.id === itemId);
+      if (!cartItem || !cartItem.foodItem._id) {
+        console.error("Cannot remove item: missing foodItem _id");
+        // Optimistically remove from UI
+        setItems((currentItems) =>
+          currentItems.filter((item) => item.id !== itemId)
+        );
+        return;
       }
-    });
+
+      const updatedItems = await removeItemFromCartAPI(cartItem.foodItem._id);
+      setItems(updatedItems);
+    } catch (error) {
+      console.error("Failed to remove item from cart:", error);
+      throw error;
+    }
   };
 
-  const removeFromCart = (itemId: string) => {
-    setItems((currentItems) =>
-      currentItems.filter((item) => item.id !== itemId)
-    );
-  };
-
-  const updateQuantity = (itemId: string, quantity: number) => {
+  const updateQuantity = async (itemId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(itemId);
+      await removeFromCart(itemId);
       return;
     }
 
-    setItems((currentItems) =>
-      currentItems.map((item) =>
-        item.id === itemId ? { ...item, quantity } : item
-      )
-    );
+    try {
+      // Find the cart item to get the foodItemId
+      const cartItem = items.find((item) => item.id === itemId);
+      if (!cartItem || !cartItem.foodItem._id) {
+        console.error("Cannot update item: missing foodItem _id");
+        throw new Error("Cart item not found or missing foodItem _id");
+      }
+
+      const updatedItems = await updateCartItemQuantityAPI(
+        cartItem.foodItem._id,
+        quantity
+      );
+      setItems(updatedItems);
+    } catch (error) {
+      console.error("Failed to update cart item quantity:", error);
+      throw error;
+    }
   };
 
-  const clearCart = () => {
-    setItems([]);
+  const clearCart = async () => {
+    try {
+      await clearCartAPI();
+      setItems([]);
+    } catch (error) {
+      console.error("Failed to clear cart:", error);
+      throw error;
+    }
   };
 
   // Calculate cart summary
@@ -126,6 +143,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const value = {
     items,
+    isLoading,
     addToCart,
     removeFromCart,
     updateQuantity,
@@ -142,12 +160,4 @@ export function useCart() {
     throw new Error("useCart must be used within a CartProvider");
   }
   return context;
-}
-
-// Helper function to calculate price based on calories
-// This is a placeholder - you can adjust the pricing logic
-function calculatePrice(calories: number): number {
-  // Base price calculation: ~$0.01 per calorie, with min $2 and max $15
-  const basePrice = calories * 0.01;
-  return Math.min(Math.max(basePrice, 2.0), 15.0);
 }

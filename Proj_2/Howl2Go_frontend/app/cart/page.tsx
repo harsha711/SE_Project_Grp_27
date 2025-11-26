@@ -16,18 +16,28 @@ export default function CartPage() {
   const [orderSummary, setOrderSummary] = useState({ total: 0, totalItems: 0 });
 
   // Increase quantity
-  const increaseQuantity = (id: string) => {
+  const increaseQuantity = async (id: string) => {
     const item = cartItems.find((i) => i.id === id);
     if (item) {
-      updateQuantity(id, item.quantity + 1);
+      try {
+        await updateQuantity(id, item.quantity + 1);
+      } catch (error) {
+        console.error("Failed to update quantity:", error);
+        // You could show a toast notification here
+      }
     }
   };
 
   // Decrease quantity
-  const decreaseQuantity = (id: string) => {
+  const decreaseQuantity = async (id: string) => {
     const item = cartItems.find((i) => i.id === id);
     if (item && item.quantity > 1) {
-      updateQuantity(id, item.quantity - 1);
+      try {
+        await updateQuantity(id, item.quantity - 1);
+      } catch (error) {
+        console.error("Failed to update quantity:", error);
+        // You could show a toast notification here
+      }
     }
   };
 
@@ -35,7 +45,7 @@ export default function CartPage() {
   const { totalItems, subtotal, tax, deliveryFee, total } = summary;
 
   // Place Order handler
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     setIsProcessing(true);
 
     // Save order summary before clearing cart
@@ -45,13 +55,18 @@ export default function CartPage() {
     });
 
     // Simulate order processing
-    setTimeout(() => {
+    setTimeout(async () => {
       console.log("Order placed successfully!");
       console.log("Cart Items:", cartItems);
       console.log("Total:", total.toFixed(2));
 
       // Clear the cart
-      clearCart();
+      try {
+        await clearCart();
+      } catch (error) {
+        console.error("Failed to clear cart:", error);
+        // Continue anyway - order is placed
+      }
 
       setIsProcessing(false);
       setOrderPlaced(true);
@@ -294,7 +309,14 @@ export default function CartPage() {
                           </p>
                         </div>
                         <button
-                          onClick={() => removeFromCart(cartItem.id)}
+                          onClick={async () => {
+                            try {
+                              await removeFromCart(cartItem.id);
+                            } catch (error) {
+                              console.error("Failed to remove item:", error);
+                              // You could show a toast notification here
+                            }
+                          }}
                           className="p-2 rounded-lg transition-colors"
                           style={{ color: "var(--text-muted)" }}
                           onMouseEnter={(e) => {

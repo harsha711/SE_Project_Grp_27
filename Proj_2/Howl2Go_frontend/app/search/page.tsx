@@ -108,6 +108,7 @@ function SmartMenuSearchContent() {
       Array.isArray(data.recommendations)
     ) {
       items = data.recommendations.map((item) => ({
+        _id: item._id, // Include MongoDB _id
         restaurant: item.company || "Unknown", // Map company -> restaurant
         item: item.item || "Unknown Item",
         calories: item.calories || 0,
@@ -127,6 +128,7 @@ function SmartMenuSearchContent() {
     } else if (Array.isArray(data)) {
       // Format 2: Array of items
       items = data.map((item) => ({
+        _id: item._id, // Include MongoDB _id
         restaurant: item.company || item.restaurant || "Unknown",
         item: item.item || "Unknown Item",
         calories: item.calories || 0,
@@ -150,6 +152,7 @@ function SmartMenuSearchContent() {
     ) {
       // Format 3: Wrapped in results
       items = data.results.map((item) => ({
+        _id: item._id, // Include MongoDB _id
         restaurant: item.company || item.restaurant || "Unknown",
         item: item.item || "Unknown Item",
         calories: item.calories || 0,
@@ -187,6 +190,7 @@ function SmartMenuSearchContent() {
       items = Object.entries(data).map(
         ([restaurant, itemData]: [string, ApiRecommendation]) => {
           return {
+            _id: itemData._id, // Include MongoDB _id if available
             restaurant,
             item: itemData.item || "Unknown Item",
             calories: extractValue(itemData.calories) || 0,

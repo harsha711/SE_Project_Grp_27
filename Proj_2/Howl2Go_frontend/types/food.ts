@@ -4,6 +4,7 @@ export interface mockSearchResults {
   [key: string]: string;
 }
 export interface FoodItem {
+  _id?: string; // MongoDB ObjectId (optional for backward compatibility)
   restaurant: string;
   item: string;
   calories: number;
