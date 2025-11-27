@@ -131,6 +131,9 @@ Search using conversational queries instead of complex filters. Powered by Llama
 ### 📊 **Smart Nutritional Filtering**
 Filter by calories, protein, carbs, fat, fiber, sugar, transfat, and 10+ nutritional parameters.
 
+### ⭐ **Ratings & Reviews**
+Rate and review items you've ordered. View verified reviews from other users to make informed decisions.
+
 ### 🏪 **Multi-Restaurant Discovery**
 Browse 1,148+ items from McDonald's, Burger King, Wendy's, KFC, Taco Bell.
 
@@ -284,17 +287,19 @@ SE_Project_Grp_27/
 - ✅ Nutritional filtering (10+ parameters)
 - ✅ Smart recommendations
 - ✅ Shopping cart with place order
+- ✅ Order history with insights
+- ✅ Ratings & reviews system
 - ✅ Beautiful dark theme UI
 - ✅ Responsive design
 - ✅ User authentication
 
 ### Future Milestones
 - Ingredient-Based Recommendations
-- Order History Insights
 - Price-Based Recommendations
 - Fine-Tuned LLM Integration
 - Group Orders Optimization
 - Smart Reordering Suggestions
+- Review Photo Uploads
 
 **[Full Roadmap →](Proj_2/docs/FEATURES.md)**
 

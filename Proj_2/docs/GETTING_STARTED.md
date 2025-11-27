@@ -184,6 +184,20 @@ When you log in, your guest cart automatically merges with your user cart.
 - `DELETE /api/cart` - Clear cart
 - `POST /api/cart/merge` - Merge carts (auth required)
 
+### Order Management
+- `POST /api/orders` - Create order from cart (auth required)
+- `GET /api/orders` - Get order history (auth required)
+- `GET /api/orders/:orderId` - Get single order (auth required)
+- `GET /api/orders/insights` - Get order insights (auth required)
+
+### Reviews & Ratings
+- `POST /api/reviews` - Create review (auth required)
+- `GET /api/reviews/item/:foodItemId` - Get item reviews (public)
+- `GET /api/reviews/my-reviews` - Get my reviews (auth required)
+- `PATCH /api/reviews/:reviewId` - Update review (auth required)
+- `DELETE /api/reviews/:reviewId` - Delete review (auth required)
+- `POST /api/reviews/:reviewId/helpful` - Mark helpful (auth required)
+
 ### Health Check
 - `GET /api/health` - Server health status
 

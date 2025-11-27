@@ -16,12 +16,11 @@ This document describes the database schema used in the HOWL2GO application.
 
 ## Overview
 
-HOWL2GO uses MongoDB as its database system. The application stores fast food nutritional information in a single collection called `FastFoodItem`.
+HOWL2GO uses MongoDB as its database system. The application stores fast food nutritional information, user data, orders, carts, and reviews across multiple collections.
 
 **Database Type:** MongoDB (NoSQL)
 **ODM (Object Document Mapper):** Mongoose v8.x
-**Collection Name:** `fastfooditems`
-**Model File:** `src/models/FastFoodItem.js`
+**Collections:** `fastfooditems`, `users`, `carts`, `orders`, `reviews`
 
 ---
 
@@ -441,6 +440,105 @@ db.fastfooditems.aggregate([
 
 **Issue: Text search not working**
 - Solution: Verify the text index exists: `db.fastfooditems.getIndexes()`
+
+---
+
+---
+
+## Review Collection
+
+The `Review` collection stores user ratings and reviews for food items they've ordered.
+
+**Collection Name:** `reviews`
+**Model File:** `src/models/Review.js`
+
+### Schema Definition
+
+```javascript
+{
+  userId: ObjectId (required, indexed, ref: 'User'),
+  orderId: ObjectId (required, indexed, ref: 'Order'),
+  foodItemId: ObjectId (required, indexed, ref: 'FastFoodItem'),
+  restaurant: String (required),
+  itemName: String (required),
+  rating: Number (required, 1-5, integer),
+  comment: String (optional, max 1000 chars),
+  helpful: Number (default: 0),
+  helpfulUsers: [ObjectId] (ref: 'User'),
+  isVerified: Boolean (default: true),
+  createdAt: Date (auto-generated),
+  updatedAt: Date (auto-generated)
+}
+```
+
+### Indexes
+
+- `{ userId: 1, orderId: 1, foodItemId: 1 }` (unique) - One review per user per item per order
+- `{ foodItemId: 1, createdAt: -1 }` - Reviews for an item, sorted by date
+- `{ restaurant: 1, rating: -1 }` - Restaurant ratings
+- `{ rating: -1, createdAt: -1 }` - Sort by rating
+
+---
+
+## Order Collection
+
+The `Order` collection stores completed orders with full nutrition tracking.
+
+**Collection Name:** `orders`
+**Model File:** `src/models/Order.js`
+
+### Schema Definition
+
+```javascript
+{
+  userId: ObjectId (required, indexed, ref: 'User'),
+  orderNumber: String (required, unique, indexed),
+  items: [{
+    foodItem: ObjectId (ref: 'FastFoodItem'),
+    restaurant: String,
+    item: String,
+    calories: Number,
+    totalFat: Number,
+    saturatedFat: Number,
+    transFat: Number,
+    protein: Number,
+    carbohydrates: Number,
+    fiber: Number,
+    sugars: Number,
+    sodium: Number,
+    cholesterol: Number,
+    price: Number,
+    quantity: Number
+  }],
+  nutrition: {
+    totalCalories: Number,
+    totalFat: Number,
+    totalSaturatedFat: Number,
+    totalTransFat: Number,
+    totalProtein: Number,
+    totalCarbohydrates: Number,
+    totalFiber: Number,
+    totalSugars: Number,
+    totalSodium: Number,
+    totalCholesterol: Number
+  },
+  subtotal: Number,
+  tax: Number,
+  deliveryFee: Number,
+  total: Number,
+  totalItems: Number,
+  status: String (enum: 'pending', 'completed', 'cancelled'),
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+### Indexes
+
+- `{ userId: 1, createdAt: -1 }` - User order history
+- `{ createdAt: -1 }` - Recent orders
+- `{ status: 1 }` - Filter by status
+- `{ orderNumber: 1 }` (unique) - Order lookup
 
 ---
 

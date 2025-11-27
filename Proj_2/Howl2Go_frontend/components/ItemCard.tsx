@@ -2,12 +2,16 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { MessageSquare } from "lucide-react";
 import type { FoodItem } from "@/types/food";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { getItemReviews } from "@/lib/api/review";
+import StarRating from "./StarRating";
+import ReviewsSection from "./ReviewsSection";
 
 interface ItemCardProps extends Partial<FoodItem> {
   restaurant: string;
@@ -19,6 +23,7 @@ interface ItemCardProps extends Partial<FoodItem> {
   onAdd?: (item: FoodItem) => void;
   onShowDescription?: (item: FoodItem) => void;
   price?: number;
+  showReviews?: boolean;
 }
 
 // Get restaurant logo with flexible matching to handle API name variations
@@ -49,12 +54,32 @@ export default function ItemCard({
   variant = "default",
   onAdd,
   onShowDescription,
+  showReviews = false,
   ...restProps
 }: ItemCardProps) {
   const [showDescription, setShowDescription] = useState(false);
+  const [showReviewsSection, setShowReviewsSection] = useState(false);
+  const [rating, setRating] = useState<number | null>(null);
+  const [reviewCount, setReviewCount] = useState(0);
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
+
+  // Fetch rating if foodItem has _id
+  useEffect(() => {
+    if (restProps._id && showReviews) {
+      getItemReviews(restProps._id, 1, 1, 'recent')
+        .then((data) => {
+          if (data.stats) {
+            setRating(data.stats.averageRating);
+            setReviewCount(data.stats.totalReviews);
+          }
+        })
+        .catch(() => {
+          // Silently fail - ratings are optional
+        });
+    }
+  }, [restProps._id, showReviews]);
 
   const foodItem: FoodItem = {
     restaurant,
@@ -142,6 +167,23 @@ export default function ItemCard({
       {/* Restaurant Name */}
       <p className="text-sm text-[var(--text-subtle)] mb-3">{restaurant}</p>
 
+      {/* Rating */}
+      {showReviews && restProps._id && rating !== null && (
+        <div className="mb-3 flex items-center gap-2">
+          <StarRating rating={rating} size={14} showNumber={true} />
+          <span className="text-xs text-[var(--text-subtle)]">
+            ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
+          </span>
+          <button
+            onClick={() => setShowReviewsSection(!showReviewsSection)}
+            className="ml-auto text-xs text-[var(--orange)] hover:text-[var(--cream)] transition-colors flex items-center gap-1"
+          >
+            <MessageSquare size={12} />
+            Reviews
+          </button>
+        </div>
+      )}
+
       {/* Nutrition Info */}
       <div className="mb-4">
         <div className="inline-flex items-center gap-2 bg-[var(--bg-hover)] px-3 py-1.5 rounded-full">
@@ -196,6 +238,19 @@ export default function ItemCard({
               <div>Fiber: {restProps.fiber}g</div>
             )}
           </div>
+        </motion.div>
+      )}
+
+      {/* Reviews Section */}
+      {showReviewsSection && restProps._id && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="mb-4 pt-4 border-t"
+          style={{ borderColor: "var(--border)" }}
+        >
+          <ReviewsSection foodItemId={restProps._id} itemName={item} />
         </motion.div>
       )}
 

@@ -443,6 +443,7 @@ function SmartMenuSearchContent() {
                     {...item}
                     disableAnimation={true}
                     variant="default"
+                    showReviews={true}
                   />
                 </div>
               ))}

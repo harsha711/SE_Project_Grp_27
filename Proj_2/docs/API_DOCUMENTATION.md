@@ -425,6 +425,244 @@ try {
 
 ---
 
+## Review & Rating Endpoints
+
+### Create Review
+
+**`POST /api/reviews`**
+
+Create a review for a food item you've ordered.
+
+**Authentication:** Required
+
+**Request:**
+```json
+{
+  "orderId": "65a1b2c3d4e5f6789012345",
+  "foodItemId": "65a1b2c3d4e5f6789012346",
+  "rating": 5,
+  "comment": "Amazing burger! Great taste and quality."
+}
+```
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| orderId | string | Yes | Order ID containing the item |
+| foodItemId | string | Yes | Food item ID to review |
+| rating | number | Yes | Rating 1-5 (integer) |
+| comment | string | No | Review text (max 1000 chars) |
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Review created successfully",
+  "data": {
+    "review": {
+      "_id": "65a1b2c3d4e5f6789012347",
+      "userId": {
+        "_id": "65a1b2c3d4e5f6789012348",
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "orderId": "65a1b2c3d4e5f6789012345",
+      "foodItemId": "65a1b2c3d4e5f6789012346",
+      "restaurant": "McDonald's",
+      "itemName": "Big Mac",
+      "rating": 5,
+      "comment": "Amazing burger! Great taste and quality.",
+      "helpful": 0,
+      "isVerified": true,
+      "createdAt": "2024-12-15T10:30:00.000Z",
+      "updatedAt": "2024-12-15T10:30:00.000Z"
+    }
+  }
+}
+```
+
+**Errors:**
+- `400` - Missing required fields or invalid rating
+- `401` - Authentication required
+- `404` - Order or food item not found
+- `400` - Already reviewed this item from this order
+
+---
+
+### Get Item Reviews
+
+**`GET /api/reviews/item/:foodItemId`**
+
+Get all reviews for a specific food item.
+
+**Authentication:** Optional (public endpoint)
+
+**Query Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| page | number | 1 | Page number |
+| limit | number | 10 | Reviews per page |
+| sort | string | "recent" | Sort order: recent, oldest, highest, lowest, helpful |
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "reviews": [
+      {
+        "_id": "65a1b2c3d4e5f6789012347",
+        "userId": {
+          "_id": "65a1b2c3d4e5f6789012348",
+          "name": "John Doe",
+          "email": "john@example.com"
+        },
+        "rating": 5,
+        "comment": "Amazing burger!",
+        "helpful": 12,
+        "isVerified": true,
+        "createdAt": "2024-12-15T10:30:00.000Z"
+      }
+    ],
+    "stats": {
+      "averageRating": 4.5,
+      "totalReviews": 42,
+      "ratingDistribution": {
+        "5": 20,
+        "4": 15,
+        "3": 5,
+        "2": 1,
+        "1": 1
+      }
+    },
+    "pagination": {
+      "total": 42,
+      "page": 1,
+      "limit": 10,
+      "pages": 5
+    }
+  }
+}
+```
+
+---
+
+### Get My Reviews
+
+**`GET /api/reviews/my-reviews`**
+
+Get current user's reviews.
+
+**Authentication:** Required
+
+**Query Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| page | number | 1 | Page number |
+| limit | number | 20 | Reviews per page |
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "reviews": [
+      {
+        "_id": "65a1b2c3d4e5f6789012347",
+        "foodItemId": {
+          "_id": "65a1b2c3d4e5f6789012346",
+          "company": "McDonald's",
+          "item": "Big Mac"
+        },
+        "rating": 5,
+        "comment": "Great!",
+        "createdAt": "2024-12-15T10:30:00.000Z"
+      }
+    ],
+    "pagination": {
+      "total": 5,
+      "page": 1,
+      "limit": 20,
+      "pages": 1
+    }
+  }
+}
+```
+
+---
+
+### Update Review
+
+**`PATCH /api/reviews/:reviewId`**
+
+Update your own review.
+
+**Authentication:** Required
+
+**Request:**
+```json
+{
+  "rating": 4,
+  "comment": "Updated review text"
+}
+```
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| rating | number | No | New rating (1-5) |
+| comment | string | No | New comment text |
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Review updated successfully",
+  "data": {
+    "review": { /* updated review object */ }
+  }
+}
+```
+
+---
+
+### Delete Review
+
+**`DELETE /api/reviews/:reviewId`**
+
+Delete your own review.
+
+**Authentication:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Review deleted successfully"
+}
+```
+
+---
+
+### Mark Review as Helpful
+
+**`POST /api/reviews/:reviewId/helpful`**
+
+Mark a review as helpful (one vote per user per review).
+
+**Authentication:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Review marked as helpful",
+  "data": {
+    "helpful": 13
+  }
+}
+```
+
+---
+
 ## Rate Limits
 
 **Groq API (Free Tier):**

@@ -12,9 +12,10 @@
 4. [Shopping Cart](#shopping-cart)
 5. [Placing Orders](#placing-orders)
 6. [Order History & Insights](#order-history--insights)
-7. [Dashboard](#dashboard)
-8. [Tips & Best Practices](#tips--best-practices)
-9. [Troubleshooting](#troubleshooting)
+7. [Ratings & Reviews](#ratings--reviews)
+8. [Dashboard](#dashboard)
+9. [Tips & Best Practices](#tips--best-practices)
+10. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -335,6 +336,151 @@ Based on your ordering habits, you'll receive:
 
 ---
 
+## ⭐ Ratings & Reviews
+
+### Overview
+
+Howl2Go allows you to rate and review food items you've ordered, helping other users make informed decisions. All reviews are verified (only users who actually ordered the item can review it).
+
+### Viewing Ratings
+
+**On Search Results:**
+- Each item card shows the average rating (if available)
+- Star rating display (1-5 stars)
+- Review count (e.g., "12 reviews")
+- Click **"Reviews"** button to see all reviews
+
+**Rating Display:**
+- ⭐⭐⭐⭐⭐ (5 stars) - Excellent
+- ⭐⭐⭐⭐ (4 stars) - Very Good
+- ⭐⭐⭐ (3 stars) - Good
+- ⭐⭐ (2 stars) - Fair
+- ⭐ (1 star) - Poor
+
+### Writing a Review
+
+**From Order History:**
+
+1. Go to your **Order History** page
+2. Find an order you want to review
+3. Click the **"Review"** button next to any item
+4. A review modal will open
+
+**In the Review Modal:**
+
+1. **Select Rating**: Click on stars (1-5)
+   - 1 star = Poor
+   - 2 stars = Fair
+   - 3 stars = Good
+   - 4 stars = Very Good
+   - 5 stars = Excellent
+
+2. **Write Comment** (Optional):
+   - Share your experience
+   - Maximum 1000 characters
+   - Be honest and helpful
+
+3. **Submit Review**:
+   - Click **"Submit Review"**
+   - Your review will appear immediately
+   - You'll see a "Reviewed" badge on the item
+
+### Review Requirements
+
+- ✅ You must have ordered the item
+- ✅ One review per item per order
+- ✅ Rating is required (1-5 stars)
+- ✅ Comment is optional
+- ✅ Reviews are verified (shows verified badge)
+
+### Viewing Reviews
+
+**From Item Cards:**
+
+1. Click the **"Reviews"** button on any item card
+2. Reviews section expands below the card
+3. See:
+   - Average rating and total review count
+   - Rating distribution (percentage for each star)
+   - All reviews with:
+     - User name and verified badge
+     - Star rating
+     - Comment (if provided)
+     - Date posted
+     - "Helpful" count
+
+**Review Sorting Options:**
+
+- **Most Recent**: Newest reviews first
+- **Oldest First**: Oldest reviews first
+- **Highest Rated**: Best ratings first
+- **Lowest Rated**: Worst ratings first
+- **Most Helpful**: Most helpful votes first
+
+### Review Statistics
+
+Each item's review section shows:
+
+- **Average Rating**: Overall star rating (e.g., 4.5/5)
+- **Total Reviews**: Number of reviews
+- **Rating Distribution**: Visual breakdown showing:
+  - Percentage of 5-star reviews
+  - Percentage of 4-star reviews
+  - Percentage of 3-star reviews
+  - Percentage of 2-star reviews
+  - Percentage of 1-star reviews
+
+### Marking Reviews as Helpful
+
+1. Read a review
+2. Click **"Helpful"** button
+3. The count increases
+4. You can only mark each review once
+5. Must be logged in to mark helpful
+
+### Managing Your Reviews
+
+**View Your Reviews:**
+- All your reviews are linked to your orders
+- You can see which items you've reviewed in Order History
+- Items with reviews show a "Reviewed" badge
+
+**Edit/Delete Reviews:**
+- Currently, reviews cannot be edited after submission
+- Contact support if you need to modify a review
+- This ensures review authenticity
+
+### Review Guidelines
+
+**Do:**
+- ✅ Be honest about your experience
+- ✅ Provide helpful information
+- ✅ Rate based on actual experience
+- ✅ Be respectful and constructive
+
+**Don't:**
+- ❌ Write fake or misleading reviews
+- ❌ Use offensive language
+- ❌ Review items you haven't ordered
+- ❌ Spam or duplicate reviews
+
+### Verified Reviews
+
+- All reviews are **verified purchases**
+- Only users who ordered the item can review
+- Verified badge appears on all reviews
+- This ensures authentic feedback
+
+### Tips for Writing Good Reviews
+
+1. **Be Specific**: Mention what you liked or didn't like
+2. **Be Honest**: Share your true experience
+3. **Be Helpful**: Help others make informed decisions
+4. **Be Balanced**: Mention both positives and negatives
+5. **Be Respectful**: Keep it professional and kind
+
+---
+
 ## 🎯 Dashboard
 
 ### Accessing Dashboard
@@ -491,6 +637,34 @@ Based on your ordering habits, you'll receive:
   - Try incognito/private mode
   - Contact support
 
+### Review Issues
+
+**Problem**: Can't write a review
+- **Solution**: 
+  - Make sure you've placed an order containing the item
+  - Check if you're logged in
+  - Verify the order is completed
+  - Make sure you haven't already reviewed this item from this order
+
+**Problem**: Review not showing up
+- **Solution**: 
+  - Refresh the page
+  - Check if review was submitted successfully
+  - Reviews appear immediately after submission
+  - Contact support if issue persists
+
+**Problem**: Can't see ratings on items
+- **Solution**: 
+  - Ratings only show if the item has reviews
+  - New items may not have ratings yet
+  - Make sure you're viewing the full item card (not compact view)
+
+**Problem**: Can't mark review as helpful
+- **Solution**: 
+  - Make sure you're logged in
+  - You can only mark each review once
+  - Refresh the page if button doesn't respond
+
 ---
 
 ## 📱 Features Summary
@@ -520,13 +694,21 @@ Based on your ordering habits, you'll receive:
    - Personalized recommendations
    - Time-based filtering
 
-5. **👤 User Accounts**
+5. **⭐ Ratings & Reviews**
+   - Rate items you've ordered (1-5 stars)
+   - Write detailed reviews
+   - View all reviews and ratings
+   - Verified purchase reviews
+   - Helpful vote system
+   - Review statistics and distribution
+
+6. **👤 User Accounts**
    - Registration & login
    - Profile management
    - Order history
    - Personalized dashboard
 
-6. **🎨 Beautiful UI**
+7. **🎨 Beautiful UI**
    - Dark theme
    - Smooth animations
    - Responsive design
@@ -566,6 +748,18 @@ A: Insights are calculated in real-time based on your order history. They update
 
 **Q: Can I delete my account?**
 A: Contact support at supp0rt.howl2go@gmail.com for account deletion requests.
+
+**Q: Can I edit my review after submitting?**
+A: Currently, reviews cannot be edited after submission to maintain authenticity. Contact support if you need to modify a review.
+
+**Q: Can I review items I haven't ordered?**
+A: No. Reviews are verified - you can only review items you've actually ordered. This ensures authentic feedback.
+
+**Q: How do ratings affect search results?**
+A: Currently, ratings are displayed for information only. They don't affect search ranking, but help you make informed decisions.
+
+**Q: Can I see who wrote a review?**
+A: Yes, reviews show the reviewer's name (first name only for privacy) and a verified purchase badge.
 
 ---
 

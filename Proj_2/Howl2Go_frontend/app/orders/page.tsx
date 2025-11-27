@@ -14,11 +14,15 @@ import {
   AlertCircle,
   CheckCircle,
   BarChart3,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { getOrderHistory, getOrderInsights, type Order, type OrderInsights } from "@/lib/api/order";
 import { useAuth } from "@/context/AuthContext";
+import ReviewModal from "@/components/ReviewModal";
+import { getMyReviews } from "@/lib/api/review";
 
 export default function OrderHistoryPage() {
   const router = useRouter();
@@ -34,6 +38,14 @@ export default function OrderHistoryPage() {
     pages: 0,
     limit: 20,
   });
+  const [reviewModal, setReviewModal] = useState<{
+    isOpen: boolean;
+    orderId: string;
+    foodItemId: string;
+    itemName: string;
+    restaurant: string;
+  } | null>(null);
+  const [userReviews, setUserReviews] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -43,7 +55,20 @@ export default function OrderHistoryPage() {
 
     loadOrders();
     loadInsights();
+    loadUserReviews();
   }, [isAuthenticated, timeRange, page]);
+
+  const loadUserReviews = async () => {
+    try {
+      const data = await getMyReviews(1, 100);
+      const reviewSet = new Set(
+        data.reviews.map((r) => `${r.orderId}-${r.foodItemId}`)
+      );
+      setUserReviews(reviewSet);
+    } catch (error) {
+      console.error("Failed to load user reviews:", error);
+    }
+  };
 
   const loadOrders = async () => {
     try {
@@ -347,24 +372,53 @@ export default function OrderHistoryPage() {
                     </div>
 
                     <div className="space-y-2 mb-4">
-                      {order.items.slice(0, 3).map((item, itemIdx) => (
-                        <div
-                          key={itemIdx}
-                          className="flex justify-between text-sm"
-                        >
-                          <span className="text-[var(--text)]">
-                            {item.quantity}x {item.item}
-                          </span>
-                          <span className="text-[var(--text-subtle)]">
-                            {item.restaurant}
-                          </span>
-                        </div>
-                      ))}
-                      {order.items.length > 3 && (
-                        <p className="text-xs text-[var(--text-subtle)]">
-                          +{order.items.length - 3} more items
-                        </p>
-                      )}
+                      {order.items.map((item, itemIdx) => {
+                        const foodItemId = typeof item.foodItem === 'object' && item.foodItem?._id 
+                          ? item.foodItem._id 
+                          : typeof item.foodItem === 'string' 
+                          ? item.foodItem 
+                          : null;
+                        const hasReviewed = foodItemId 
+                          ? userReviews.has(`${order._id}-${foodItemId}`)
+                          : false;
+                        
+                        return (
+                          <div
+                            key={itemIdx}
+                            className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-[var(--bg-hover)] transition-colors"
+                          >
+                            <div className="flex-1">
+                              <span className="text-[var(--text)]">
+                                {item.quantity}x {item.item}
+                              </span>
+                              <span className="text-[var(--text-subtle)] ml-2">
+                                {item.restaurant}
+                              </span>
+                            </div>
+                            {foodItemId && !hasReviewed && (
+                              <button
+                                onClick={() => setReviewModal({
+                                  isOpen: true,
+                                  orderId: order._id,
+                                  foodItemId,
+                                  itemName: item.item,
+                                  restaurant: item.restaurant,
+                                })}
+                                className="ml-2 px-3 py-1 rounded-lg text-xs font-medium bg-[var(--orange)]/10 text-[var(--orange)] hover:bg-[var(--orange)]/20 transition-colors flex items-center gap-1"
+                              >
+                                <Star size={12} />
+                                Review
+                              </button>
+                            )}
+                            {hasReviewed && (
+                              <span className="ml-2 px-3 py-1 rounded-lg text-xs font-medium bg-green-500/10 text-green-500 flex items-center gap-1">
+                                <CheckCircle size={12} />
+                                Reviewed
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
 
                     <div className="pt-4 border-t flex items-center justify-between" style={{ borderColor: "var(--border)" }}>
@@ -417,6 +471,24 @@ export default function OrderHistoryPage() {
           </div>
         </div>
       </div>
+
+      {/* Review Modal */}
+      {reviewModal && (
+        <ReviewModal
+          isOpen={reviewModal.isOpen}
+          onClose={() => {
+            setReviewModal(null);
+            loadUserReviews(); // Reload reviews after closing
+          }}
+          orderId={reviewModal.orderId}
+          foodItemId={reviewModal.foodItemId}
+          itemName={reviewModal.itemName}
+          restaurant={reviewModal.restaurant}
+          onReviewCreated={() => {
+            loadUserReviews();
+          }}
+        />
+      )}
     </div>
   );
 }
