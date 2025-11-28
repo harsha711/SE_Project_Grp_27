@@ -1,14 +1,20 @@
 import Order from '../models/Order.js';
+import mongoose from 'mongoose';
 
 /**
  * Analyze nutrition patterns from user's order history
  */
 export async function analyzeNutritionPatterns(userId, timeRange = 'all') {
+  // Ensure userId is a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new Error('Invalid user ID');
+  }
+
   const dateFilter = getDateFilter(timeRange);
   
   const orders = await Order.find({
-    userId,
-    createdAt: dateFilter,
+    userId: new mongoose.Types.ObjectId(userId),
+    ...(Object.keys(dateFilter).length > 0 && { createdAt: dateFilter }),
     status: 'completed'
   }).lean();
 
@@ -26,10 +32,11 @@ export async function analyzeNutritionPatterns(userId, timeRange = 'all') {
 
   // Calculate averages
   const totals = orders.reduce((acc, order) => {
-    acc.calories += order.nutrition.totalCalories;
-    acc.protein += order.nutrition.totalProtein;
-    acc.fat += order.nutrition.totalFat;
-    acc.carbs += order.nutrition.totalCarbohydrates;
+    const nutrition = order.nutrition || {};
+    acc.calories += nutrition.totalCalories || 0;
+    acc.protein += nutrition.totalProtein || 0;
+    acc.fat += nutrition.totalFat || 0;
+    acc.carbs += nutrition.totalCarbohydrates || 0;
     return acc;
   }, { calories: 0, protein: 0, fat: 0, carbs: 0 });
 
@@ -69,14 +76,20 @@ export async function analyzeNutritionPatterns(userId, timeRange = 'all') {
   // Nutrition distribution (calories, protein, fat, carbs)
   const nutritionDistribution = {
     calories: {
-      low: orders.filter(o => o.nutrition.totalCalories < 500).length,
-      medium: orders.filter(o => o.nutrition.totalCalories >= 500 && o.nutrition.totalCalories < 1000).length,
-      high: orders.filter(o => o.nutrition.totalCalories >= 1000).length
+      low: orders.filter(o => (o.nutrition?.totalCalories || 0) < 500).length,
+      medium: orders.filter(o => {
+        const calories = o.nutrition?.totalCalories || 0;
+        return calories >= 500 && calories < 1000;
+      }).length,
+      high: orders.filter(o => (o.nutrition?.totalCalories || 0) >= 1000).length
     },
     protein: {
-      low: orders.filter(o => o.nutrition.totalProtein < 30).length,
-      medium: orders.filter(o => o.nutrition.totalProtein >= 30 && o.nutrition.totalProtein < 50).length,
-      high: orders.filter(o => o.nutrition.totalProtein >= 50).length
+      low: orders.filter(o => (o.nutrition?.totalProtein || 0) < 30).length,
+      medium: orders.filter(o => {
+        const protein = o.nutrition?.totalProtein || 0;
+        return protein >= 30 && protein < 50;
+      }).length,
+      high: orders.filter(o => (o.nutrition?.totalProtein || 0) >= 50).length
     }
   };
 
@@ -93,6 +106,11 @@ export async function analyzeNutritionPatterns(userId, timeRange = 'all') {
  * Track dietary trends over time
  */
 export async function trackDietaryTrends(userId, period = 'month') {
+  // Ensure userId is a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new Error('Invalid user ID');
+  }
+
   const now = new Date();
   let startDate;
   let groupBy;
@@ -116,7 +134,7 @@ export async function trackDietaryTrends(userId, period = 'month') {
   }
 
   const orders = await Order.find({
-    userId,
+    userId: new mongoose.Types.ObjectId(userId),
     createdAt: { $gte: startDate },
     status: 'completed'
   }).sort({ createdAt: 1 }).lean();
@@ -153,10 +171,11 @@ export async function trackDietaryTrends(userId, period = 'month') {
       };
     }
     
-    grouped[key].calories += order.nutrition.totalCalories;
-    grouped[key].protein += order.nutrition.totalProtein;
-    grouped[key].fat += order.nutrition.totalFat;
-    grouped[key].carbs += order.nutrition.totalCarbohydrates;
+    const nutrition = order.nutrition || {};
+    grouped[key].calories += nutrition.totalCalories || 0;
+    grouped[key].protein += nutrition.totalProtein || 0;
+    grouped[key].fat += nutrition.totalFat || 0;
+    grouped[key].carbs += nutrition.totalCarbohydrates || 0;
     grouped[key].orderCount += 1;
   });
 

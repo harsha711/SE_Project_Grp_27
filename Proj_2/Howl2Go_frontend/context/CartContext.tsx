@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import type { CartItem, CartSummary } from "@/types/cart";
 import type { FoodItem } from "@/types/food";
 import {
@@ -50,17 +51,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addToCart = async (foodItem: FoodItem, quantity: number = 1) => {
-    // Require _id to add to cart
-    if (!foodItem._id) {
-      console.error("Cannot add item to cart: missing _id");
+    // Require _id to add to cart - try multiple possible fields
+    const foodItemId = foodItem._id || (foodItem as any).id;
+    if (!foodItemId) {
+      console.error("Cannot add item to cart: missing _id", foodItem);
+      const errorMessage = "Unable to add item to cart: missing item ID. Please try searching again.";
+      toast.error(errorMessage);
       throw new Error("Food item must have an _id to add to cart");
     }
 
     try {
-      const updatedItems = await addItemToCartAPI(foodItem._id, quantity);
+      const updatedItems = await addItemToCartAPI(foodItemId, quantity);
       setItems(updatedItems);
-    } catch (error) {
+      toast.success("Item added to cart!");
+    } catch (error: any) {
       console.error("Failed to add item to cart:", error);
+      // Only show error toast if it's not already shown (avoid duplicates)
+      const errorMessage = error?.message || "Failed to add item to cart. Please try again.";
+      if (!errorMessage.includes("already shown")) {
+        toast.error(errorMessage);
+      }
       throw error;
     }
   };

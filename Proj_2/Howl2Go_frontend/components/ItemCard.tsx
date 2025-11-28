@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, CheckCircle } from "lucide-react";
 import type { FoodItem } from "@/types/food";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
@@ -61,11 +61,12 @@ export default function ItemCard({
   const [showReviewsSection, setShowReviewsSection] = useState(false);
   const [rating, setRating] = useState<number | null>(null);
   const [reviewCount, setReviewCount] = useState(0);
+  const [userReview, setUserReview] = useState<{ rating: number; _id: string } | null>(null);
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { addToCart } = useCart();
 
-  // Fetch rating if foodItem has _id
+  // Fetch rating and user's review if foodItem has _id
   useEffect(() => {
     if (restProps._id && showReviews) {
       getItemReviews(restProps._id, 1, 1, 'recent')
@@ -74,18 +75,64 @@ export default function ItemCard({
             setRating(data.stats.averageRating);
             setReviewCount(data.stats.totalReviews);
           }
+          // Set user's review if available
+          if (data.userReview) {
+            setUserReview({
+              rating: data.userReview.rating,
+              _id: data.userReview._id
+            });
+          } else {
+            setUserReview(null);
+          }
         })
         .catch(() => {
           // Silently fail - ratings are optional
         });
     }
+  }, [restProps._id, showReviews, isAuthenticated]);
+
+  // Listen for review submission events (from order page or elsewhere)
+  useEffect(() => {
+    if (!restProps._id || !showReviews) return;
+
+    const handleReviewSubmitted = (event: CustomEvent) => {
+      // Refresh if this item matches the reviewed item
+      if (event.detail?.foodItemId === restProps._id) {
+        getItemReviews(restProps._id, 1, 1, 'recent')
+          .then((data) => {
+            if (data.stats) {
+              setRating(data.stats.averageRating);
+              setReviewCount(data.stats.totalReviews);
+            }
+            if (data.userReview) {
+              setUserReview({
+                rating: data.userReview.rating,
+                _id: data.userReview._id
+              });
+            } else {
+              setUserReview(null);
+            }
+          })
+          .catch(() => {
+            // Silently fail
+          });
+      }
+    };
+
+    window.addEventListener('reviewSubmitted' as any, handleReviewSubmitted);
+    return () => {
+      window.removeEventListener('reviewSubmitted' as any, handleReviewSubmitted);
+    };
   }, [restProps._id, showReviews]);
 
+  // Construct foodItem ensuring _id is included
   const foodItem: FoodItem = {
     restaurant,
     item,
     calories,
     ...restProps,
+    // Ensure _id is included if available in restProps
+    _id: restProps._id || (restProps as any).id || undefined,
   };
 
   const handleAdd = () => {
@@ -115,11 +162,17 @@ export default function ItemCard({
       // In production: await addMealToLog(foodItem, selectedMealType)
     } else {
       // Default behavior: add to cart
-      addToCart(foodItem);
-      console.log("Added to cart:", foodItem);
-      toast.success(`Added ${item} to cart!`, {
-        duration: 2000,
-        icon: "🛒",
+      // Check if _id exists before adding
+      if (!foodItem._id) {
+        toast.error("Unable to add item: missing item ID. Please try searching again.");
+        console.error("Cannot add item to cart: missing _id", foodItem);
+        return;
+      }
+      
+      // Add to cart - CartContext will handle success/error toasts
+      addToCart(foodItem).catch((error) => {
+        // Error toast is already shown in CartContext, just log here
+        console.error("Failed to add to cart:", error);
       });
     }
   };
@@ -167,20 +220,43 @@ export default function ItemCard({
       {/* Restaurant Name */}
       <p className="text-sm text-[var(--text-subtle)] mb-3">{restaurant}</p>
 
-      {/* Rating */}
-      {showReviews && restProps._id && rating !== null && (
-        <div className="mb-3 flex items-center gap-2">
-          <StarRating rating={rating} size={14} showNumber={true} />
-          <span className="text-xs text-[var(--text-subtle)]">
-            ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
-          </span>
-          <button
-            onClick={() => setShowReviewsSection(!showReviewsSection)}
-            className="ml-auto text-xs text-[var(--orange)] hover:text-[var(--cream)] transition-colors flex items-center gap-1"
-          >
-            <MessageSquare size={12} />
-            Reviews
-          </button>
+      {/* Rating and User Review Status */}
+      {showReviews && restProps._id && (
+        <div className="mb-3 space-y-2">
+          {/* Average Rating */}
+          {rating !== null && (
+            <div className="flex items-center gap-2">
+              <StarRating rating={rating} size={14} showNumber={false} />
+              <span className="text-xs text-[var(--text-subtle)]">
+                {rating.toFixed(1)} ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
+              </span>
+              <button
+                onClick={() => setShowReviewsSection(!showReviewsSection)}
+                className="ml-auto text-xs text-[var(--orange)] hover:text-[var(--cream)] transition-colors flex items-center gap-1"
+              >
+                <MessageSquare size={12} />
+                Reviews
+              </button>
+            </div>
+          )}
+          
+          {/* User's Review Badge */}
+          {isAuthenticated && userReview && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-[var(--orange)]/20 to-[var(--cream)]/20 border border-[var(--orange)]/30"
+            >
+              <CheckCircle size={14} className="text-[var(--orange)] flex-shrink-0" />
+              <span className="text-xs font-medium text-[var(--text)]">
+                You rated this
+              </span>
+              <StarRating rating={userReview.rating} size={12} showNumber={false} />
+              <span className="text-xs font-semibold text-[var(--orange)]">
+                {userReview.rating}/5
+              </span>
+            </motion.div>
+          )}
         </div>
       )}
 

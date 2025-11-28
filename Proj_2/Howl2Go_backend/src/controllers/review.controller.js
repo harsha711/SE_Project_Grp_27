@@ -171,6 +171,21 @@ export const getItemReviews = async (req, res) => {
     // Get total count
     const total = await Review.countDocuments({ foodItemId });
 
+    // Get current user's review if authenticated
+    let userReview = null;
+    if (req.user && req.user.id) {
+      const userReviewDoc = await Review.findOne({
+        userId: req.user.id,
+        foodItemId
+      })
+        .populate('userId', 'name email')
+        .lean();
+      
+      if (userReviewDoc) {
+        userReview = userReviewDoc;
+      }
+    }
+
     // Calculate average rating
     const ratingStats = await Review.aggregate([
       { $match: { foodItemId: new mongoose.Types.ObjectId(foodItemId) } },
@@ -210,6 +225,7 @@ export const getItemReviews = async (req, res) => {
       data: {
         reviews,
         stats,
+        userReview, // Include current user's review if authenticated
         pagination: {
           total,
           page: parseInt(page),

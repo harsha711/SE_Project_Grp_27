@@ -37,6 +37,7 @@ export interface ReviewResponse {
   data: {
     reviews: Review[];
     stats: ReviewStats;
+    userReview?: Review | null; // Current user's review if authenticated
     pagination: {
       total: number;
       page: number;
@@ -71,8 +72,22 @@ export async function createReview(
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Failed to create review: ${response.status}`);
+      let errorMessage = `Failed to create review: ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorData.error || errorMessage;
+      } catch (e) {
+        // If response is not JSON, try to get text
+        try {
+          const errorText = await response.text();
+          if (errorText) {
+            errorMessage = errorText;
+          }
+        } catch (textError) {
+          // If all else fails, use the status-based message
+        }
+      }
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
@@ -191,8 +206,22 @@ export async function updateReview(
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Failed to update review: ${response.status}`);
+      let errorMessage = `Failed to update review: ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorData.error || errorMessage;
+      } catch (e) {
+        // If response is not JSON, try to get text
+        try {
+          const errorText = await response.text();
+          if (errorText) {
+            errorMessage = errorText;
+          }
+        } catch (textError) {
+          // If all else fails, use the status-based message
+        }
+      }
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();

@@ -51,7 +51,7 @@ const orderSchema = new mongoose.Schema({
   orderNumber: {
     type: String,
     unique: true,
-    required: true,
+    required: true, // Required, but generated in controller before save
     index: true
   },
   items: [orderItemSchema],
@@ -132,7 +132,7 @@ const orderSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Generate unique order number before saving
+// Generate unique order number before saving (backup - should be set in controller)
 orderSchema.pre('save', async function(next) {
   if (this.isNew && !this.orderNumber) {
     const timestamp = Date.now().toString(36).toUpperCase();

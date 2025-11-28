@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { FoodItem } from "@/types/food";
 import ItemCard from "@/components/ItemCard";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 // API Response Types
 interface ApiRecommendation {
@@ -107,8 +108,9 @@ function SmartMenuSearchContent() {
       "recommendations" in data &&
       Array.isArray(data.recommendations)
     ) {
-      items = data.recommendations.map((item) => ({
-        _id: item._id, // Include MongoDB _id
+      items = data.recommendations
+        .map((item) => ({
+        _id: item._id ? String(item._id) : item.id ? String(item.id) : undefined, // Include MongoDB _id, ensure it's a string
         restaurant: item.company || "Unknown", // Map company -> restaurant
         item: item.item || "Unknown Item",
         calories: item.calories || 0,
@@ -127,8 +129,9 @@ function SmartMenuSearchContent() {
       }));
     } else if (Array.isArray(data)) {
       // Format 2: Array of items
-      items = data.map((item) => ({
-        _id: item._id, // Include MongoDB _id
+      items = data
+        .map((item) => ({
+        _id: item._id ? String(item._id) : item.id ? String(item.id) : undefined, // Include MongoDB _id, ensure it's a string
         restaurant: item.company || item.restaurant || "Unknown",
         item: item.item || "Unknown Item",
         calories: item.calories || 0,
@@ -151,8 +154,9 @@ function SmartMenuSearchContent() {
       Array.isArray(data.results)
     ) {
       // Format 3: Wrapped in results
-      items = data.results.map((item) => ({
-        _id: item._id, // Include MongoDB _id
+      items = data.results
+        .map((item) => ({
+        _id: item._id ? String(item._id) : item.id ? String(item.id) : undefined, // Include MongoDB _id, ensure it's a string
         restaurant: item.company || item.restaurant || "Unknown",
         item: item.item || "Unknown Item",
         calories: item.calories || 0,
@@ -187,10 +191,11 @@ function SmartMenuSearchContent() {
         return null;
       };
 
-      items = Object.entries(data).map(
+      items = Object.entries(data)
+        .map(
         ([restaurant, itemData]: [string, ApiRecommendation]) => {
           return {
-            _id: itemData._id, // Include MongoDB _id if available
+            _id: itemData._id ? String(itemData._id) : itemData.id ? String(itemData.id) : undefined, // Include MongoDB _id, ensure it's a string
             restaurant,
             item: itemData.item || "Unknown Item",
             calories: extractValue(itemData.calories) || 0,
@@ -393,16 +398,7 @@ function SmartMenuSearchContent() {
               exit={{ opacity: 0 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div
-                  key={i}
-                  className="bg-[var(--bg-card)] rounded-xl p-6 animate-pulse"
-                >
-                  <div className="h-16 bg-[var(--bg-hover)] rounded mb-4"></div>
-                  <div className="h-4 bg-[var(--bg-hover)] rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-[var(--bg-hover)] rounded w-full"></div>
-                </div>
-              ))}
+              <LoadingSpinner message="Searching for the perfect food items..." size="lg" />
             </motion.div>
           ) : error ? (
             <motion.div

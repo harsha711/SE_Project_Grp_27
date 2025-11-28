@@ -192,7 +192,7 @@ npm run dev
 ### 4. Open Application
 Navigate to **http://localhost:3000** and start searching!
 
-📖 **[Full Setup Guide →](Proj_2/docs/DEVELOPER_SETUP.md)**
+📖 **[Quick Start Guide →](Proj_2/docs/QUICK_START.md)** | **[Full Setup Guide →](Proj_2/docs/DEVELOPER_SETUP.md)**
 
 ## 🎯 How It Works
 

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
 import FastFoodItem from '../models/FastFoodItem.js';
@@ -85,9 +86,26 @@ export const createOrder = async (req, res) => {
       })
     );
 
+    // Generate unique order number
+    let orderNumber;
+    let isUnique = false;
+    
+    while (!isUnique) {
+      const timestamp = Date.now().toString(36).toUpperCase();
+      const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+      orderNumber = `ORD-${timestamp}-${random}`;
+      
+      // Check if this orderNumber already exists
+      const existingOrder = await Order.findOne({ orderNumber });
+      if (!existingOrder) {
+        isUnique = true;
+      }
+    }
+
     // Create order
     const order = await Order.create({
       userId,
+      orderNumber,
       items: orderItems,
       subtotal,
       tax,
@@ -137,41 +155,46 @@ export const getOrderHistory = async (req, res) => {
     const userId = req.user.id;
     const { limit = 20, page = 1, timeRange = 'all' } = req.query;
 
-    // Build date filter
-    let dateFilter = {};
+    // Ensure userId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid user ID'
+      });
+    }
+
+    // Build query
+    const query = {
+      userId: new mongoose.Types.ObjectId(userId),
+      status: 'completed'
+    };
+
+    // Build date filter if needed
     if (timeRange !== 'all') {
       const now = new Date();
       switch (timeRange) {
         case 'week':
-          dateFilter = { $gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) };
+          query.createdAt = { $gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) };
           break;
         case 'month':
-          dateFilter = { $gte: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) };
+          query.createdAt = { $gte: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) };
           break;
         case 'year':
-          dateFilter = { $gte: new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000) };
+          query.createdAt = { $gte: new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000) };
           break;
       }
     }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    const orders = await Order.find({
-      userId,
-      createdAt: dateFilter,
-      status: 'completed'
-    })
+    const orders = await Order.find(query)
       .populate('items.foodItem')
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
       .skip(skip)
       .lean();
 
-    const total = await Order.countDocuments({
-      userId,
-      createdAt: dateFilter,
-      status: 'completed'
-    });
+    const total = await Order.countDocuments(query);
 
     res.status(200).json({
       success: true,

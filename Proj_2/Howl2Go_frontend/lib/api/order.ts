@@ -161,8 +161,14 @@ export async function getOrderHistory(
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `Failed to fetch orders: ${response.status}`);
+      let errorMessage = `Failed to fetch orders: ${response.status}`;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        // If response is not JSON, use default message
+      }
+      throw new Error(errorMessage);
     }
 
     const data: OrderHistoryResponse = await response.json();

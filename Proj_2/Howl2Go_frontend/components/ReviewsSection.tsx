@@ -7,6 +7,7 @@ import ReviewCard from "./ReviewCard";
 import StarRating from "./StarRating";
 import { getItemReviews, type ReviewStats } from "@/lib/api/review";
 import type { Review } from "@/lib/api/review";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface ReviewsSectionProps {
   foodItemId: string;
@@ -16,6 +17,7 @@ interface ReviewsSectionProps {
 export default function ReviewsSection({
   foodItemId,
   itemName,
+  onReviewUpdated,
 }: ReviewsSectionProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState<ReviewStats | null>(null);
@@ -39,6 +41,7 @@ export default function ReviewsSection({
       setReviews(data.reviews);
       setStats(data.stats);
       setPagination(data.pagination);
+      // Note: userReview is available in data.userReview if needed
     } catch (error) {
       console.error("Failed to load reviews:", error);
     } finally {
@@ -54,7 +57,7 @@ export default function ReviewsSection({
   if (isLoading && reviews.length === 0) {
     return (
       <div className="rounded-xl p-6 border" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-card)" }}>
-        <div className="animate-pulse">Loading reviews...</div>
+        <LoadingSpinner message="Loading reviews and ratings..." size="md" />
       </div>
     );
   }

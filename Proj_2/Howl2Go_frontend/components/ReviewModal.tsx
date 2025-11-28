@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Star } from "lucide-react";
 import StarRating from "./StarRating";
-import { createReview } from "@/lib/api/review";
+import { createReview, updateReview, getItemReviews } from "@/lib/api/review";
 import toast from "react-hot-toast";
 
 interface ReviewModalProps {
@@ -14,7 +14,13 @@ interface ReviewModalProps {
   foodItemId: string;
   itemName: string;
   restaurant: string;
+  reviewId?: string; // For editing existing reviews
+  existingReview?: {
+    rating: number;
+    comment?: string;
+  };
   onReviewCreated?: () => void;
+  onReviewUpdated?: () => void;
 }
 
 export default function ReviewModal({
@@ -24,12 +30,67 @@ export default function ReviewModal({
   foodItemId,
   itemName,
   restaurant,
+  reviewId,
+  existingReview,
   onReviewCreated,
+  onReviewUpdated,
 }: ReviewModalProps) {
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
+  const [rating, setRating] = useState(existingReview?.rating || 0);
+  const [comment, setComment] = useState(existingReview?.comment || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoveredStar, setHoveredStar] = useState(0);
+  const [currentReviewId, setCurrentReviewId] = useState<string | undefined>(reviewId);
+  
+  // Determine if we're editing - check reviewId prop, state, or existingReview prop
+  const isEditing = !!(currentReviewId || reviewId || existingReview);
+
+  // Check for existing review when modal opens (if not already provided)
+  useEffect(() => {
+    const checkExistingReview = async () => {
+      if (isOpen && foodItemId) {
+        // If reviewId and existingReview are provided, use them
+        if (reviewId && existingReview) {
+          setCurrentReviewId(reviewId);
+          setRating(existingReview.rating);
+          setComment(existingReview.comment || "");
+          return;
+        }
+        
+        // Otherwise, check if user has an existing review for this item
+        try {
+          const data = await getItemReviews(foodItemId, 1, 1, 'recent');
+          if (data.userReview) {
+            // User has an existing review - set up for edit mode
+            setCurrentReviewId(data.userReview._id);
+            setRating(data.userReview.rating);
+            setComment(data.userReview.comment || "");
+          } else {
+            // No existing review - new review mode
+            setCurrentReviewId(undefined);
+            if (!existingReview) {
+              setRating(0);
+              setComment("");
+            }
+          }
+        } catch (error) {
+          // Silently fail - user might not be authenticated or review might not exist
+          setCurrentReviewId(undefined);
+          if (!existingReview) {
+            setRating(0);
+            setComment("");
+          }
+        }
+      } else if (isOpen && existingReview) {
+        setRating(existingReview.rating);
+        setComment(existingReview.comment || "");
+      } else if (isOpen && !existingReview) {
+        setRating(0);
+        setComment("");
+      }
+    };
+
+    checkExistingReview();
+  }, [isOpen, existingReview, reviewId, foodItemId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,16 +102,83 @@ export default function ReviewModal({
 
     try {
       setIsSubmitting(true);
-      await createReview(orderId, foodItemId, rating, comment);
-      toast.success("Review submitted successfully!");
+      
+      // Determine which review ID to use for update
+      let reviewIdToUpdate = currentReviewId || reviewId;
+      
+      // If we don't have a reviewId yet, check one more time for existing review
+      if (!reviewIdToUpdate) {
+        try {
+          const data = await getItemReviews(foodItemId, 1, 1, 'recent');
+          if (data.userReview) {
+            reviewIdToUpdate = data.userReview._id;
+            setCurrentReviewId(data.userReview._id);
+          }
+        } catch (error) {
+          // Silently fail - will try to create new review
+        }
+      }
+      
+      if (reviewIdToUpdate) {
+        // Update existing review
+        await updateReview(reviewIdToUpdate, rating, comment);
+        toast.success("Review updated successfully!");
+        
+        if (onReviewUpdated) {
+          onReviewUpdated();
+        }
+      } else {
+        // Try to create new review, but if it fails with "already reviewed", update instead
+        try {
+          await createReview(orderId, foodItemId, rating, comment);
+          toast.success("Review submitted successfully!");
+          
+          if (onReviewCreated) {
+            onReviewCreated();
+          }
+        } catch (createError: any) {
+          // Check if error is "already reviewed" - catch various error message formats
+          const errorMsg = createError.message?.toLowerCase() || "";
+          if (errorMsg.includes("already reviewed") || 
+              errorMsg.includes("already reviewed this item") ||
+              errorMsg.includes("already reviewed this item from this order")) {
+            // User already has a review - fetch it and update instead
+            try {
+              const data = await getItemReviews(foodItemId, 1, 1, 'recent');
+              if (data.userReview) {
+                // Update the existing review instead
+                await updateReview(data.userReview._id, rating, comment);
+                toast.success("Review updated successfully!");
+                
+                if (onReviewUpdated) {
+                  onReviewUpdated();
+                }
+              } else {
+                throw createError; // Re-throw if we can't find the review
+              }
+            } catch (updateError: any) {
+              // If update also fails, show the original error
+              throw createError;
+            }
+          } else {
+            // Re-throw other errors
+            throw createError;
+          }
+        }
+      }
+      
+      // Dispatch custom event to notify other components
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('reviewSubmitted', {
+          detail: { foodItemId, orderId, rating, isUpdate: isEditing }
+        }));
+      }
+      
       setRating(0);
       setComment("");
       onClose();
-      if (onReviewCreated) {
-        onReviewCreated();
-      }
     } catch (error: any) {
-      toast.error(error.message || "Failed to submit review");
+      toast.error(error.message || (isEditing ? "Failed to update review" : "Failed to submit review"));
     } finally {
       setIsSubmitting(false);
     }
@@ -98,7 +226,7 @@ export default function ReviewModal({
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-xl font-bold text-[var(--text)]">
-                    Write a Review
+                    {isEditing ? "Edit Your Review" : "Write a Review"}
                   </h2>
                   <p className="text-sm text-[var(--text-subtle)] mt-1">
                     {itemName} from {restaurant}
@@ -201,7 +329,9 @@ export default function ReviewModal({
                     disabled={rating === 0 || isSubmitting}
                     className="flex-1 px-4 py-2.5 rounded-lg font-medium bg-[var(--orange)] text-[var(--bg)] hover:bg-[var(--cream)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? "Submitting..." : "Submit Review"}
+                    {isSubmitting 
+                      ? (isEditing ? "Updating..." : "Submitting...") 
+                      : (isEditing ? "Update Review" : "Submit Review")}
                   </button>
                 </div>
               </form>
