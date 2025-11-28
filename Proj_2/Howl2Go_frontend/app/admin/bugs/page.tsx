@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, Bug, Filter, Search, AlertCircle, CheckCircle, Clock, XCircle } from "lucide-react";
+import { ArrowLeft, Bug, Filter, Search, AlertCircle, CheckCircle, Clock, XCircle, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { getBugReports, type Bug } from "@/lib/api/bug";
@@ -145,6 +145,20 @@ export default function AdminBugsPage() {
                   </p>
                 </div>
               </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/admin/analytics"
+                className="px-4 py-2 rounded-lg border transition-colors flex items-center gap-2"
+                style={{
+                  borderColor: "var(--border)",
+                  color: "var(--text)",
+                  backgroundColor: "var(--bg-hover)",
+                }}
+              >
+                <BarChart3 className="h-4 w-4" />
+                Analytics
+              </Link>
             </div>
             <div className="text-sm text-[var(--text-subtle)]">
               Total: {pagination.total} bugs
