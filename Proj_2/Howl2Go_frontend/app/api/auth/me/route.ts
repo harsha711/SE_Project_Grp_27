@@ -43,10 +43,12 @@ export async function GET() {
       data: {
         user: {
           id: data.data.user.id,
+          _id: data.data.user.id,
           name: data.data.user.name,
           email: data.data.user.email,
           dailyGoal: data.data.user.preferences?.maxCalories || 2000,
           avatar: data.data.user.avatar,
+          role: data.data.user.role || 'user',
         },
       },
     });

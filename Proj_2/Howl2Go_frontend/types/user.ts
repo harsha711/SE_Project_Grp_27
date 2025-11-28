@@ -17,10 +17,12 @@ export interface MealLog {
 }
 
 export interface UserProfile {
+  _id?: string;
   name: string;
   email: string;
-  dailyGoal: number;
+  dailyGoal?: number;
   avatar?: string;
+  role?: 'user' | 'admin';
 }
 
 export interface DashboardData {

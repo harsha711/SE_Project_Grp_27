@@ -2,15 +2,33 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { User, ShoppingCart, LogOut } from "lucide-react";
+import { User, ShoppingCart, LogOut, Bug } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const { summary } = useCart();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    if (showUserMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserMenu]);
   return (
     <header
       className="absolute top-0 left-0 right-0 z-50 border-b backdrop-blur-sm"
@@ -56,6 +74,14 @@ export default function Header() {
                 Dashboard
               </Link>
 
+              {/* Orders Link - when logged in */}
+              <Link
+                href="/orders"
+                className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
+              >
+                Orders
+              </Link>
+
               {/* Cart Link with Badge - only shown when logged in */}
               <Link
                 href="/cart"
@@ -70,7 +96,7 @@ export default function Header() {
               </Link>
 
               {/* User Menu */}
-              <div className="relative">
+              <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--orange)] transition-colors"
@@ -81,9 +107,17 @@ export default function Header() {
                   </span>
                 </button>
 
-                {/* Dropdown Menu - only Logout */}
+                {/* Dropdown Menu */}
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg shadow-lg py-2 z-50">
+                    <Link
+                      href="/bug-report"
+                      onClick={() => setShowUserMenu(false)}
+                      className="w-full text-left px-4 py-2 text-sm text-[var(--text)] hover:bg-[var(--bg-hover)] transition-colors flex items-center gap-2"
+                    >
+                      <Bug className="h-4 w-4" />
+                      Raise a Bug
+                    </Link>
                     <button
                       onClick={() => {
                         setShowUserMenu(false);

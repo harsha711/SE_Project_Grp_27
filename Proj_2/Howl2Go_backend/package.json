@@ -10,6 +10,7 @@
         "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --coverage",
         "coverage": "cat ./coverage/lcov.info | coveralls",
         "import:fastfood": "node src/scripts/importFastFoodData.js",
+        "create:admin": "node src/scripts/createAdmin.js",
         "prepare": "husky"
     },
     "keywords": [],

@@ -139,7 +139,62 @@ POST /api/food/recommend
 
 ---
 
-### 4. Fast Food Database
+### 4. Ratings & Reviews System
+
+**Endpoints:**
+- `POST /api/reviews` - Create a review for a food item (authenticated)
+- `GET /api/reviews/item/:foodItemId` - Get reviews for a specific food item (public)
+- `GET /api/reviews/my-reviews` - Get current user's reviews (authenticated)
+- `PATCH /api/reviews/:reviewId` - Update a review (authenticated)
+- `DELETE /api/reviews/:reviewId` - Delete a review (authenticated)
+- `POST /api/reviews/:reviewId/helpful` - Mark a review as helpful (authenticated)
+
+**Features:**
+- **Verified Reviews**: Only users who ordered the item can review it
+- **Star Ratings**: 1-5 star rating system
+- **Comments**: Optional text reviews (up to 1000 characters)
+- **Helpful Votes**: Users can mark reviews as helpful
+- **Review Statistics**: Average rating, total reviews, rating distribution
+- **Sorting Options**: Recent, oldest, highest rated, lowest rated, most helpful
+- **Pagination**: Efficient loading of reviews
+- **One Review Per Order**: Users can review each item once per order
+- **Review Display**: Beautiful UI with user avatars, verified badges, and helpful counts
+
+**Review Model:**
+```javascript
+{
+  userId: ObjectId (ref: 'User'),
+  orderId: ObjectId (ref: 'Order'),
+  foodItemId: ObjectId (ref: 'FastFoodItem'),
+  restaurant: String,
+  itemName: String,
+  rating: Number (1-5, required),
+  comment: String (optional, max 1000 chars),
+  helpful: Number (default: 0),
+  helpfulUsers: [ObjectId],
+  isVerified: Boolean (default: true),
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+**Review Statistics:**
+- Average rating calculation
+- Total review count
+- Rating distribution (percentage for each star rating)
+- Helpful vote tracking
+
+**Frontend Features:**
+- Star rating display on item cards
+- Expandable reviews section
+- Review modal for writing reviews
+- Review cards with user info and helpful buttons
+- Rating distribution visualization
+- Sort and filter options
+
+---
+
+### 5. Fast Food Database
 
 **Database:** MongoDB with 1,148+ fast food items
 
@@ -178,7 +233,7 @@ POST /api/food/recommend
 
 ---
 
-### 5. Session Management
+### 6. Session Management
 
 **Technology:** express-session + connect-mongo
 
@@ -195,7 +250,7 @@ POST /api/food/recommend
 
 ---
 
-### 6. Security & Middleware
+### 7. Security & Middleware
 
 **Authentication Middleware:**
 - `authenticate` - Requires valid JWT token
@@ -217,7 +272,7 @@ POST /api/food/recommend
 
 ---
 
-### 7. API Health & Monitoring
+### 8. API Health & Monitoring
 
 **Endpoint:**
 - `GET /api/health` - Health check
@@ -232,7 +287,7 @@ POST /api/food/recommend
 
 ---
 
-### 8. Testing Infrastructure
+### 9. Testing Infrastructure
 
 **Test Coverage:**
 - User authentication tests (registration, login, profile, password change)
@@ -332,6 +387,24 @@ FRONTEND_URL=http://localhost:3000
 | DELETE | `/` | No | Clear cart |
 | POST | `/merge` | Yes | Merge guest cart with user cart |
 
+### Order Routes (`/api/orders`)
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|---------------|-------------|
+| POST | `/` | Yes | Create order from cart |
+| GET | `/` | Yes | Get order history |
+| GET | `/:orderId` | Yes | Get single order |
+| GET | `/insights` | Yes | Get order insights & analytics |
+
+### Review Routes (`/api/reviews`)
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|---------------|-------------|
+| POST | `/` | Yes | Create review for ordered item |
+| GET | `/item/:foodItemId` | No | Get reviews for food item |
+| GET | `/my-reviews` | Yes | Get current user's reviews |
+| PATCH | `/:reviewId` | Yes | Update review |
+| DELETE | `/:reviewId` | Yes | Delete review |
+| POST | `/:reviewId/helpful` | Yes | Mark review as helpful |
+
 ### Health Routes (`/api`)
 | Method | Endpoint | Auth Required | Description |
 |--------|----------|---------------|-------------|
@@ -343,10 +416,11 @@ FRONTEND_URL=http://localhost:3000
 
 The following features are planned for the future:
 
-- Order History
 - Payment processing (Stripe/PayPal integration)
 - AI Meal Suggestions based on Order History
 - Ingredient based filtering/recommendations
+- Review photo uploads
+- Review editing after submission
 - Rate limiting
 - Query caching
 

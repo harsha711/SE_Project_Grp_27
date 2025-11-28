@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ShoppingBag } from "lucide-react";
 import PersonalizedGreeting from "./PersonalizedGreeting";
 import SearchBar from "./SearchBar";
 import DailyProgressRing from "./DailyProgressRing";
@@ -57,6 +59,17 @@ export default function DashboardHero({
           userName={userName}
           // isSearchFocused={isSearchFocused}
         />
+
+        {/* Quick Actions - Orders Link */}
+        <div className="flex justify-center mb-4">
+          <Link
+            href="/orders"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all hover:scale-105 hover:shadow-md bg-[var(--howl-secondary)]/10 hover:bg-[var(--howl-secondary)]/20 text-[var(--howl-secondary)] border border-[var(--howl-secondary)]/30"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            View Orders
+          </Link>
+        </div>
 
         {/* Search Bar - Same as homepage */}
         <SearchBar
