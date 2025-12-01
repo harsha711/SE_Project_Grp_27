@@ -40,13 +40,14 @@ class LLMService {
      * @returns {string} - Formatted prompt for the LLM
      */
     buildPrompt(userPrompt) {
-        return `Your goal is to extract nutritional and taste-based information from user prompts in the form of a structured json object.
-For example, the user might ask 'I want to eat something that has at least 30g of protein, less than 500 calories, and is pretty spicy.'
+        return `Your goal is to extract nutritional, taste-based, and price information from user prompts in the form of a structured json object.
+For example, the user might ask 'I want to eat something that has at least 30g of protein, less than 500 calories, is pretty spicy, and costs under $8.'
 The response should be a json object with the following fields:
 {
 "spice_level": {"min": 3},
 "calories": {"max": 500},
 "protein": {"min": 30},
+"price": {"max": 8},
 "item": {"name": "burger"}
 }
 Respond only with the json object and nothing else. If a field is not mentioned in the prompt, it should be omitted from the response.
@@ -65,6 +66,10 @@ fats/protein/carbs/fiber/sugars → grams (g)
 
 sodium/cholesterol → milligrams (mg)
 
+iron/potassium/magnesium/calcium/vitaminA/vitaminC/vitaminD → milligrams (mg)
+
+price → USD ($) - extract numeric value only (e.g., "$5" or "5 dollars" → 5)
+
 Here are some examples:
 User prompt: "I want a meal with at least 20g of fiber and low sugar."
 Response: {"fiber": {"min": 20}, "sugars": {"max": 10}}
@@ -75,6 +80,18 @@ Response: {"sugars": {"max": 15}, "calories": {"max": 300}}
 User prompt: "Between 400 and 600 calories, high protein, no sugar."
 Response: {"calories": {"min": 400, "max": 600}, "protein": {"min": 20}, "sugars": {"max": 0}}
 
+User prompt: "Cheap meal under $5"
+Response: {"price": {"max": 5}}
+
+User prompt: "Show me meals between $8 and $12"
+Response: {"price": {"min": 8, "max": 12}}
+
+User prompt: "High protein lunch under $10"
+Response: {"protein": {"min": 20}, "price": {"max": 10}}
+
+User prompt: "Budget-friendly healthy meal"
+Response: {"price": {"max": 7}, "calories": {"max": 600}}
+
 User prompt: "Show me Big Mac nutritional information"
 Response: {"item": {"name": "Big Mac"}}
 
@@ -83,6 +100,21 @@ Response: {"item": {"name": "burger"}, "protein": {"min": 20}}
 
 User prompt: "Find chicken sandwiches under 400 calories"
 Response: {"item": {"name": "chicken sandwich"}, "calories": {"max": 400}}
+
+User prompt: "Show me meals high in iron"
+Response: {"iron": {"min": 2}}
+
+User prompt: "I need more calcium, at least 200mg"
+Response: {"calcium": {"min": 200}}
+
+User prompt: "Give me foods rich in vitamin C"
+Response: {"vitaminC": {"min": 10}}
+
+User prompt: "Low sodium but high in potassium"
+Response: {"sodium": {"max": 500}, "potassium": {"min": 300}}
+
+User prompt: "High protein meal with good iron content under $10"
+Response: {"protein": {"min": 25}, "iron": {"min": 2}, "price": {"max": 10}}
 
 Sample fields that are available in the database:
 company:"McDonald's"
@@ -99,6 +131,13 @@ fiber:3
 sugars:8
 protein:27
 weightWatchersPoints:502
+iron:2.5
+potassium:220
+magnesium:25
+calcium:120
+vitaminA:0.02
+vitaminC:1
+vitaminD:0.5
 
 Companies:
 McDonald's,
@@ -169,6 +208,17 @@ Now, here is the user prompt: ${userPrompt}
     }
 
     /**
+     * Convert price to calorie range (since price is calculated from calories)
+     * Formula: price = calories * 0.01, min $2.00, max $15.00
+     * @param {number} price - Price constraint
+     * @returns {number} - Equivalent calorie value
+     */
+    priceToCalories(price) {
+        // Reverse the formula: calories = price / 0.01
+        return price / 0.01;
+    }
+
+    /**
      * Convert LLM criteria to MongoDB query
      * @param {Object} criteria - Parsed criteria from LLM
      * @returns {Object} - MongoDB query object
@@ -176,7 +226,48 @@ Now, here is the user prompt: ${userPrompt}
     buildMongoQuery(criteria) {
         const query = {};
 
-        // Map of criteria fields to database fields
+        // Handle price separately since it's calculated from calories
+        if (criteria.price) {
+            const priceConstraint = criteria.price;
+            const calorieConstraint = {};
+
+            if (priceConstraint.min !== undefined) {
+                // Min price → Min calories
+                // But account for the $2 minimum price (200 calories)
+                const minCalories = Math.max(this.priceToCalories(priceConstraint.min), 200);
+                calorieConstraint.$gte = minCalories;
+            }
+            
+            if (priceConstraint.max !== undefined) {
+                // Max price → Max calories
+                // But account for the $15 maximum price (1500 calories)
+                const maxCalories = Math.min(this.priceToCalories(priceConstraint.max), 1500);
+                calorieConstraint.$lte = maxCalories;
+            }
+
+            // Merge with existing calorie constraints if any
+            if (criteria.calories) {
+                const existingCalories = criteria.calories;
+                if (existingCalories.min !== undefined) {
+                    calorieConstraint.$gte = Math.max(
+                        calorieConstraint.$gte || 0,
+                        existingCalories.min
+                    );
+                }
+                if (existingCalories.max !== undefined) {
+                    calorieConstraint.$lte = Math.min(
+                        calorieConstraint.$lte || Infinity,
+                        existingCalories.max
+                    );
+                }
+            }
+
+            if (Object.keys(calorieConstraint).length > 0) {
+                query.calories = calorieConstraint;
+            }
+        }
+
+        // Map of criteria fields to database fields (excluding price and calories)
         const fieldMapping = {
             company: "company",
             item: "item",
@@ -191,6 +282,14 @@ Now, here is the user prompt: ${userPrompt}
             saturatedFat: "saturatedFat",
             transFat: "transFat",
             caloriesFromFat: "caloriesFromFat",
+            // Micronutrient fields
+            iron: "iron",
+            potassium: "potassium",
+            magnesium: "magnesium",
+            calcium: "calcium",
+            vitaminA: "vitaminA",
+            vitaminC: "vitaminC",
+            vitaminD: "vitaminD",
         };
 
         for (const [criteriaField, dbField] of Object.entries(fieldMapping)) {
@@ -207,6 +306,12 @@ Now, here is the user prompt: ${userPrompt}
                     }
                     continue;
                 }
+                
+                // Skip calories if already handled by price conversion
+                if (criteriaField === "calories" && criteria.price) {
+                    continue;
+                }
+                
                 const constraint = criteria[criteriaField];
 
                 if (

@@ -172,6 +172,56 @@ curl -X POST http://localhost:4000/api/food/search \
   }'
 ```
 
+### Example 5: High Iron Meals (Micronutrient)
+```bash
+curl -X POST http://localhost:4000/api/food/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "show me meals high in iron",
+    "limit": 5
+  }'
+```
+
+### Example 6: Calcium-Rich Foods (Micronutrient)
+```bash
+curl -X POST http://localhost:4000/api/food/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "I need more calcium, at least 200mg",
+    "limit": 5
+  }'
+```
+
+### Example 7: Vitamin C Sources (Micronutrient)
+```bash
+curl -X POST http://localhost:4000/api/food/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "give me foods rich in vitamin C",
+    "limit": 5
+  }'
+```
+
+### Example 8: Heart Health (Combined Micronutrients)
+```bash
+curl -X POST http://localhost:4000/api/food/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "low sodium but high in potassium",
+    "limit": 10
+  }'
+```
+
+### Example 9: Comprehensive Nutrition Query
+```bash
+curl -X POST http://localhost:4000/api/food/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "high protein meal with good iron content under $10",
+    "limit": 5
+  }'
+```
+
 ---
 
 ## Server Status

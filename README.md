@@ -129,6 +129,10 @@ npm run dev
 ```bash
 cd ../Howl2Go_frontend
 npm install
+
+# Create .env file
+echo "BACKEND_URL=http://localhost:4000" > .env
+
 npm run dev
 ```
 
@@ -234,15 +238,29 @@ SE_Project_Grp_27/
 - ✅ Responsive design
 - ✅ User authentication
 
+### Recent Completed Milestones for V2
+- ✅ Price-based & metric sorting and restaurant filter
+  - Added sort by price (low → high, high → low), highest protein-per-dollar, and most calories within budget.
+  - Added a specific restaurant filter (multi-select chips) in search UI.
+- ✅ Seed admin account
+  - Added seed file for admin account.
+- ✅ Admin dashboard
+  - Admin can manage user accounts and add staff users.
+- ✅ Staff dashboard
+  - Staff can view and fulfill user orders.
+- ✅ Order persistence & fulfillment
+  - Fixed order saving by creating a proper order object so orders are stored and can be fulfilled by staff.
+- ✅ Order history
+  - Users can track the status of their placed orders.
+- ✅ Price-based recommendations
+  - Added price-range recommendation support (e.g., "Show me meals between $8 and $12").
+- ✅ Micronutrient extension
+  - Added 7 micronutrient fields (Iron, Potassium, Magnesium, Calcium, Vitamin A, Vitamin C, Vitamin D) across 1,150+ items; enables natural-language micronutrient queries (e.g., "Show me meals high in iron").
+
 ### Future Milestones
 - Ingredient-Based Recommendations
-- Order History Insights
-- Price-Based Recommendations
 - Fine-Tuned LLM Integration
 - Group Orders Optimization
-- Smart Reordering Suggestions
-
-**[Full Roadmap →](Proj_2/docs/FEATURES.md)**
 
 ## 👥 Team
 
@@ -252,6 +270,10 @@ SE_Project_Grp_27/
 [Pratham](https://github.com/pratham2879)  <br>
 [Samarth](https://github.com/Samarth061)  <br>
 [Jai](https://github.com/JaiRumz)  <br>
+[Ahmed](https://github.com/AhmedOHassan)  <br>
+[Nolan](https://github.com/nolanwitt)  <br>
+[Shounak](https://github.com/ShounakDeshmukh)  <br>
+[Jc](https://github.com/jcmigaly)  <br>
 
 - Course: Software Engineering  
 - Institution: NC State University (Fall 2025)

@@ -1,16 +1,3 @@
-# Large data files
-data/uber-eats-usa-restaurants-menus/
-data/uber-eats-usa-restaurants-menus.zip
-data/fast-food/*.csv
-data/*.ipynb
-
-# Data files in Proj_2
-Proj_2/data/uber-eats-usa-restaurants-menus/
-Proj_2/data/uber-eats-usa-restaurants-menus.zip
-Proj_2/data/fast-food/*.csv
-Proj_2/data/*.ipynb
-Proj_2/data/
-
 # Environment variables
 .env
 *.env

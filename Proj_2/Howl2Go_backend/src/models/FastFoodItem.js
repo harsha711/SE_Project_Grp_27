@@ -65,6 +65,34 @@ const fastFoodItemSchema = new mongoose.Schema(
             type: Number,
             default: 2,
         },
+        iron: {
+            type: Number,
+            default: null,
+        },
+        potassium: {
+            type: Number,
+            default: null,
+        },
+        magnesium: {
+            type: Number,
+            default: null,
+        },
+        calcium: {
+            type: Number,
+            default: null,
+        },
+        vitaminA: {
+            type: Number,
+            default: null,
+        },
+        vitaminC: {
+            type: Number,
+            default: null,
+        },
+        vitaminD: {
+            type: Number,
+            default: null,
+        },
     },
     {
         timestamps: true,

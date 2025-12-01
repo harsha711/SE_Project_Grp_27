@@ -131,11 +131,20 @@ DOORDASH_SIGNING_SECRET=your_signing_secret
 Import the fast food nutrition data into MongoDB:
 
 ```bash
-npm run import-data
+npm run import:fastfood
 ```
 
 This will populate your database with fast food nutrition information from major chains (McDonald's, Burger King, Wendy's, KFC, Taco Bell, Pizza Hut).
 
+---
+
+### 2.5 Seed Admin Account
+
+Seed the admin account into the MongoDB:
+
+```bash
+npm run seed:admin
+```
 ---
 
 ## Step 3: Frontend Installation
@@ -160,14 +169,14 @@ This will install all required frontend dependencies including:
 - TypeScript
 - Axios (HTTP client)
 
-### 3.3 Configure Frontend Environment (Optional)
+### 3.3 Configure Frontend Environment
 
-If your backend runs on a different port or host, create a `.env.local` file:
+Create a `.env.local` file in the `Howl2Go_frontend` directory:
 
 ```bash
-NEXT_PUBLIC_API_URL=http://localhost:4000
+# Copy the example environment file
+cp .env.local.example .env.local
 ```
-
 ---
 
 ## Step 4: Running the Application
@@ -340,7 +349,7 @@ npm test
 npm run test:coverage
 
 # Import sample data
-npm run import-data
+npm run import:fastfood
 
 # Start production server
 npm start

@@ -47,6 +47,7 @@ export async function GET() {
           email: data.data.user.email,
           dailyGoal: data.data.user.preferences?.maxCalories || 2000,
           avatar: data.data.user.avatar,
+          role: data.data.user.role || "user",
         },
       },
     });

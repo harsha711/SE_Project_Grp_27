@@ -36,6 +36,10 @@ export const recommendFood = async (req, res) => {
             sortCriteria.calories = 1; // Low calories first
         } else if (req.parsedCriteria.totalFat?.max) {
             sortCriteria.totalFat = 1; // Low fat first
+        } else if (req.parsedCriteria.price?.max) {
+            sortCriteria.calories = 1; // Low price (via low calories) first
+        } else if (req.parsedCriteria.price?.min) {
+            sortCriteria.calories = -1; // High price (via high calories) first
         }
 
         const recommendations = await FastFoodItem.find(mongoQuery)

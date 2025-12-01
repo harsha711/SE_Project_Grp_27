@@ -16,7 +16,7 @@ export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();
 
   // Get return URL from query params
-  const returnUrl = searchParams.get("returnUrl") || "/dashboard";
+  const returnUrl = searchParams.get("returnUrl") || "/";
 
   // Redirect if already logged in
   useEffect(() => {

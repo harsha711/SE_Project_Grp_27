@@ -27,6 +27,13 @@ interface ApiRecommendation {
   protein?: number | null;
   weightWatchersPoints?: number | null;
   price?: number;
+  iron?: number | null;
+  potassium?: number | null;
+  magnesium?: number | null;
+  calcium?: number | null;
+  vitaminA?: number | null;
+  vitaminC?: number | null;
+  vitaminD?: number | null;
 }
 
 interface ApiResponse {
@@ -45,6 +52,16 @@ function SmartMenuSearchContent() {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [isLoading, setIsLoading] = useState(false);
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+  const [sortMetric, setSortMetric] = useState<
+    | "relevance"
+    | "proteinPerDollar"
+    | "caloriesWithinBudget"
+    | "priceLow"
+    | "priceHigh"
+  >("relevance");
+  const [budget, setBudget] = useState<number | "">("");
+  const [hasSearched, setHasSearched] = useState(false);
+  const [selectedRestaurants, setSelectedRestaurants] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   // Auto-submit when page loads with initial query from main page
@@ -52,6 +69,7 @@ function SmartMenuSearchContent() {
     if (initialQuery && !foodItems.length && !isLoading && !error) {
       // Trigger search automatically
       const submitSearch = async () => {
+        setHasSearched(true);
         setIsLoading(true);
         setError(null);
         setFoodItems([]);
@@ -123,6 +141,13 @@ function SmartMenuSearchContent() {
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
         price: item.price,
+        iron: item.iron ?? null,
+        potassium: item.potassium ?? null,
+        magnesium: item.magnesium ?? null,
+        calcium: item.calcium ?? null,
+        vitaminA: item.vitaminA ?? null,
+        vitaminC: item.vitaminC ?? null,
+        vitaminD: item.vitaminD ?? null,
       }));
     } else if (Array.isArray(data)) {
       // Format 2: Array of items
@@ -142,6 +167,13 @@ function SmartMenuSearchContent() {
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
         price: item.price,
+        iron: item.iron ?? null,
+        potassium: item.potassium ?? null,
+        magnesium: item.magnesium ?? null,
+        calcium: item.calcium ?? null,
+        vitaminA: item.vitaminA ?? null,
+        vitaminC: item.vitaminC ?? null,
+        vitaminD: item.vitaminD ?? null,
       }));
     } else if (
       !Array.isArray(data) &&
@@ -165,6 +197,13 @@ function SmartMenuSearchContent() {
         protein: item.protein || null,
         weightWatchersPoints: item.weightWatchersPoints || null,
         price: item.price,
+        iron: item.iron ?? null,
+        potassium: item.potassium ?? null,
+        magnesium: item.magnesium ?? null,
+        calcium: item.calcium ?? null,
+        vitaminA: item.vitaminA ?? null,
+        vitaminC: item.vitaminC ?? null,
+        vitaminD: item.vitaminD ?? null,
       }));
     } else if (!Array.isArray(data) && "restaurant" in data && "item" in data) {
       // Format 4: Single item
@@ -202,6 +241,13 @@ function SmartMenuSearchContent() {
             protein: extractValue(itemData.protein),
             weightWatchersPoints: extractValue(itemData.weightWatchersPoints),
             price: itemData.price,
+            iron: extractValue(itemData.iron),
+            potassium: extractValue(itemData.potassium),
+            magnesium: extractValue(itemData.magnesium),
+            calcium: extractValue(itemData.calcium),
+            vitaminA: extractValue(itemData.vitaminA),
+            vitaminC: extractValue(itemData.vitaminC),
+            vitaminD: extractValue(itemData.vitaminD),
           };
         }
       );
@@ -223,6 +269,8 @@ function SmartMenuSearchContent() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
+
+    setHasSearched(true);
 
     // ✅ Update URL only when pressing Enter / submitting
     const params = new URLSearchParams();
@@ -264,6 +312,87 @@ function SmartMenuSearchContent() {
       setIsLoading(false);
     }
   };
+
+  // Helper: estimate price when API doesn't provide one (same heuristic as CartContext)
+  function estimatePrice(calories: number | undefined | null): number {
+    const c = calories || 0;
+    const basePrice = c * 0.01;
+    return Math.min(Math.max(basePrice, 2.0), 15.0);
+  }
+
+  // Compute displayed items based on selected metric and budget
+  const displayedItems = (() => {
+    if (!foodItems || foodItems.length === 0) return foodItems;
+
+    // Clone to avoid mutating state
+    let items = [...foodItems];
+
+    // Apply restaurant filter (multi-select chips)
+    if (selectedRestaurants && selectedRestaurants.length > 0) {
+      items = items.filter((it) => selectedRestaurants.includes(it.restaurant));
+    }
+
+    if (sortMetric === "proteinPerDollar") {
+      return items
+        .map((it) => {
+          const price =
+            typeof it.price === "number" && it.price > 0
+              ? it.price
+              : estimatePrice(it.calories);
+          const protein = it.protein ?? 0;
+          const metric = price > 0 ? protein / price : 0;
+          return { item: it, metric };
+        })
+        .sort((a, b) => b.metric - a.metric)
+        .map((x) => x.item);
+    }
+
+    if (sortMetric === "priceLow") {
+      return items.sort((a, b) => {
+        const pa =
+          typeof a.price === "number" && a.price > 0
+            ? a.price
+            : estimatePrice(a.calories);
+        const pb =
+          typeof b.price === "number" && b.price > 0
+            ? b.price
+            : estimatePrice(b.calories);
+        return pa - pb;
+      });
+    }
+
+    if (sortMetric === "priceHigh") {
+      return items.sort((a, b) => {
+        const pa =
+          typeof a.price === "number" && a.price > 0
+            ? a.price
+            : estimatePrice(a.calories);
+        const pb =
+          typeof b.price === "number" && b.price > 0
+            ? b.price
+            : estimatePrice(b.calories);
+        return pb - pa;
+      });
+    }
+
+    if (sortMetric === "caloriesWithinBudget") {
+      // If no budget specified, fallback to relevance
+      if (!budget || Number(budget) <= 0) return items;
+
+      return items
+        .filter((it) => {
+          const price =
+            typeof it.price === "number" && it.price > 0
+              ? it.price
+              : estimatePrice(it.calories);
+          return price <= Number(budget);
+        })
+        .sort((a, b) => (b.calories || 0) - (a.calories || 0));
+    }
+
+    // Default: return as-is (relevance from backend)
+    return items;
+  })();
 
   const handleSearchChange = (value: string) => {
     // Just update the state while typing
@@ -310,7 +439,7 @@ function SmartMenuSearchContent() {
             </Link>
           </div>
           <Link
-            href="/dashboard"
+            href="/"
             className="px-4 py-2 font-semibold rounded-full transition-all hover:scale-105 bg-[var(--orange)] text-[var(--text)] text-sm"
           >
             Dashboard
@@ -379,7 +508,133 @@ function SmartMenuSearchContent() {
           </div>
         </motion.div>
 
+        {/* Price Filter Chips */}
+        {!hasSearched && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            className="mb-6"
+          >
+            <h3 className="text-sm font-medium text-[var(--text-subtle)] mb-3">
+              Quick Price Filters
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { label: "Under $5", query: "meals under $5" },
+                { label: "$5-$10", query: "meals between $5 and $10" },
+                { label: "$10-$15", query: "meals between $10 and $15" },
+                { label: "Budget-Friendly", query: "cheap healthy meal" },
+                { label: "Premium", query: "premium meal" },
+              ].map((filter) => (
+                <button
+                  key={filter.label}
+                  onClick={() => {
+                    setSearchQuery(filter.query);
+                    // Auto-submit the search
+                    handleSearch(
+                      new Event("submit") as unknown as React.FormEvent
+                    );
+                  }}
+                  className="px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 bg-[var(--bg-card)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--orange)] hover:text-[var(--text)] hover:border-[var(--orange)]"
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
         {/* Results Section */}
+        {/* Controls: advanced filtering / metrics */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <label className="flex items-center gap-2 text-sm text-[var(--text-subtle)]">
+              <span className="font-medium text-[var(--text)]">Sort:</span>
+              <select
+                value={sortMetric}
+                onChange={(e) => setSortMetric(e.target.value as any)}
+                className="rounded-md border px-3 py-2 bg-[var(--bg-card)] text-[var(--text)]"
+              >
+                <option value="relevance">Relevance (default)</option>
+                <option value="priceLow">Price: low → high</option>
+                <option value="priceHigh">Price: high → low</option>
+                <option value="proteinPerDollar">
+                  Highest protein-per-dollar
+                </option>
+                <option value="caloriesWithinBudget">
+                  Most calories within budget
+                </option>
+              </select>
+            </label>
+
+            {/* Restaurant / Brand filter chips */}
+            <div className="flex flex-wrap gap-2">
+              {Array.from(new Set(foodItems.map((f) => f.restaurant)))
+                .sort()
+                .map((restaurant) => {
+                  const selected = selectedRestaurants.includes(restaurant);
+                  return (
+                    <button
+                      key={restaurant}
+                      onClick={() => {
+                        setSelectedRestaurants((prev) =>
+                          prev.includes(restaurant)
+                            ? prev.filter((r) => r !== restaurant)
+                            : [...prev, restaurant]
+                        );
+                      }}
+                      className={`text-sm px-3 py-1.5 rounded-full border transition-all ${
+                        selected
+                          ? "bg-[var(--orange)] text-[var(--text)]"
+                          : "bg-[var(--bg-card)] text-[var(--text-subtle)]"
+                      }`}
+                    >
+                      {restaurant}
+                    </button>
+                  );
+                })}
+              {foodItems.length > 0 && (
+                <button
+                  onClick={() => setSelectedRestaurants([])}
+                  className="text-sm px-3 py-1.5 rounded-full border bg-[var(--bg-card)] text-[var(--text-subtle)]"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            {sortMetric === "caloriesWithinBudget" && (
+              <label className="flex items-center gap-2 text-sm text-[var(--text-subtle)]">
+                <span className="font-medium text-[var(--text)]">Budget:</span>
+                <input
+                  type="number"
+                  min={0}
+                  value={budget as any}
+                  onChange={(e) =>
+                    setBudget(
+                      e.target.value === "" ? "" : Number(e.target.value)
+                    )
+                  }
+                  placeholder="Max $"
+                  className="w-28 rounded-md border px-3 py-2 bg-[var(--bg-card)] text-[var(--text)]"
+                />
+              </label>
+            )}
+
+            <div className="ml-auto text-sm text-[var(--text-subtle)]">
+              {displayedItems.length}
+              {displayedItems.length !== foodItems.length && (
+                <span className="text-[var(--text-subtle)]">
+                  {" "}
+                  of {foodItems.length}
+                </span>
+              )}{" "}
+              results
+            </div>
+          </div>
+        </div>
+
         <AnimatePresence mode="wait">
           {isLoading ? (
             <motion.div
@@ -422,12 +677,12 @@ function SmartMenuSearchContent() {
                 Try Again
               </button>
             </motion.div>
-          ) : foodItems.length > 0 ? (
+          ) : displayedItems.length > 0 ? (
             <div
               key="results"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {foodItems.map((item, idx) => (
+              {displayedItems.map((item, idx) => (
                 <div
                   key={`${item.restaurant}-${item.item}-${idx}`}
                   className="opacity-0 animate-[fadeInUp_0.5s_ease-out_forwards]"
@@ -435,11 +690,45 @@ function SmartMenuSearchContent() {
                     animationDelay: `${idx * 100}ms`,
                   }}
                 >
-                  <ItemCard
-                    {...item}
-                    disableAnimation={true}
-                    variant="default"
-                  />
+                  {(() => {
+                    // Compute metric for display
+                    const price =
+                      typeof item.price === "number" && item.price > 0
+                        ? item.price
+                        : estimatePrice(item.calories);
+                    if (sortMetric === "proteinPerDollar") {
+                      const protein = item.protein ?? 0;
+                      const metric =
+                        price > 0 ? +(protein / price).toFixed(2) : 0;
+                      return (
+                        <ItemCard
+                          {...item}
+                          disableAnimation={true}
+                          variant="default"
+                          computedMetric={metric}
+                          metricLabel="g/$"
+                        />
+                      );
+                    }
+
+                    if (sortMetric === "caloriesWithinBudget") {
+                      return (
+                        <ItemCard
+                          {...item}
+                          disableAnimation={true}
+                          variant="default"
+                        />
+                      );
+                    }
+
+                    return (
+                      <ItemCard
+                        {...item}
+                        disableAnimation={true}
+                        variant="default"
+                      />
+                    );
+                  })()}
                 </div>
               ))}
               <style jsx>{`
@@ -455,6 +744,34 @@ function SmartMenuSearchContent() {
                 }
               `}</style>
             </div>
+          ) : hasSearched ? (
+            <motion.div
+              key="no-results"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="text-center py-20"
+            >
+              <div className="text-6xl mb-4">😕</div>
+              <h3 className="text-2xl font-bold text-[var(--text)] mb-2">
+                No results found
+              </h3>
+              <p className="text-[var(--text-subtle)] mb-4">
+                We couldn't find any items matching your search. Try different
+                terms or broaden your filters.
+              </p>
+              <button
+                onClick={() => {
+                  setHasSearched(false);
+                  setSearchQuery("");
+                  setFoodItems([]);
+                  router.push("/search");
+                }}
+                className="px-6 py-3 rounded-full font-semibold bg-[var(--orange)] text-[var(--text)] hover:bg-[var(--cream)] hover:text-[var(--bg)] transition-colors"
+              >
+                Clear Search
+              </button>
+            </motion.div>
           ) : (
             <motion.div
               key="empty"

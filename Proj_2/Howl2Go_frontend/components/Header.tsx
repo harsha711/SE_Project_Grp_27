@@ -1,3 +1,13 @@
+/**
+ * Header component: top navigation and user controls.
+ *
+ * Renders the site logo/branding, primary navigation links (About, Dashboard, Orders),
+ * the cart link with badge (consumes `CartContext`), and the user menu (consumes
+ * `AuthContext`) showing the user's name and logout action. Links and menu items
+ * are shown/hidden based on authentication state.
+ *
+ * @author Ahmed Hassan
+ */
 "use client";
 
 import Image from "next/image";
@@ -38,7 +48,7 @@ export default function Header() {
 
         {/* Right Side */}
         <div className="flex items-center gap-4">
-          {/* About Link */}
+          {/* About Link - shown to all users */}
           <Link
             href="/about"
             className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
@@ -48,15 +58,33 @@ export default function Header() {
 
           {isAuthenticated ? (
             <>
-              {/* Dashboard Link - when logged in */}
+              {/* Admin: only show Users management link in header */}
+              {user?.role === "admin" && (
+                <Link
+                  href="/admin/users"
+                  className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
+                >
+                  Manage Users
+                </Link>
+              )}
+
+              {/* Staff: only show Orders management link in header */}
+              {user?.role === "staff" && (
+                <Link
+                  href="/staff/orders"
+                  className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
+                >
+                  Manage Orders
+                </Link>
+              )}
+
               <Link
-                href="/dashboard"
+                href="/orders"
                 className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
               >
-                Dashboard
+                My Orders
               </Link>
 
-              {/* Cart Link with Badge - only shown when logged in */}
               <Link
                 href="/cart"
                 className="relative p-2 transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
@@ -106,14 +134,6 @@ export default function Header() {
                 className="hidden sm:inline-block font-medium transition-colors hover:opacity-70 text-[var(--howl-neutral)]"
               >
                 Log In
-              </Link>
-
-              {/* Dashboard Button - when logged out */}
-              <Link
-                href="/dashboard"
-                className="px-5 py-2 font-semibold rounded-full transition-all hover:scale-105 hover:shadow-md bg-[var(--howl-secondary)] text-[var(--howl-bg)]"
-              >
-                Dashboard
               </Link>
             </>
           )}
