@@ -256,10 +256,11 @@ SE_Project_Grp_27/
   - Added price-range recommendation support (e.g., "Show me meals between $8 and $12").
 - ✅ Micronutrient extension
   - Added 7 micronutrient fields (Iron, Potassium, Magnesium, Calcium, Vitamin A, Vitamin C, Vitamin D) across 1,150+ items; enables natural-language micronutrient queries (e.g., "Show me meals high in iron").
+- ✅ Personalized recommendations
+  - Added a personalized recommendation system that analyzes user order history to provide tailored suggestions (frequent favorites, similar items by nutrition/taste, explore new restaurants, healthier lower-calorie alternatives, time-based suggestions, and popular-items fallback).
 
 ### Future Milestones
 - Ingredient-Based Recommendations
-- Fine-Tuned LLM Integration
 - Group Orders Optimization
 
 ## 👥 Team
