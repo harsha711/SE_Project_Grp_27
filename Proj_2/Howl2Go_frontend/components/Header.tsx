@@ -32,7 +32,7 @@ export default function Header() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         {/* Left Side: Logo + Branding */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center gap-2">
             <Image
               src="/Howl2go_orange_logo_transparent.png"
               alt="Howl2Go Logo"
