@@ -145,7 +145,7 @@ export default function RecommendationCard({
             transition={
                 disableAnimation ? undefined : { delay: index * 0.08, duration: 0.3 }
             }
-            className="relative bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden hover:border-[var(--orange)] transition-all group min-w-[280px] max-w-[320px]"
+            className="relative bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden hover:border-[var(--orange)] transition-all group min-w-[280px] max-w-[320px] h-full flex flex-col"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
@@ -168,29 +168,32 @@ export default function RecommendationCard({
             </div>
 
             {/* Card Content */}
-            <div className="p-5 pt-12">
-                {/* Restaurant & Item */}
+            <div className="p-5 pt-12 flex flex-col flex-1">
+                {/* Restaurant & Item - Fixed height section */}
                 <div className="mb-3">
-                    <p className="text-xs text-[var(--text-subtle)] mb-1">{restaurant}</p>
-                    <h3 className="text-lg font-semibold text-[var(--text)] group-hover:text-[var(--orange)] transition-colors line-clamp-2">
+                    <p className="text-xs text-[var(--text-subtle)] mb-1 truncate">{restaurant}</p>
+                    <h3 className="text-lg font-semibold text-[var(--text)] group-hover:text-[var(--orange)] transition-colors line-clamp-2 min-h-[56px]">
                         {itemName}
                     </h3>
                 </div>
 
-                {/* Reason */}
+                {/* Reason - Fixed height */}
                 <p className="text-sm text-[var(--text-subtle)] mb-4 line-clamp-2 min-h-[40px]">
                     {reason}
                 </p>
 
-                {/* Calories Saved Badge (for healthy alternatives) */}
-                {caloriesSaved && caloriesSaved > 0 && (
-                    <div className="mb-3">
+                {/* Calories Saved Badge (for healthy alternatives) - Fixed height slot */}
+                <div className="h-[28px] mb-3">
+                    {caloriesSaved && caloriesSaved > 0 && (
                         <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-400 px-2 py-1 rounded-full text-xs">
                             <Leaf className="h-3 w-3" />
                             Save {caloriesSaved} calories
                         </span>
-                    </div>
-                )}
+                    )}
+                </div>
+
+                {/* Spacer to push bottom content down */}
+                <div className="flex-1" />
 
                 {/* Nutrition Info */}
                 <div className="flex items-center gap-4 mb-4">
@@ -204,7 +207,7 @@ export default function RecommendationCard({
                     </div>
                 </div>
 
-                {/* Price & Add to Cart */}
+                {/* Price & Add to Cart - Always at bottom */}
                 <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
                     <span className="text-xl font-bold text-[var(--cream)]">
                         ${price.toFixed(2)}
