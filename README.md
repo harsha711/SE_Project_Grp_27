@@ -260,7 +260,6 @@ SE_Project_Grp_27/
   - Added a personalized recommendation system that analyzes user order history to provide tailored suggestions (frequent favorites, similar items by nutrition/taste, explore new restaurants, healthier lower-calorie alternatives, time-based suggestions, and popular-items fallback).
 
 ### Future Milestones
-- Ingredient-Based Recommendations
 - Group Orders Optimization
 
 ## 👥 Team
