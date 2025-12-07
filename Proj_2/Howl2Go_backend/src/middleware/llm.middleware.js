@@ -1,6 +1,57 @@
 import { llmService } from '../services/llm.service.js';
 
 /**
+ * Middleware to apply user preferences to parsed criteria
+ * Merges user's saved preferences with LLM-parsed criteria
+ * User preferences act as defaults, LLM criteria takes precedence
+ * 
+ * @requires optionalAuth middleware to run first (req.user.preferences)
+ * @requires parseLLMQuery middleware to run first (req.parsedCriteria)
+ */
+export const applyUserPreferences = (req, res, next) => {
+  try {
+    // Only apply if user is authenticated and has preferences
+    if (!req.user?.preferences) {
+      return next();
+    }
+
+    const prefs = req.user.preferences;
+    const criteria = req.parsedCriteria || {};
+
+    // Apply maxCalories as default if user has it set and query doesn't specify
+    if (prefs.maxCalories && !criteria.calories?.max) {
+      criteria.calories = criteria.calories || {};
+      criteria.calories.max = prefs.maxCalories;
+    }
+
+    // Apply minProtein as default if user has it set and query doesn't specify
+    if (prefs.minProtein && !criteria.protein?.min) {
+      criteria.protein = criteria.protein || {};
+      criteria.protein.min = prefs.minProtein;
+    }
+
+    // Store favorite restaurants to boost in results (handled in controller)
+    if (prefs.favoriteRestaurants?.length > 0) {
+      req.favoriteRestaurants = prefs.favoriteRestaurants;
+    }
+
+    // Store dietary restrictions for filtering (handled in controller)
+    if (prefs.dietaryRestrictions?.length > 0) {
+      req.dietaryRestrictions = prefs.dietaryRestrictions;
+    }
+
+    req.parsedCriteria = criteria;
+    req.preferencesApplied = true;
+
+    next();
+  } catch (error) {
+    console.error('Apply User Preferences Error:', error);
+    // Don't fail the request if preferences can't be applied
+    next();
+  }
+};
+
+/**
  * Middleware to parse natural language queries using LLM
  * Attaches parsed criteria to req.parsedCriteria
  *

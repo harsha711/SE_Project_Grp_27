@@ -20,8 +20,8 @@ beforeAll(async () => {
   ) {
     throw new Error(
       `DANGER: Tests are trying to run against non-test database: "${dbName}". ` +
-        `Database name must include "test" or NODE_ENV must be "test". ` +
-        `Current NODE_ENV: "${process.env.NODE_ENV}"`
+      `Database name must include "test" or NODE_ENV must be "test". ` +
+      `Current NODE_ENV: "${process.env.NODE_ENV}"`
     );
   }
 
@@ -404,8 +404,8 @@ test("POST /api/users/change-password - should handle mongoose validation errors
   } else if (response.body.message) {
     assert.ok(
       response.body.message.includes("Validation") ||
-        response.body.message.includes("validation") ||
-        response.body.message.includes("Current password is incorrect")
+      response.body.message.includes("validation") ||
+      response.body.message.includes("Current password is incorrect")
     );
   }
 });
@@ -470,4 +470,125 @@ test("POST /api/users/change-password - should generate new tokens after passwor
   assert.ok(response.body.data.refreshToken);
 
   authToken = response.body.data.accessToken;
+});
+
+// ==================== PREFERENCES TESTS ====================
+
+test("GET /api/users/preferences - should return user preferences", async () => {
+  const response = await request(app)
+    .get("/api/users/preferences")
+    .set("Authorization", `Bearer ${authToken}`);
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.success, true);
+  assert.ok(response.body.data.preferences);
+  assert.ok(Array.isArray(response.body.data.preferences.dietaryRestrictions));
+  assert.ok(Array.isArray(response.body.data.preferences.favoriteRestaurants));
+});
+
+test("GET /api/users/preferences - should fail without authentication", async () => {
+  const response = await request(app)
+    .get("/api/users/preferences");
+
+  assert.equal(response.status, 401);
+  assert.equal(response.body.success, false);
+});
+
+test("PATCH /api/users/preferences - should update maxCalories", async () => {
+  const response = await request(app)
+    .patch("/api/users/preferences")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      maxCalories: 600,
+    });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.data.preferences.maxCalories, 600);
+});
+
+test("PATCH /api/users/preferences - should update minProtein", async () => {
+  const response = await request(app)
+    .patch("/api/users/preferences")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      minProtein: 25,
+    });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.data.preferences.minProtein, 25);
+  // Previous value should persist
+  assert.equal(response.body.data.preferences.maxCalories, 600);
+});
+
+test("PATCH /api/users/preferences - should update favoriteRestaurants", async () => {
+  const response = await request(app)
+    .patch("/api/users/preferences")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      favoriteRestaurants: ["McDonald's", "Wendy's"],
+    });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.success, true);
+  assert.deepEqual(response.body.data.preferences.favoriteRestaurants, ["McDonald's", "Wendy's"]);
+});
+
+test("PATCH /api/users/preferences - should update dietaryRestrictions", async () => {
+  const response = await request(app)
+    .patch("/api/users/preferences")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      dietaryRestrictions: ["Vegetarian", "Low-Sodium"],
+    });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.success, true);
+  assert.deepEqual(response.body.data.preferences.dietaryRestrictions, ["Vegetarian", "Low-Sodium"]);
+});
+
+test("PATCH /api/users/preferences - should update all preferences at once", async () => {
+  const response = await request(app)
+    .patch("/api/users/preferences")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      maxCalories: 500,
+      minProtein: 30,
+      favoriteRestaurants: ["KFC"],
+      dietaryRestrictions: ["Gluten-Free"],
+    });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.data.preferences.maxCalories, 500);
+  assert.equal(response.body.data.preferences.minProtein, 30);
+  assert.deepEqual(response.body.data.preferences.favoriteRestaurants, ["KFC"]);
+  assert.deepEqual(response.body.data.preferences.dietaryRestrictions, ["Gluten-Free"]);
+});
+
+test("PATCH /api/users/preferences - should clear values with null", async () => {
+  const response = await request(app)
+    .patch("/api/users/preferences")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      maxCalories: null,
+      minProtein: null,
+    });
+
+  assert.equal(response.status, 200);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.data.preferences.maxCalories, null);
+  assert.equal(response.body.data.preferences.minProtein, null);
+});
+
+test("PATCH /api/users/preferences - should fail without authentication", async () => {
+  const response = await request(app)
+    .patch("/api/users/preferences")
+    .send({
+      maxCalories: 700,
+    });
+
+  assert.equal(response.status, 401);
+  assert.equal(response.body.success, false);
 });

@@ -14,6 +14,40 @@ const calculatePrice = (calories) => {
 };
 
 /**
+ * Boost favorite restaurants to the top of results
+ * Items from favorite restaurants appear first, maintaining sort order within each group
+ *
+ * @param {Array} items - Array of food items
+ * @param {Array} favoriteRestaurants - Array of restaurant names to boost
+ * @returns {Array} - Reordered array with favorites first
+ */
+const boostFavoriteRestaurants = (items, favoriteRestaurants) => {
+    if (!favoriteRestaurants?.length) return items;
+
+    // Normalize favorites for case-insensitive matching
+    const normalizedFavorites = favoriteRestaurants.map(r => r.toLowerCase().trim());
+
+    const favorites = [];
+    const others = [];
+
+    for (const item of items) {
+        const companyLower = (item.company || '').toLowerCase().trim();
+        // Skip matching if company is empty - can't be a favorite
+        if (!companyLower) {
+            others.push(item);
+            continue;
+        }
+        if (normalizedFavorites.some(fav => companyLower.includes(fav) || fav.includes(companyLower))) {
+            favorites.push(item);
+        } else {
+            others.push(item);
+        }
+    }
+
+    return [...favorites, ...others];
+};
+
+/**
  * Get food recommendations based on natural language preferences
  * Similar to search but with sorting and better recommendations
  *
@@ -42,16 +76,24 @@ export const recommendFood = async (req, res) => {
             sortCriteria.calories = -1; // High price (via high calories) first
         }
 
-        const recommendations = await FastFoodItem.find(mongoQuery)
+        let recommendations = await FastFoodItem.find(mongoQuery)
             .sort(sortCriteria)
             // .limit(limit)
             .lean();
 
         // Add calculated price to each recommendation
-        const recommendationsWithPrice = recommendations.map(item => ({
+        let recommendationsWithPrice = recommendations.map(item => ({
             ...item,
             price: calculatePrice(item.calories)
         }));
+
+        // Boost favorite restaurants to top if user has preferences
+        if (req.favoriteRestaurants?.length > 0) {
+            recommendationsWithPrice = boostFavoriteRestaurants(
+                recommendationsWithPrice,
+                req.favoriteRestaurants
+            );
+        }
 
         return res.status(200).json({
             success: true,
@@ -59,6 +101,7 @@ export const recommendFood = async (req, res) => {
             criteria: req.parsedCriteria,
             recommendations: recommendationsWithPrice,
             count: recommendationsWithPrice.length,
+            preferencesApplied: req.preferencesApplied || false,
             message: `Here are ${recommendationsWithPrice.length} recommendations based on your preferences`,
         });
     } catch (error) {

@@ -16,6 +16,13 @@ export interface MealLog {
   foodItem: FoodItem;
 }
 
+export interface UserPreferences {
+  dietaryRestrictions: string[];
+  favoriteRestaurants: string[];
+  maxCalories: number | null;
+  minProtein: number | null;
+}
+
 export interface UserProfile {
   name: string;
   email: string;
@@ -23,6 +30,7 @@ export interface UserProfile {
   avatar?: string;
   // Role of the user within the system: 'user' | 'staff' | 'admin'
   role?: string;
+  preferences?: UserPreferences;
 }
 
 export interface DashboardData {
