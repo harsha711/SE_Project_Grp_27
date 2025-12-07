@@ -376,3 +376,110 @@ test("applyUserPreferences - applies all preferences together", () => {
     assert.deepEqual(req.dietaryRestrictions, ["Halal"]);
     assert.equal(req.preferencesApplied, true);
 });
+
+test("applyUserPreferences - initializes empty parsedCriteria when undefined", () => {
+    const req = mockRequest({});
+    req.user = {
+        id: "123",
+        preferences: {
+            maxCalories: 500,
+            minProtein: 15,
+            favoriteRestaurants: [],
+            dietaryRestrictions: [],
+        },
+    };
+    req.parsedCriteria = undefined; // No parsed criteria yet
+    const res = mockResponse();
+    const next = mockNext();
+
+    applyUserPreferences(req, res, next);
+
+    assert.equal(next.wasCalled(), true);
+    assert.equal(req.parsedCriteria.calories.max, 500);
+    assert.equal(req.parsedCriteria.protein.min, 15);
+});
+
+test("applyUserPreferences - handles error gracefully and continues", () => {
+    const req = mockRequest({});
+    // Create an object that throws when accessed
+    req.user = {
+        id: "123",
+        get preferences() {
+            throw new Error("Simulated error");
+        },
+    };
+    req.parsedCriteria = { protein: { min: 20 } };
+    const res = mockResponse();
+    const next = mockNext();
+
+    // Should not throw, just log and call next
+    applyUserPreferences(req, res, next);
+
+    assert.equal(next.wasCalled(), true);
+});
+
+test("applyUserPreferences - does not set favoriteRestaurants when empty array", () => {
+    const req = mockRequest({});
+    req.user = {
+        id: "123",
+        preferences: {
+            maxCalories: null,
+            minProtein: null,
+            favoriteRestaurants: [],
+            dietaryRestrictions: [],
+        },
+    };
+    req.parsedCriteria = { protein: { min: 20 } };
+    const res = mockResponse();
+    const next = mockNext();
+
+    applyUserPreferences(req, res, next);
+
+    assert.equal(next.wasCalled(), true);
+    assert.equal(req.favoriteRestaurants, undefined);
+    assert.equal(req.dietaryRestrictions, undefined);
+});
+
+test("applyUserPreferences - initializes calories object when adding max", () => {
+    const req = mockRequest({});
+    req.user = {
+        id: "123",
+        preferences: {
+            maxCalories: 800,
+            minProtein: null,
+            favoriteRestaurants: [],
+            dietaryRestrictions: [],
+        },
+    };
+    req.parsedCriteria = { protein: { min: 30 } }; // No calories object
+    const res = mockResponse();
+    const next = mockNext();
+
+    applyUserPreferences(req, res, next);
+
+    assert.equal(next.wasCalled(), true);
+    assert.ok(req.parsedCriteria.calories);
+    assert.equal(req.parsedCriteria.calories.max, 800);
+});
+
+test("applyUserPreferences - initializes protein object when adding min", () => {
+    const req = mockRequest({});
+    req.user = {
+        id: "123",
+        preferences: {
+            maxCalories: null,
+            minProtein: 30,
+            favoriteRestaurants: [],
+            dietaryRestrictions: [],
+        },
+    };
+    req.parsedCriteria = { calories: { max: 600 } }; // No protein object
+    const res = mockResponse();
+    const next = mockNext();
+
+    applyUserPreferences(req, res, next);
+
+    assert.equal(next.wasCalled(), true);
+    assert.ok(req.parsedCriteria.protein);
+    assert.equal(req.parsedCriteria.protein.min, 30);
+});

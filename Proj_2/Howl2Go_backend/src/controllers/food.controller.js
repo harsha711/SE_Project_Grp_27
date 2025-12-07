@@ -32,6 +32,11 @@ const boostFavoriteRestaurants = (items, favoriteRestaurants) => {
 
     for (const item of items) {
         const companyLower = (item.company || '').toLowerCase().trim();
+        // Skip matching if company is empty - can't be a favorite
+        if (!companyLower) {
+            others.push(item);
+            continue;
+        }
         if (normalizedFavorites.some(fav => companyLower.includes(fav) || fav.includes(companyLower))) {
             favorites.push(item);
         } else {
