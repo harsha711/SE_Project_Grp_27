@@ -266,6 +266,102 @@ export const changePassword = async (req, res) => {
 };
 
 /**
+ * Get user preferences
+ * GET /api/users/preferences
+ */
+export const getPreferences = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        preferences: user.preferences || {
+          dietaryRestrictions: [],
+          favoriteRestaurants: [],
+          maxCalories: null,
+          minProtein: null,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Get preferences error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve preferences",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+/**
+ * Update user preferences
+ * PATCH /api/users/preferences
+ */
+export const updatePreferences = async (req, res) => {
+  try {
+    const { dietaryRestrictions, favoriteRestaurants, maxCalories, minProtein } = req.body;
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update only provided fields
+    if (dietaryRestrictions !== undefined) {
+      user.preferences.dietaryRestrictions = dietaryRestrictions;
+    }
+    if (favoriteRestaurants !== undefined) {
+      user.preferences.favoriteRestaurants = favoriteRestaurants;
+    }
+    if (maxCalories !== undefined) {
+      user.preferences.maxCalories = maxCalories;
+    }
+    if (minProtein !== undefined) {
+      user.preferences.minProtein = minProtein;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Preferences updated successfully",
+      data: {
+        preferences: user.preferences,
+      },
+    });
+  } catch (error) {
+    console.error("Update preferences error:", error);
+
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors,
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to update preferences",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+/**
  * Refresh access token using refresh token
  * POST /api/users/refresh-token
  */
