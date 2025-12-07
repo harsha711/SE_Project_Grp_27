@@ -1,9 +1,22 @@
+import { cookies } from "next/headers";
+
 export async function POST(req: Request) {
   const body = await req.json();
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+
+  // Build headers, including auth token if available for preference application
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+
+  if (accessToken) {
+    headers["Authorization"] = `Bearer ${accessToken}`;
+  }
 
   const res = await fetch(`${process.env.BACKEND_URL}/api/food/recommend`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(body)
   });
 
