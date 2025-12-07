@@ -109,7 +109,7 @@ export default function CartPage() {
       setOrderPlaced(true);
 
       setTimeout(() => {
-        router.push("/");
+        router.push("/dashboard");
       }, 3000);
     } catch (error) {
       console.error("Failed to place order:", error);
@@ -197,7 +197,7 @@ export default function CartPage() {
                 }}
               />
             </div>
-            <span>Redirecting to home...</span>
+            <span>Redirecting to dashboard...</span>
           </div>
         </div>
 
