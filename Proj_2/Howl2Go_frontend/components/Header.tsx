@@ -12,7 +12,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { User, ShoppingCart, LogOut } from "lucide-react";
+import { User, ShoppingCart, LogOut, Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
@@ -109,9 +109,17 @@ export default function Header() {
                   </span>
                 </button>
 
-                {/* Dropdown Menu - only Logout */}
+                {/* Dropdown Menu */}
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg shadow-lg py-2 z-50">
+                    <Link
+                      href="/preferences"
+                      onClick={() => setShowUserMenu(false)}
+                      className="w-full text-left px-4 py-2 text-sm text-[var(--text)] hover:bg-[var(--bg-hover)] transition-colors flex items-center gap-2"
+                    >
+                      <Settings className="h-4 w-4" />
+                      Preferences
+                    </Link>
                     <button
                       onClick={() => {
                         setShowUserMenu(false);
